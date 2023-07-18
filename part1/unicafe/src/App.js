@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 const Statistics = (props) => {
   return (
-    (props.all === 0) ? <p>No feedback yet</p> : (ste
+    (props.all === 0) ? <p>No feedback yet</p> : (
     <div>
       <h2>statistics</h2>
       <p>good {props.good}</p>
