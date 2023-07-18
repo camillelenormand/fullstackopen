@@ -41,14 +41,24 @@ const App = () => {
     console.log(updatedVotes);
   }
 
+  const sortedIndices = [...anecdotes.keys()].sort((a, b) => votes[b] - votes[a]);
+  
   return (
     <div>
-      {anecdotes[selected]}
-      <br />
+      <h1>Anecdote of the day</h1>
+      <p>{anecdotes[selected]}</p>
       <p>has {votes[selected]} votes</p>
       <br />
       <Button label="Vote" handleClick={() => setVote()} />
       <Button label="Next anecdote" handleClick={() => setToSelected()} />
+      <br />
+      <h1>Anecdote with most votes</h1>
+      {sortedIndices.map((index) => (
+        <div key={index}>
+          <p>{anecdotes[index]}</p>
+          <p>has {votes[index]}  votes</p>
+        </div>
+      ))}
     </div>
   )
 }
