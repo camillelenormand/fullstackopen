@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-
+// Button component
 const Button = (props) => {
   const {label} = props;
   return (
@@ -23,40 +23,60 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.'
   ]
    
+  // State hooks
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
+  const [latestUnvote, setLatestUnvote] = useState(null);
 
-  const setToSelected = () => {
-    const newValue = Math.floor(Math.random() * anecdotes.length);
-    console.log(newValue);
-    setSelected(newValue);
+
+  // Helper functions to select random anecdote
+  const pickRandom = () => {
+    while (true) {
+    
+      const newValue = Math.floor(Math.random() * anecdotes.length);
+      if (newValue !== selected) return newValue
+    }
   }
 
+  // Helper functions to set votes
   const setVote = () => {
     const updatedVotes = [...votes]
-    console.log(updatedVotes);
-    updatedVotes[selected] += 1
-    console.log(updatedVotes);
+    updatedVotes[selected] += 1 
     setVotes(updatedVotes);
-    console.log(updatedVotes);
+    setLatestUnvote(null);
   }
 
+
+  // Helper functions to set unvoting
+  const setUnvote = () => {
+    const updatedVotes = [...votes]
+    updatedVotes[selected] -= 1
+    if (updatedVotes[selected] < 0) updatedVotes[selected] = 0
+    setVotes(updatedVotes);
+    setLatestUnvote(selected);
+  }
+
+  // Helper functions to sort anecdotes
   const sortedIndices = [...anecdotes.keys()].sort((a, b) => votes[b] - votes[a]);
   
+
   return (
     <div>
       <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
-      <p>has {votes[selected]} votes</p>
-      <br />
+      <p>
+        has {votes[selected]} votes{' '}
+        {votes[selected] > 0 && (latestUnvote === selected ? '⬇️' : '⬆️')}
+      </p>      <br />
       <Button label="Vote" handleClick={() => setVote()} />
-      <Button label="Next anecdote" handleClick={() => setToSelected()} />
+      <Button label="Unvote" handleClick={() => setUnvote()} />
+      <Button label="Next anecdote" handleClick={() => setSelected(pickRandom())} />
       <br />
       <h1>Anecdote with most votes</h1>
       {sortedIndices.map((index) => (
         <div key={index}>
           <p>{anecdotes[index]}</p>
-          <p>has {votes[index]}  votes</p>
+          <p>has {votes[index]} votes </p>
         </div>
       ))}
     </div>
