@@ -1,10 +1,9 @@
 import { useState } from 'react'
 
 // Button component
-const Button = (props) => {
-  const {label} = props;
+const Button = ({label, handleClick}) => {
   return (
-    <button onClick={props.handleClick}>
+    <button onClick={handleClick}>
       {label}
     </button>
   )
@@ -58,7 +57,6 @@ const App = () => {
 
   // Helper functions to sort anecdotes
   const sortedIndices = [...anecdotes.keys()].sort((a, b) => votes[b] - votes[a]);
-  
 
   return (
     <div>
@@ -67,18 +65,34 @@ const App = () => {
       <p>
         has {votes[selected]} votes{' '}
         {votes[selected] > 0 && (latestUnvote === selected ? '⬇️' : '⬆️')}
-      </p>      <br />
+      </p>     
+      <br />
       <Button label="Vote" handleClick={() => setVote()} />
       <Button label="Unvote" handleClick={() => setUnvote()} />
       <Button label="Next anecdote" handleClick={() => setSelected(pickRandom())} />
       <br />
       <h1>Anecdote with most votes</h1>
-      {sortedIndices.map((index) => (
-        <div key={index}>
-          <p>{anecdotes[index]}</p>
-          <p>has {votes[index]} votes </p>
-        </div>
-      ))}
+      <table>
+        <thead>
+          <tr>
+            <th>Anecdote</th>
+            <th>Votes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sortedIndices.map((index) => (
+            <tr key={index}>
+              <td>{anecdotes[index]}</td>
+              <td>{votes[index]} votes</td>
+              <td>
+                {index === 0 && <span>⬆️</span>}
+                {index !== 0 && votes[index] > votes[index - 1] && <span>⬆️</span>}
+                {index !== 0 && votes[index] === votes[index - 1] && <span>⬇️</span>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 }
