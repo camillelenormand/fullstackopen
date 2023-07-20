@@ -25,7 +25,7 @@ const App = () => {
   // State hooks
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
-  const [latestUnvote, setLatestUnvote] = useState(null);
+  const [latestUnvote, setLatestUnvote] = useState(null)
 
 
   // Helper functions to select random anecdote
@@ -41,6 +41,7 @@ const App = () => {
   const setVote = () => {
     const updatedVotes = [...votes]
     updatedVotes[selected] += 1 
+    console.log( 'Updated Votes Array ', updatedVotes);
     setVotes(updatedVotes);
     setLatestUnvote(null);
   }
@@ -52,7 +53,9 @@ const App = () => {
     updatedVotes[selected] -= 1
     if (updatedVotes[selected] < 0) updatedVotes[selected] = 0
     setVotes(updatedVotes);
+    console.log(updatedVotes);
     setLatestUnvote(selected);
+    console.log(latestUnvote);
   }
 
   // Helper functions to sort anecdotes
