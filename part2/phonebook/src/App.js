@@ -28,12 +28,6 @@ const App = () => {
     setNewName('')
   }
 
-  const checkName = (name) => {
-    if (persons.some(person => person.name === name)) {
-      alert(`${name} is already added to phonebook`)
-    }
-  }
-
   return (
     <div>
       <h2>Phone Book</h2>
