@@ -1,3 +1,4 @@
+import React from 'react'
 
 const Total = ({ parts }) => {
   console.log(parts)
@@ -6,7 +7,7 @@ const Total = ({ parts }) => {
 
   return (
     <div>
-      <p>Number of exercises: {result}</p>
+      <p><b>Number of exercises: <em>{result}</em></b></p>
     </div>
   )
 }

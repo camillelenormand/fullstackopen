@@ -1,3 +1,5 @@
+import React from 'react'
+
 import Part from '../course/content/Part'
 
 const Content = ({ parts }) => {
