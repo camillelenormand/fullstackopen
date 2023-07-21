@@ -17,13 +17,22 @@ const App = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    const personObject = {
-      name: newName
+    if (persons.some(person => person.name === newName)) {
+      alert(`${newName} is already added to phonebook`)
+    } else {
+      const personObject = {
+        name: newName
+      }
+      setPersons(persons.concat(personObject))
     }
+    setNewName('')
+  }
 
-  setPersons(persons.concat(personObject))
-  setNewName('')
-}
+  const checkName = (name) => {
+    if (persons.some(person => person.name === name)) {
+      alert(`${name} is already added to phonebook`)
+    }
+  }
 
   return (
     <div>
