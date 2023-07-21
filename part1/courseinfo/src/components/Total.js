@@ -3,6 +3,8 @@ const Total = ({ parts }) => {
 
   const result = parts.reduce((sum, part) => sum + part.exercises, 0);
 
+  console.log(result)
+
   return (
     <div>
       <p>Number of exercises: {result}</p>
