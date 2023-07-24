@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types';
 
 const Person = ({ persons, newSearch }) => {
 
@@ -18,6 +19,11 @@ const Person = ({ persons, newSearch }) => {
           })}
     </div>
   )
+}
+
+Person.propTypes = {
+  persons: PropTypes.array.isRequired,
+  newSearch: PropTypes.string.isRequired
 }
 
 export default Person

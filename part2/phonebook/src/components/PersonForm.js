@@ -1,4 +1,6 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+
 
 const PersonForm = ({ handleSubmit, newName, newPhoneNumber, handleChangePhoneNumber, handleChangeName }) => {
 
@@ -9,6 +11,7 @@ const PersonForm = ({ handleSubmit, newName, newPhoneNumber, handleChangePhoneNu
           <div>
             <label>Name</label>
             <input 
+              required
               value={newName}
               onChange={handleChangeName}
             />
@@ -16,6 +19,7 @@ const PersonForm = ({ handleSubmit, newName, newPhoneNumber, handleChangePhoneNu
           <div>
             <label>Phone</label>
             <input 
+              required
               value={newPhoneNumber}
               onChange={handleChangePhoneNumber}
             />
@@ -26,6 +30,14 @@ const PersonForm = ({ handleSubmit, newName, newPhoneNumber, handleChangePhoneNu
         </form>
     </div>
   )
+}
+
+PersonForm.propTypes = {
+  handleSubmit: PropTypes.func.isRequired,
+  newName: PropTypes.string.isRequired,
+  newPhoneNumber: PropTypes.string.isRequired,
+  handleChangeName: PropTypes.func.isRequired,
+  handleChangePhoneNumber: PropTypes.func.isRequired
 }
 
 export default PersonForm

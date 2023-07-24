@@ -4,6 +4,7 @@ import PersonForm  from './components/PersonForm'
 import Filter from './components/Filter'
 import Axios from 'axios'
 
+
 const App = () => {
   const [newName, setNewName, ] = useState('')
   const [newPhoneNumber, setNewPhoneNumber] = useState('')
@@ -22,6 +23,7 @@ const App = () => {
     const newValue = e.target.value
     setNewName(newValue);
   }
+
   
   const handleChangePhoneNumber = (e) => {
     const newValue = e.target.value
