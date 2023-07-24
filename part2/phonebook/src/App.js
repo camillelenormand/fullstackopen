@@ -3,6 +3,7 @@ import Person  from './components/Person'
 import PersonForm  from './components/PersonForm'
 import Filter from './components/Filter'
 import axios from 'axios'
+import phoneService from './services/phoneService'
 
 
 const App = () => {
@@ -12,7 +13,8 @@ const App = () => {
   const [persons, setPersons] = useState([])
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons')
+    phoneService
+      .getAllPersons()
       .then(response => {
         setPersons(response.data)
       })
@@ -34,7 +36,7 @@ const App = () => {
     e.preventDefault()
     const personExists = persons.some(person => person.name === newName)
     if (personExists) {
-      alert(`${newName} was already added to phonebook`)
+      alert(`${newName} was already added to the phone book`)
     } else {
       const newPerson = {
         name: newName,
