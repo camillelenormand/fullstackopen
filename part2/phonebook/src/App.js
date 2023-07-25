@@ -1,16 +1,26 @@
+// import components, react features and other libraries
+
+// React
 import { useState, useEffect } from 'react'
+
+// Components
 import PersonForm  from './components/PersonForm'
 import People from './components/People'
 import Filter from './components/Filter'
-import axios from 'axios'
 import phoneService from './services/phoneService'
+import Notification from './components/Notification'
 
+// Other Libraries
+import axios from 'axios'
 
+// App
 const App = () => {
   const [newName, setNewName, ] = useState('')
   const [newPhoneNumber, setNewPhoneNumber] = useState('')
   const [newSearch, setNewSearch] = useState('')
   const [persons, setPersons] = useState([])
+  const [message, setMessage] = useState(null)
+  const [color, setColor] = useState("")
 
   // get all data from server
   useEffect(() => {
@@ -19,13 +29,21 @@ const App = () => {
       .getAllPersons()
       .then(response => {
         console.log('response', response)
-        setPersons(response)
+        setPersons(response)        
+      })
+      .catch(error => {
+        setMessage(error.message)
+        setColor('red')
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
       })
   }, [])
 
+  // Delete a person from list
   const handleDelete = (id,) => {
     const person = persons.find(p => p.id === id)
-
+    // Display popup to confirm person deletion
     if (window.confirm(`Delete ${person.name}?`))
     phoneService
       .deletePerson(id)
@@ -34,20 +52,33 @@ const App = () => {
           .getAllPersons()
           .then((person) => {
             setPersons(person)
+            setMessage(`${person.name} was deleted`)
+            setColor('green')
           })
       })
+        .catch(error => {
+          setMessage(error.message)
+          setColor('red')
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000
+        )
+    })
   }
 
+  // Get name value from input
   const handleChangeName = (e) => {
     const newValue = e.target.value
     setNewName(newValue);
   }
 
+  // Get phone number value from input
   const handleChangePhoneNumber = (e) => {
     const newValue = e.target.value
     setNewPhoneNumber(newValue);
   }
 
+  // Send new person to server
   const handleSubmit = (e) => {
     e.preventDefault()
     const personExists = persons.some(person => person.name === newName)
@@ -55,38 +86,56 @@ const App = () => {
       name: newName,
       number: newPhoneNumber
     }
+    // Check if person exists
     if (personExists) {
+      // Find related person
       const existingPerson = persons.find(person => person.name === newName)
+      // Display popup to confirm person update
       const answer = window.confirm(`${newName} was already added to the phone book. Do you want to replace the old number with the new one for ${newName}?`)
       console.log(answer)
+      // Update existing person if answer is true
       if (answer) {
         console.log("update")
         phoneService
           .updatePerson(existingPerson.id, newPerson)
           .then(returnedPerson => {
             setPersons(persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson))
+            setMessage(`${newName} updated!`)
+            setColor('green')
             setNewName('')
             setNewPhoneNumber('')
           })
           .catch(error => {
-            console.log(error)
+            setMessage(error.message)
+            setColor('red')
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
+            })
             setPersons(persons.filter(person => person.name !== newName))
-          })
       } 
     } else {
+      // Add new person
       axios 
         .post('http://localhost:3001/persons', newPerson)
         .then(response => {
           setPersons(persons.concat(response.data))
+          setMessage(`${newName} added!`)
+          setColor('green')
           setNewName('')
           setNewPhoneNumber('')
         })
         .catch(error => {
-          console.log(error)
+          setMessage(error.message)
+          setColor('red')
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
         })
     }
   }
 
+  // Search
   const handleSearch = (e) => {
     const input = e.target.value
     setNewSearch(input)
@@ -94,7 +143,8 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phone Book</h2>
+      <h1>Phone Book</h1>
+        <Notification message={message} color={color}/>
         <Filter setNewSearch={setNewSearch} newSearch={newSearch} handleSearch={handleSearch}/>
         
         <PersonForm 
