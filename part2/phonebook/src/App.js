@@ -51,13 +51,29 @@ const App = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     const personExists = persons.some(person => person.name === newName)
+    const newPerson = {
+      name: newName,
+      number: newPhoneNumber
+    }
     if (personExists) {
-      alert(`${newName} was already added to the phone book`)
+      const existingPerson = persons.find(person => person.name === newName)
+      const answer = window.confirm(`${newName} was already added to the phone book. Do you want to replace the old number with the new one for ${newName}?`)
+      console.log(answer)
+      if (answer) {
+        console.log("update")
+        phoneService
+          .updatePerson(existingPerson.id, newPerson)
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson))
+            setNewName('')
+            setNewPhoneNumber('')
+          })
+          .catch(error => {
+            console.log(error)
+            setPersons(persons.filter(person => person.name !== newName))
+          })
+      } 
     } else {
-      const newPerson = {
-        name: newName,
-        number: newPhoneNumber
-      }
       axios 
         .post('http://localhost:3001/persons', newPerson)
         .then(response => {
