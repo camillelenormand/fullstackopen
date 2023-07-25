@@ -1,29 +1,16 @@
 import React from 'react'
-import PropTypes from 'prop-types';
 
-const Person = ({ persons, newSearch }) => {
+const Person = ({ person, handleDelete }) => {
 
-  const results = persons.filter(person => {
-    return person.name.toLowerCase().includes(newSearch.toLowerCase())
-  })
-
-  return(
-    <div>
-      <h2>Contacts</h2>
-        {results.map((person) => {
-            return (
-              <div key={person.name}>
-                Name: <b>{person.name}</b> - Phone: <b>{person.number}</b>
-              </div>
-            )
-          })}
-    </div>
+  return (
+    <tr key={person.name}>
+      <td>{person.name}</td>
+      <td>{person.number}</td>
+      <td>
+        <button onClick={handleDelete}>Delete</button>
+      </td>
+    </tr>
   )
 }
 
-Person.propTypes = {
-  persons: PropTypes.array.isRequired,
-  newSearch: PropTypes.string.isRequired
-}
-
-export default Person
+export default Person;

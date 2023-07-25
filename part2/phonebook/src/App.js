@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import Person  from './components/Person'
 import PersonForm  from './components/PersonForm'
+import People from './components/People'
 import Filter from './components/Filter'
 import axios from 'axios'
 import phoneService from './services/phoneService'
@@ -12,21 +12,37 @@ const App = () => {
   const [newSearch, setNewSearch] = useState('')
   const [persons, setPersons] = useState([])
 
+  // get all data from server
   useEffect(() => {
+    console.log("effect");
     phoneService
       .getAllPersons()
       .then(response => {
-        setPersons(response.data)
+        console.log('response', response)
+        setPersons(response)
       })
   }, [])
 
+  const handleDelete = (id,) => {
+    const person = persons.find(p => p.id === id)
+
+    if (window.confirm(`Delete ${person.name}?`))
+    phoneService
+      .deletePerson(id)
+      .then(() => {
+        phoneService
+          .getAllPersons()
+          .then((person) => {
+            setPersons(person)
+          })
+      })
+  }
 
   const handleChangeName = (e) => {
     const newValue = e.target.value
     setNewName(newValue);
   }
 
-  
   const handleChangePhoneNumber = (e) => {
     const newValue = e.target.value
     setNewPhoneNumber(newValue);
@@ -49,6 +65,9 @@ const App = () => {
           setNewName('')
           setNewPhoneNumber('')
         })
+        .catch(error => {
+          console.log(error)
+        })
     }
   }
 
@@ -70,9 +89,9 @@ const App = () => {
           handleChangeName={handleChangeName}
         />
           
-        <Person 
-          persons={persons}
-          newSearch={newSearch}
+        <People 
+          people={persons}
+          handleDelete={handleDelete}
         />
     </div>
   )
