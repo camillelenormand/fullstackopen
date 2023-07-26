@@ -2,23 +2,22 @@ import React from 'react'
 import PropTypes from 'prop-types';
 
 
-const Filter = ({ newSearch, handleSearch }) => {
+const Filter = ({ setFilter, filter }) => {
 
   return(
     <div>
       <h3>Search</h3>
         <input 
-          placeholder='Enter a name'
-          value={newSearch}
-          onChange={handleSearch}
+          type="text"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
         />
     </div>
   )
 }
 
 Filter.propTypes = {
-  newSearch: PropTypes.string.isRequired,
-  handleSearch: PropTypes.func.isRequired
+  setFilter: PropTypes.func.isRequired
 }
 
 export default Filter

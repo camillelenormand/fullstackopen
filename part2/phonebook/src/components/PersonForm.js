@@ -36,8 +36,8 @@ PersonForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   newName: PropTypes.string.isRequired,
   newPhoneNumber: PropTypes.string.isRequired,
-  handleChangeName: PropTypes.func.isRequired,
-  handleChangePhoneNumber: PropTypes.func.isRequired
+  handleChangePhoneNumber: PropTypes.func.isRequired,
+  handleChangeName: PropTypes.func.isRequired
 }
 
 export default PersonForm

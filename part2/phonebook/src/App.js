@@ -17,7 +17,7 @@ import axios from 'axios'
 const App = () => {
   const [newName, setNewName, ] = useState('')
   const [newPhoneNumber, setNewPhoneNumber] = useState('')
-  const [newSearch, setNewSearch] = useState('')
+  const [filter, setFilter] = useState("");
   const [persons, setPersons] = useState([])
   const [message, setMessage] = useState(null)
   const [color, setColor] = useState("")
@@ -43,6 +43,7 @@ const App = () => {
   // Delete a person from list
   const handleDelete = (id,) => {
     const person = persons.find(p => p.id === id)
+    console.log('person', person)
     // Display popup to confirm person deletion
     if (window.confirm(`Delete ${person.name}?`))
     phoneService
@@ -51,6 +52,7 @@ const App = () => {
         phoneService
           .getAllPersons()
           .then((person) => {
+            console.log('person', person)
             setPersons(person)
             setMessage(`${person.name} was deleted`)
             setColor('green')
@@ -78,18 +80,19 @@ const App = () => {
     setNewPhoneNumber(newValue);
   }
 
-  // Send new person to server
+  // Add new person to list
   const handleSubmit = (e) => {
     e.preventDefault()
-    const personExists = persons.some(person => person.name === newName)
+    // Check if name already exists
+    const existingPerson = persons.find(person => person.name === newName)
     const newPerson = {
       name: newName,
       number: newPhoneNumber
     }
     // Check if person exists
-    if (personExists) {
+    if (existingPerson) {
       // Find related person
-      const existingPerson = persons.find(person => person.name === newName)
+      const newPeople = {...existingPerson, newPerson}
       // Display popup to confirm person update
       const answer = window.confirm(`${newName} was already added to the phone book. Do you want to replace the old number with the new one for ${newName}?`)
       console.log(answer)
@@ -97,16 +100,16 @@ const App = () => {
       if (answer) {
         console.log("update")
         phoneService
-          .updatePerson(existingPerson.id, newPerson)
+          .updatePerson(existingPerson.id, newPeople)
           .then(returnedPerson => {
             setPersons(persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson))
-            setMessage(`${newName} updated!`)
+            setMessage(`${returnedPerson.name} updated!`)
             setColor('green')
             setNewName('')
             setNewPhoneNumber('')
           })
           .catch(error => {
-            setMessage(error.message)
+            setMessage(`${newName} was already removed from the server`) 
             setColor('red')
             setTimeout(() => {
               setMessage(null)
@@ -135,17 +138,12 @@ const App = () => {
     }
   }
 
-  // Search
-  const handleSearch = (e) => {
-    const input = e.target.value
-    setNewSearch(input)
-  }
-
+  
   return (
     <div>
       <h1>Phone Book</h1>
         <Notification message={message} color={color}/>
-        <Filter setNewSearch={setNewSearch} newSearch={newSearch} handleSearch={handleSearch}/>
+        <Filter setFilter={setFilter} filter={filter} />
         
         <PersonForm 
           handleSubmit={handleSubmit}
@@ -156,6 +154,7 @@ const App = () => {
         />
           
         <People 
+          filter={filter}
           people={persons}
           handleDelete={handleDelete}
         />
