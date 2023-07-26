@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 
 function App() {
-  const [countries, setCountries] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [countries, setCountries] = useState([])
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     if (searchQuery) {
@@ -16,17 +16,17 @@ function App() {
           alert(`Something went wrong: ${error.message}`);
         });
     } else {
-      setCountries([]);
+      setCountries([])
     }
-  }, [searchQuery]);
+  }, [searchQuery])
 
   const onChange = (e) => {
-    setSearchQuery(e.target.value);
+    setSearchQuery(e.target.value)
   };
 
   const filteredCountries = countries.filter(country => {
-    const countryName = country.name.common.toLowerCase();
-    return countryName.includes(searchQuery.toLowerCase());
+    const countryName = country.name.common.toLowerCase()
+    return countryName.includes(searchQuery.toLowerCase())
   });
 
   return (
@@ -73,7 +73,7 @@ function App() {
         <p>No countries found.</p>
       )}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
