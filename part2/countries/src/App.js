@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './App.css';
 
 function App() {
   const [countries, setCountries] = useState([]);
@@ -26,7 +25,7 @@ function App() {
   };
 
   const filteredCountries = countries.filter(country => {
-    const countryName = country.name.common.toLowerCase(); // Use 'name.common'
+    const countryName = country.name.common.toLowerCase();
     return countryName.includes(searchQuery.toLowerCase());
   });
 
@@ -43,7 +42,26 @@ function App() {
           onChange={onChange}
         />
       </form>
-      {filteredCountries.length >= 10 ? (
+      {filteredCountries.length === 1 ? (
+        <div>
+          <h2>{filteredCountries[0].name.common}</h2>
+          <h3>Details</h3>
+          <ul>
+            <li>Capital: {filteredCountries[0].capital}</li>
+            <li>Area: {filteredCountries[0].area.toLocaleString("en-US")} km²</li>
+            <li>Population: {filteredCountries[0].population.toLocaleString("en-US")} unhabitants</li>
+            <li>Languages:
+              <ul>
+                {Object.values(filteredCountries[0].languages).map(language => (
+                  <li key={language}>{language}</li>
+                ))}
+              </ul>
+            </li>
+          </ul>
+          <h3>Flag</h3>
+          <img src={filteredCountries[0].flags.png} alt="{filteredCountries[0].name.common}" />
+        </div>
+      ) : filteredCountries.length >= 10 ? (
         <p>Error: Too many results found. Please refine your search.</p>
       ) : filteredCountries.length > 0 ? (
         <ul>
