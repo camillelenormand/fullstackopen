@@ -49,7 +49,7 @@ function App() {
           <ul>
             <li>Capital: {filteredCountries[0].capital}</li>
             <li>Area: {filteredCountries[0].area.toLocaleString("en-US")} km²</li>
-            <li>Population: {filteredCountries[0].population.toLocaleString("en-US")} unhabitants</li>
+            <li>Population: {filteredCountries[0].population.toLocaleString("en-US")} inhabitants</li>
             <li>Languages:
               <ul>
                 {Object.values(filteredCountries[0].languages).map(language => (
