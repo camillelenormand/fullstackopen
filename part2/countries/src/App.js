@@ -28,6 +28,7 @@ function App() {
     const countryName = country.name.common.toLowerCase()
     return countryName.includes(searchQuery.toLowerCase())
   });
+  console.log("filteredCountries", filteredCountries)
 
   return (
     <div className="App">
@@ -59,7 +60,9 @@ function App() {
             </li>
           </ul>
           <h3>Flag</h3>
-          <img src={filteredCountries[0].flags.png} alt="{filteredCountries[0].name.common}" />
+          <img src={filteredCountries[0].flags.png} alt="{filteredCountries[0].name.common}" width={"200"}/>
+          <h3>Coat Of Arms</h3>
+          <img src={filteredCountries[0].coatOfArms.png} alt="{filteredCountries[0].name.common}" width={"200"}/>
         </div>
       ) : filteredCountries.length >= 10 ? (
         <p>Error: Too many results found. Please refine your search.</p>
