@@ -5,6 +5,7 @@ const CountriesCoatOfArms = ({ country }) => {
     <>
       <h3>Coat Of Arms</h3>
       <img src={country.coatOfArms.png} alt={country.name.common} width={"200"}/>
+      <hr />
     </>
   )
 }
