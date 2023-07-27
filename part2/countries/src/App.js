@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import countriesService from './services/countriesService'
 import Weather from './components/Weather'
 import Search from './components/Search'
 import CountriesDetails from './components/CountriesDetails'
@@ -14,10 +14,10 @@ function App() {
 
   useEffect(() => {
     if (searchQuery) {
-      axios
-        .get('https://studies.cs.helsinki.fi/restcountries/api/all')
+      countriesService
+        .getCountries()
         .then(response => {
-          setCountries(response.data);
+          setCountries(response);
         })
         .catch(error => {
           alert(`Something went wrong: ${error.message}`);
