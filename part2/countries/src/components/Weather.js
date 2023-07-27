@@ -24,6 +24,7 @@ const Weather = ({ city }) => {
 
   return (
     <div>
+      <h3>Weather</h3>
       {error && <p>Error: {error}</p>}
       {isWeatherDataAvailable ? (
         <ul>
@@ -46,6 +47,7 @@ const Weather = ({ city }) => {
           />
         </div>
       )}
+       <hr />
     </div>
   )
 }

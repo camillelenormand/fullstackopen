@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import Weather from './components/Weather'
+import Search from './components/Search'
+import CountriesDetails from './components/CountriesDetails'
+import CountriesFlag from './components/CountriesFlag'
+import CountriesCoatOfArms from './components/CountriesCoatOfArms'
+import Button from './components/Button'
+import Title from './components/Title'
 
 function App() {
   const [countries, setCountries] = useState([])
@@ -34,50 +40,25 @@ function App() {
   return (
     <>
       <header className="countries-header">
-        <h1>Countries</h1>
+        <Title label="Countries" size="h1"/>
       </header>
       <main className="App">
-        <form>
-          <input
-            type="text"
-            placeholder="Search"
-            value={searchQuery}
-            onChange={onChange}
-          />
-        </form>
+        <Search searchQuery={searchQuery} onChange={onChange} />
         {filteredCountries.length === 1 ? (
           <article>
-            <h2>{filteredCountries[0].name.common}</h2>
-              <hr />
-            <h3>Details</h3>
-              <ul>
-                <li>Capital: {filteredCountries[0].capital}</li>
-                <li>Area: {filteredCountries[0].area.toLocaleString("en-US")} km²</li>
-                <li>Population: {filteredCountries[0].population.toLocaleString("en-US")} inhabitants</li>
-                <li>Languages:
-                  <ul>
-                    {Object.values(filteredCountries[0].languages).map(language => (
-                      <li key={language}>{language}</li>
-                    ))}
-                  </ul>
-                </li>
-              </ul>
-            <h3>Flag</h3>
-              <img src={filteredCountries[0].flags.png} alt={filteredCountries[0].name.common} width={"200"}/>
-            <h3>Coat Of Arms</h3>
-              <img src={filteredCountries[0].coatOfArms.png} alt={filteredCountries[0].name.common} width={"200"}/>
-              <hr />
-              <br />
-            <h3>Weather</h3>
+            <Title label={filteredCountries[0].name.common} size="h2"/>
+            <CountriesDetails country={filteredCountries[0]} />
+            <CountriesFlag country={filteredCountries[0]} />
+            <CountriesCoatOfArms country={filteredCountries[0]} />
             <Weather city={filteredCountries[0].capital}/>
-            <button onClick={() => setCountries([])}>Back</button>
+            <Button label="Go back" onClick={() => setSearchQuery('')}/>
           </article>
         ) : filteredCountries.length >= 10 ? (
           <p>Error: Too many results found. Please refine your search.</p>
         ) : filteredCountries.length > 0 ? (
           <ul>
             {filteredCountries.map(country => (
-              <li key={country.name.common}>{country.name.common} : <button onClick={() => setCountries([country])}>Show more</button> </li>
+              <li key={country.name.common}>{country.name.common} : <Button label="Show more" onClick={() => setCountries([country])} /></li>
             ))}
           </ul>
         ) : (
