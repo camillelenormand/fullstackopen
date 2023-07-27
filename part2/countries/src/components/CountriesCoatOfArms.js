@@ -1,10 +1,12 @@
 import React from 'react'
+import Title from './Title'
+import Image from './Image'
 
 const CountriesCoatOfArms = ({ country }) => {
   return (
     <>
-      <h3>Coat Of Arms</h3>
-      <img src={country.coatOfArms.png} alt={country.name.common} width={"200"}/>
+      <Title label="Coat of arms" size="h3"/>
+      <Image src={country.coatOfArms.png} alt={country.name.common} width="200" height="200"/>
       <hr />
     </>
   )

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react"
 import weatherService from "../services/weatherService"
+import Image from "./Image"
+import Title from "./Title"
 
 const Weather = ({ city }) => {
   const [weather, setWeather] = useState({})
@@ -24,11 +26,10 @@ const Weather = ({ city }) => {
 
   return (
     <div>
-      <h3>Weather</h3>
+      <Title label={city} size="h3" />
       {error && <p>Error: {error}</p>}
       {isWeatherDataAvailable ? (
         <ul>
-          <li>City: {city}</li>
           <li>Sum-up: {weather?.weather[0]?.description} </li>
           <li>Temperature: {weather?.main?.temp}°F</li>
           <li>Humidity: {weather?.main?.humidity}%</li>
@@ -39,13 +40,7 @@ const Weather = ({ city }) => {
         <p>Loading...</p>
       )}
       {isWeatherDataAvailable && (
-        <div>
-          <img
-            src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
-            width='100'
-            alt={`Weather in ${city} is ${weather.weather[0].description}`}
-          />
-        </div>
+        <Image src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} alt={weather.weather[0].description} width='100' height='100'/>
       )}
        <hr />
     </div>

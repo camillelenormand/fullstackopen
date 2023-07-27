@@ -1,11 +1,12 @@
 import React from 'react'
+import Title from './Title'
 
 
 const Search = ({ searchQuery, onChange }) => {
 
   return (
     <>
-      <h1>Search a country</h1>
+      <Title label="Search for a country" size="h4" />
       <form>
           <input
             type="text"
