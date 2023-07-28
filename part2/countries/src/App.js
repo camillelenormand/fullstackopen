@@ -21,7 +21,7 @@ function App() {
         })
         .catch(error => {
           alert(`Something went wrong: ${error.message}`);
-        });
+        })
     } else { 
       setCountries([])
     }
@@ -29,13 +29,12 @@ function App() {
 
   const onChange = (e) => {
     setSearchQuery(e.target.value)
-  };
+  }
 
   const filteredCountries = countries.filter(country => {
     const countryName = country.name.common.toLowerCase()
     return countryName.includes(searchQuery.toLowerCase())
-  });
-  console.log("filteredCountries", filteredCountries)
+  })
 
   return (
     <>
