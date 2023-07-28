@@ -33,6 +33,13 @@ app.get('/api/persons', (request, response) => {
   console.log("persons", persons)
 })
 
+// Information about Phonebook
+
+app.get('/info', (request, response) => {
+  response.send(
+    `<p>Phonebook has info for ${persons.length} people</p><br/><p>${new Date()}</p>`)
+})
+
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
