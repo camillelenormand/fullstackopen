@@ -1,22 +1,22 @@
 
 // Testing good data entry
-POST http://localhost:3001/api/persons HTTP/1.1
-content-type: application/json
+# POST https://phonebook-camille.fly.dev/api/persons HTTP/1.1
+# content-type: application/json
 
-{
-  "name": "John Doe",
-  "number": "040-123454"
-}
+# {
+#   "name": "John Doe",
+#   "number": "040-123454"
+# }
 
 # /// Testing bad data entries
 # // Testing missing phone number
 
-# POST http://localhost:3001/api/persons HTTP/1.1
-# content-type: application/json
+POST http://localhost:3001/api/persons HTTP/1.1
+content-type: application/json
 
-# {
-#   "name": "John Doe"
-# }
+{
+  "name": "Jane Doe"
+}
 
 # // Testing duplicate person
 # POST http://localhost:3001/api/persons HTTP/1.1

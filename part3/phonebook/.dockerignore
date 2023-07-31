@@ -1,0 +1,155 @@
+# flyctl launch added from part1/anecdotes/.gitignore
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+part1/anecdotes/node_modules
+part1/anecdotes/.pnp
+part1/anecdotes/**/.pnp.js
+
+# testing
+part1/anecdotes/coverage
+
+# production
+part1/anecdotes/build
+
+# misc
+part1/anecdotes/**/.DS_Store
+part1/anecdotes/**/.env.local
+part1/anecdotes/**/.env.development.local
+part1/anecdotes/**/.env.test.local
+part1/anecdotes/**/.env.production.local
+
+part1/anecdotes/**/npm-debug.log*
+part1/anecdotes/**/yarn-debug.log*
+part1/anecdotes/**/yarn-error.log*
+
+# flyctl launch added from part1/courseinfo/.gitignore
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+part1/courseinfo/node_modules
+part1/courseinfo/.pnp
+part1/courseinfo/**/.pnp.js
+
+# testing
+part1/courseinfo/coverage
+
+# production
+part1/courseinfo/build
+
+# misc
+part1/courseinfo/**/.DS_Store
+part1/courseinfo/**/.env.local
+part1/courseinfo/**/.env.development.local
+part1/courseinfo/**/.env.test.local
+part1/courseinfo/**/.env.production.local
+
+part1/courseinfo/**/npm-debug.log*
+part1/courseinfo/**/yarn-debug.log*
+part1/courseinfo/**/yarn-error.log*
+
+part1/courseinfo/**/.env
+
+# flyctl launch added from part1/unicafe/.gitignore
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+part1/unicafe/node_modules
+part1/unicafe/.pnp
+part1/unicafe/**/.pnp.js
+
+# testing
+part1/unicafe/coverage
+
+# production
+part1/unicafe/build
+
+# misc
+part1/unicafe/**/.DS_Store
+part1/unicafe/**/.env.local
+part1/unicafe/**/.env.development.local
+part1/unicafe/**/.env.test.local
+part1/unicafe/**/.env.production.local
+
+part1/unicafe/**/npm-debug.log*
+part1/unicafe/**/yarn-debug.log*
+part1/unicafe/**/yarn-error.log*
+
+# flyctl launch added from part2/countries/.gitignore
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+part2/countries/node_modules
+part2/countries/.pnp
+part2/countries/**/.pnp.js
+
+# testing
+part2/countries/coverage
+
+# production
+part2/countries/build
+
+# misc
+part2/countries/**/.DS_Store
+part2/countries/**/.env.local
+part2/countries/**/.env.development.local
+part2/countries/**/.env.test.local
+part2/countries/**/.env.production.local
+
+part2/countries/**/npm-debug.log*
+part2/countries/**/yarn-debug.log*
+part2/countries/**/yarn-error.log*
+
+part2/countries/**/.env
+
+# flyctl launch added from part2/courseinfo/.gitignore
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+part2/courseinfo/node_modules
+part2/courseinfo/.pnp
+part2/courseinfo/**/.pnp.js
+
+# testing
+part2/courseinfo/coverage
+
+# production
+part2/courseinfo/build
+
+# misc
+part2/courseinfo/**/.DS_Store
+part2/courseinfo/**/.env.local
+part2/courseinfo/**/.env.development.local
+part2/courseinfo/**/.env.test.local
+part2/courseinfo/**/.env.production.local
+
+part2/courseinfo/**/npm-debug.log*
+part2/courseinfo/**/yarn-debug.log*
+part2/courseinfo/**/yarn-error.log*
+
+# flyctl launch added from part2/phonebook/.gitignore
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+part2/phonebook/node_modules
+part2/phonebook/.pnp
+part2/phonebook/**/.pnp.js
+
+# testing
+part2/phonebook/coverage
+
+# production
+part2/phonebook/build
+
+# misc
+part2/phonebook/**/.DS_Store
+part2/phonebook/**/.env.local
+part2/phonebook/**/.env.development.local
+part2/phonebook/**/.env.test.local
+part2/phonebook/**/.env.production.local
+
+part2/phonebook/**/npm-debug.log*
+part2/phonebook/**/yarn-debug.log*
+part2/phonebook/**/yarn-error.log*
+part2/phonebook/**/.env
+fly.toml

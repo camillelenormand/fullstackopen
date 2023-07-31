@@ -14,6 +14,7 @@ morgan.token('req-body', (req) => {
 
 app.use(morgan(':method :url :status :response-time ms - :res[content-length] - :req-body'));
 
+const url_base = process.env.URL_BASE_PRODUCTION
 
 let persons = [
   {
@@ -45,14 +46,14 @@ let persons = [
 
 // Get persons
 
-app.get('/api/persons', (request, response) => {
+app.get(`${url_base}/api/persons`, (request, response) => {
   response.json(persons)
   console.log("persons", persons)
 })
 
 // Information about Phonebook
 
-app.get('/info', (request, response) => {
+app.get(`${url_base}/info`, (request, response) => {
   try {
     const contactCount = persons.length;
     const contactList = persons.map(person => `<li>Name: ${person.name}</li><li> Phone number: ${person.number}</li>`).join('');
@@ -75,7 +76,7 @@ app.get('/info', (request, response) => {
 
 // Get 1 person
 
-app.get('/api/persons/:id', (request, response) => {
+app.get(`${url_base}/api/persons/:id`, (request, response) => {
   const id = Number(request.params.id);
   const person = persons.find(person => person.id === id);
   if (person) {
@@ -88,7 +89,7 @@ app.get('/api/persons/:id', (request, response) => {
 
 // Delete 1 person
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete(`${url_base}/api/persons/:id`, (request, response) => {
   const id = Number(request.params.id);
   persons = persons.filter(person => person.id !== id);
   response.status(204).end();
@@ -103,7 +104,7 @@ const generateId = () => {
   return maxId + 1
 }
 
-app.post('/api/persons', (request, response) => {
+app.post(`${url_base}/api/persons`, (request, response) => {
   const body = request.body;
 
   if (!body.name || !body.number) {
