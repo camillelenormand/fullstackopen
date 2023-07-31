@@ -120,7 +120,7 @@ const App = () => {
     } else {
       // Add new person
       axios 
-        .post('http://localhost:3001/persons', newPerson)
+        .post('http://localhost:3001/api/persons', newPerson)
         .then(response => {
           setPersons(persons.concat(response.data))
           setMessage(`${newName} added!`)
