@@ -118,15 +118,16 @@ const App = () => {
             setPersons(persons.filter(person => person.name !== newName))
       } 
     } else {
-      // Add new person
-      axios 
-        .post('http://localhost:3001/persons', newPerson)
-        .then(response => {
-          setPersons(persons.concat(response.data))
-          setMessage(`${newName} added!`)
-          setColor('green')
-          setNewName('')
-          setNewPhoneNumber('')
+      // Add new person 
+        console.log("Creating a new person ...")
+        phoneService
+          .createPerson(newPerson)
+          .then(response => {
+            setPersons(persons.concat(response.data))
+            setMessage(`${newName} added!`)
+            setColor('green')
+            setNewName('')
+            setNewPhoneNumber('')
         })
         .catch(error => {
           setMessage(error.message)
