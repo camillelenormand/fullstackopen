@@ -153,3 +153,4 @@ part2/phonebook/**/yarn-debug.log*
 part2/phonebook/**/yarn-error.log*
 part2/phonebook/**/.env
 fly.toml
+.env
