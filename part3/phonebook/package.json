@@ -4,11 +4,11 @@
   "description": " list of phonebook entries",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "set NODE_ENV=dev && node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "fly deploy",
-    "deploy:full": "npm run build:ui && npm run deploy",    
+    "deploy:full": "npm run deploy",
     "logs:prod": "fly logs"
   },
   "author": "Camille Lenormand",
@@ -18,7 +18,10 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "mongodb": "^5.7.0",
+    "mongoose": "^7.4.1",
     "morgan": "^1.10.0"
   }
 }
