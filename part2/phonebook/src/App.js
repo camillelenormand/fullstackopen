@@ -14,7 +14,7 @@ const App = () => {
   const [color, setColor] = useState('')
 
   const handleErrorMessage = (error) => {
-    setMessage(error.message)
+    setMessage(error)
     setColor('red')
     setTimeout(() => {
       setMessage(null)

@@ -18,12 +18,22 @@ mongoose.connect(url)
     name: {
       type: String,
       required: true,
-      minlength: 3
+      validate: {
+        validator: (value) => {
+          return value.length >= 3
+        },
+        message: 'name must contain at least 3 characters'
+      }
     },
     number: {
       type: String,
       required: true,
-      minlength: 8
+      validate: {
+        validator: (value) => {
+          return value.length >= 8
+        },
+        message: 'number must be equal to or longer than 8 characters'
+      }
     }
   })
 

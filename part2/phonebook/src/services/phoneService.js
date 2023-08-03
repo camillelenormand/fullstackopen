@@ -14,11 +14,10 @@ const getAllPersons = async () => {
 
 const createPerson = async (newObject) => {
   try {
-    const response = await axios.post(baseUrl, newObject);
-    console.log("------- Create person request --------", response)
+    const response = await axios.post(baseUrl, newObject, FormData);
     return response.data;
   } catch (error) {
-    throw new Error(error.message);
+    throw error.response.data.error
   }
 }
 
