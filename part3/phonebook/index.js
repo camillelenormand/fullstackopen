@@ -20,8 +20,12 @@ morgan.token('req-body', (req) => {
 // Get persons
 app.get("/api/persons", (request, response) => {
   console.log(request.body)
-  Contact.find({}).then(result => {
+  Contact.find({})
+  .then(result => {
     response.json(result)
+  })
+  .catch(error => {
+    next(error)
   })
 })
 
@@ -29,7 +33,7 @@ app.get("/api/persons", (request, response) => {
 app.get("/info", (request, response, next) => {
   Contact.find({})
   .then(result => {
-    response.send(`<p>Phonebook has info for ${result.length} people</p>`)
+    response.send(`<p>Phonebook has ${result.length} contacts</p>`)
   })
   .catch(error => {
     next(error)
@@ -37,7 +41,6 @@ app.get("/info", (request, response, next) => {
 })
 
 // Get 1 person
-
 app.get("/api/persons/:id", (request, response) => {
   Contact.findById(request.params.id)
     .then(contact => {
@@ -53,7 +56,6 @@ app.get("/api/persons/:id", (request, response) => {
 })
 
 // Delete 1 person
-
 app.delete("/api/persons/:id", (request, response, next) => {
   Contact.findByIdAndRemove(request.params.id)
     .then(result => {
@@ -65,17 +67,8 @@ app.delete("/api/persons/:id", (request, response, next) => {
 })
 
 // Create 1 person
-
 app.post("/api/persons", (request, response, next) => {
   const body = request.body
-
-  if (!body.name) {
-    return response.status(400).json({ error: 'name missing'})
-  }
-
-  if (!body.number) {
-    return response.status(400).json({ error: 'number missing'})
-  }
 
   const contact = new Contact({
     name: body.name,
@@ -92,22 +85,22 @@ app.post("/api/persons", (request, response, next) => {
 })
 
 // Update 1 person
-
 app.put("/api/persons/:id", (request, response, next) => {
-  const body = request.body
+  const { name, number } = request.body
 
-  const contact = {
-    name: body.name,
-    number: body.number
-  }
+  Contact.findByIdAndUpdate(
+    request.params.id, 
+    { name, number },
+    { new: true, runValidators: true, context: 'query'}
 
-  Contact.findByIdAndUpdate(request.params.id, contact, { new: true })
     .then(updatedContact => {
       response.json(updatedContact)
     })
+
     .catch(error => {
       next(error)
     })
+  )
 })
 
 
@@ -129,7 +122,9 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).send({ error: error.message })
+  }
 
   next(error)
 }
