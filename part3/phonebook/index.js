@@ -26,26 +26,15 @@ app.get("/api/persons", (request, response) => {
 })
 
 // Information about Phonebook
-app.get("/info", (request, response) => {
-  try {
-    const contactCount = persons.length;
-    const contactList = persons.map(person => `<li>Name: ${person.name}</li><li> Phone number: ${person.number}</li>`).join('');
-    const currentDate = new Date();
-
-    const htmlResponse = `
-      <p> Phonebook contains ${contactCount} contacts. </p>
-      <ul>
-        ${contactList}
-      </ul>
-      <br/>
-      <p> ${currentDate} </p>
-    `;
-
-    response.send(htmlResponse);
-  } catch (error) {
-    response.status(500).send('An error occurred while retrieving the phonebook information.');
-  }
-});
+app.get("/info", (request, response, next) => {
+  Contact.find({})
+  .then(result => {
+    response.send(`<p>Phonebook has info for ${result.length} people</p>`)
+  })
+  .catch(error => {
+    next(error)
+  })
+})
 
 // Get 1 person
 
