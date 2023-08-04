@@ -22,7 +22,7 @@ mongoose.connect(url)
         validator: (value) => {
           return value.length >= 3
         },
-        message: 'name must contain at least 3 characters'
+        message: 'must contain at least 3 characters'
       }
     },
     number: {
@@ -30,9 +30,10 @@ mongoose.connect(url)
       required: true,
       validate: {
         validator: (value) => {
-          return value.length >= 8
+          const phoneRegex = /^(09-\d{7,}|040-\d{8,})$/
+          return phoneRegex.test(value)
         },
-        message: 'number must be equal to or longer than 8 characters'
+        message: 'must be in the following format: 09-1234556 or 040-22334455 with a minimum length of 8 characters.'
       }
     }
   })
