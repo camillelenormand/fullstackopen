@@ -9,7 +9,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "fly deploy",
     "deploy:full": "npm run deploy",
-    "logs:prod": "fly logs"
+    "logs:prod": "fly logs",
+    "lint": "eslint ."
   },
   "author": "Camille Lenormand",
   "license": "ISC",

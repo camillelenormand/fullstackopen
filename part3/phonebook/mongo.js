@@ -1,3 +1,5 @@
+/* eslint-disable no-case-declarations */
+/* eslint-disable no-undef */
 const mongoose = require('mongoose')
 
 // Check console input
@@ -36,33 +38,33 @@ const contactSchema = new mongoose.Schema({
 const Contact = mongoose.model('Contact', contactSchema)
 
 switch (process.argv.length) {
-  // If arguments length === 3, display contacts
-  case 3:
-    console.log('phonebook:')
-    Contact.find({}).then(result => {
-      result.forEach(contact => {
-        console.log(`${contact.name} ${contact.number}`)
-      })
-      mongoose.connection.close()
+// If arguments length === 3, display contacts
+case 3:
+  console.log('phonebook:')
+  Contact.find({}).then(result => {
+    result.forEach(contact => {
+      console.log(`${contact.name} ${contact.number}`)
     })
-    break
-    // If arguments length === 5, add contact
-  case 5:
-    console.log('add contact')
-    const name = process.argv[3]
-    const number = process.argv[4]
-    const contact = new Contact({
-      name,
-      number
-    })
-    contact.save().then(result => {
-      console.log(`added ${result.name} number ${result.number} to phonebook`)
-      mongoose.connection.close()
-    })
-    break
-    // Other cases
-  default:
-    console.log('Your console input does not match arguments')
-    process.exit(1)
+    mongoose.connection.close()
+  })
+  break
+  // If arguments length === 5, add contact
+case 5:
+  console.log('add contact')
+  const name = process.argv[3]
+  const number = process.argv[4]
+  const contact = new Contact({
+    name,
+    number
+  })
+  contact.save().then(result => {
+    console.log(`added ${result.name} number ${result.number} to phonebook`)
+    mongoose.connection.close()
+  })
+  break
+  // Other cases
+default:
+  console.log('Your console input does not match arguments')
+  process.exit(1)
 }
 
