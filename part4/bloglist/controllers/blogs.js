@@ -1,25 +1,37 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
-const generateBlog = require('../data/blog_seed')
+const { faker } = require('@faker-js/faker')
 
-// Generate new blogs
+// Seed new blogs
+blogsRouter.post('/seed', async (request, response) => {
+  const numberOfBlogs = 10
 
-blogsRouter.post('/generate', async (request, response) => {
-  try {
-    const blogs = await Blog.insertMany(generateBlog)
-    response.json(blogs)
-    response.status(201).end()
-  } catch (error) {
-    response.status(500).json({ error: error.message })
-  }
-  })
+  const fakeBlogs = Array.from({ length: numberOfBlogs }, () => ({
+    title: faker.lorem.sentence(),
+    author: faker.person.fullName(),
+    url: faker.internet.url(),
+    likes: faker.number.int(100)
+  }))
 
+  Blog.insertMany(fakeBlogs)
+    .then(createdBlogs => {
+      console.log('Fake blogs seeded successfully:', createdBlogs)
+      response.status(201).json({ message: 'Fake blogs seeded successfully' })
+    })
+    .catch(error => {
+      console.log(error)
+      response.status(500).json({ error: error.message })
+    })
+})
+
+// Get all blogs
 blogsRouter.get('/', (request, response) => {
   Blog.find({}).then(blogs => {
     response.json(blogs)
   })
 })
 
+// Create a blog
 blogsRouter.post('/', (request, response, next) => {
   const body = request.body
 
