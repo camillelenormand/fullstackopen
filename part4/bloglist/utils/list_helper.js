@@ -9,6 +9,7 @@ const favoriteBlog = blogs => {
   return sortedBlogs[0]
 }
 
+// Find author with most blogs using vanilla js
 const mostBlogs = (blogs) => {
 
   const authorBlogsCount = blogs.reduce((count, blog) => {
@@ -41,6 +42,7 @@ const mostBlogs = (blogs) => {
   }
 }
 
+// Find author with most likes using lodash
 const mostLikes = (blogs) => {
   const authorLikes = _.groupBy(blogs, 'author')
   console.log(authorLikes)
@@ -53,9 +55,12 @@ const mostLikes = (blogs) => {
   const sortedAuthors = _.keys(authorTotalLikes).sort((a, b) => {
     return authorTotalLikes[b] - authorTotalLikes[a]
   })
+  console.log(sortedAuthors)
 
   const authorWithMostLikes = sortedAuthors[0]
+  console.log(authorWithMostLikes)
   const likes = authorTotalLikes[authorWithMostLikes]
+  console.log(likes)
   
   return {
     'author': authorWithMostLikes,
