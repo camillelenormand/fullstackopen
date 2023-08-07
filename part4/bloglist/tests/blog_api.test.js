@@ -9,6 +9,7 @@ const Blog = require('../models/blog')
 beforeEach(async() => {
   await Blog.deleteMany({})
   console.log('cleared')
+  
   for (let blog of helper.initialBlogs) {
     let blogObject = new Blog(blog)
     await blogObject.save()
@@ -146,6 +147,80 @@ test('blog without an author is added', async () => {
 
   expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
 })
+
+test('deleting a blog', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToDelete = blogsAtStart[0]
+  console.log('blogToDelete: ', blogToDelete)
+  console.log('blogsAtStart: ', blogsAtStart)
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  console.log('blogsAtEnd: ', blogsAtEnd)
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+
+  const titles = blogsAtEnd.map(r => r.title)
+  console.log('titles: ', titles)
+  expect(titles).not.toContain(blogToDelete.title)
+
+})
+
+describe('viewing a specific blog', () => {
+  test('succeed in finding a blog', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    console.log('blogsAtStart: ', blogsAtStart)
+
+    const blogToView = blogsAtStart[0]
+    console.log('blogToView: ', blogToView)
+    
+    const resultBlog = await api
+      .get(`/api/blogs/${blogToView.id}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+      
+    expect(resultBlog.body).toEqual(blogToView)
+  })
+
+  test('fails with statuscode 404 if blog does not exist', async () => {
+    const validNonExistingId = helper.nonExistingId
+    console.log('validNonExistingId: ', validNonExistingId)
+
+    await api
+      .get(`/api/blogs/${validNonExistingId}`)
+      .expect(404)
+  })
+
+  test('fails with statuscode 400 if id is invalid', async () => {
+    const invalidId = '5a3d5da59070081a82a3445'
+
+    await api
+      .get(`/api/blogs/${invalidId}`)
+      .expect(400)
+  })
+})
+
+test('updating a blog', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToUpdate = blogsAtStart.find((blog => blog.title === 'TDD harms architecture'))
+  console.log('blogToUpdate: ', blogToUpdate)
+  
+  const newBlog = {
+    title: blogToUpdate.title,
+    author: blogToUpdate.author,
+    url: blogToUpdate.url,
+    likes: 9
+  }
+
+  await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(newBlog)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+})
+
 
 afterAll(async () => {
   await mongoose.connection.close()
