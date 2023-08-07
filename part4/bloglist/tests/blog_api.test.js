@@ -118,6 +118,66 @@ test('a valid blog can be added', async () => {
   expect(titles).toContainEqual('Responsive Web Design')
 })
 
+test('blog without a title is not added', async () => {
+  const newBlog = {
+    author: 'Ethan Marcotte',
+    url: 'https://alistapart.com/article/responsive-web-design/',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+
+  expect(response.body).toHaveLength(initialBlogs.length)
+  expect(response.body).not.toContainEqual(newBlog)
+})
+  
+test('blog without an URL is not added', async () => {
+  const newBlog = {
+    title: 'Responsive Web Design',
+    author: 'Ethan Marcotte',
+    likes: 10
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+
+  expect(response.body).toHaveLength(initialBlogs.length)
+  expect(response.body).not.toContainEqual(newBlog)
+})
+
+test('blog without any likes will have a 0 default value', async () => {
+  const newBlog = {
+    title: 'Responsive Web Design',
+    author: 'Ethan Marcotte',
+    url: 'https://alistapart.com/article/responsive-web-design/'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+
+  const likes = response.body.map(r => r.likes).slice(-1)
+
+  console.log(likes)
+
+  expect(response.body).toHaveLength(initialBlogs.length + 1)
+  expect(likes).toEqual([0])
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 }, 100000)
