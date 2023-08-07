@@ -73,10 +73,6 @@ test('blogs are returned as json', async () => {
     .expect('Content-Type', /application\/json/)
 })
 
-afterAll(async () => {
-  await mongoose.connection.close()
-}, 100000)
-
 test('return all blogs', async () => {
   const response = await api.get('/api/blogs')
   console.log('fetching response')
@@ -109,15 +105,19 @@ test('a valid blog can be added', async () => {
   }
 
   await api 
-    .post('api/blogs')
+    .post('/api/blogs')
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
-  const response = await api.get('/api/notes')
+  const response = await api.get('/api/blogs')
 
   const titles = response.body.map(r => r.title)
 
   expect(response.body).toHaveLength(initialBlogs.length + 1)
   expect(titles).toContainEqual('Responsive Web Design')
 })
+
+afterAll(async () => {
+  await mongoose.connection.close()
+}, 100000)
