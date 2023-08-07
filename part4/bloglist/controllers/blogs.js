@@ -13,7 +13,7 @@ blogsRouter.post('/seed', async (request, response) => {
     likes: faker.number.int(100)
   }))
 
-  Blog.insertMany(fakeBlogs)
+  await Blog.insertMany(fakeBlogs)
     .then(createdBlogs => {
       console.log('Fake blogs seeded successfully:', createdBlogs)
       response.status(201).json({ message: 'Fake blogs seeded successfully' })
@@ -25,15 +25,16 @@ blogsRouter.post('/seed', async (request, response) => {
 })
 
 // Get all blogs
-blogsRouter.get('/', (request, response) => {
-  Blog.find({}).then(blogs => {
-    response.json(blogs)
-  })
+blogsRouter.get('/', async (request, response) => {
+  await Blog.find({})
+    .then(blogs => {
+      response.json(blogs)
+    })
 })
 
 // Create a blog
-blogsRouter.post('/', (request, response, next) => {
-  const body = request.body
+blogsRouter.post('/', async (request, response, next) => {
+  const body = await request.body
 
   const blog = new Blog({
     title: body.title,
