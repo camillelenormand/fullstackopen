@@ -85,11 +85,19 @@ test('return all blogs', async () => {
   expect(response.body).toHaveLength(initialBlogs.length)
 })
 
-test('One of the title of the blogs must be TDD harms architecture', async () => {
+test('One of the title of the blogs must be "TDD harms architecture"', async () => {
   const response = await api.get('/api/blogs')
 
   const titles = response.body.map(r => r.title)
   expect(titles).toContainEqual('TDD harms architecture')
+})
+
+test('unique identifier property of the blog posts is named "id"', async () => {
+  const response = await api.get('/api/blogs')
+
+  const ids = response.body.map(r => r.id)
+
+  expect(ids).toBeDefined()
 })
 
 test('a valid blog can be added', async () => {
