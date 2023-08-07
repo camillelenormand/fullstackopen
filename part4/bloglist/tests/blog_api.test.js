@@ -1,65 +1,15 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const helper = require('./test_helper.test')
 const app = require('../app')
 
 const api = supertest(app)
 const Blog = require('../models/blog')
 
-const initialBlogs = [
-  {
-    _id: '5a422a851b54a676234d17f7',
-    title: 'React patterns',
-    author: 'Michael Chan',
-    url: 'https://reactpatterns.com/',
-    likes: 7,
-    __v: 0
-  },
-  {
-    _id: '5a422aa71b54a676234d17f8',
-    title: 'Go To Statement Considered Harmful',
-    author: 'Edsger W. Dijkstra',
-    url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-    likes: 5,
-    __v: 0
-  },
-  {
-    _id: '5a422b3a1b54a676234d17f9',
-    title: 'Canonical string reduction',
-    author: 'Edsger W. Dijkstra',
-    url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
-    likes: 12,
-    __v: 0
-  },
-  {
-    _id: '5a422b891b54a676234d17fa',
-    title: 'First class tests',
-    author: 'Robert C. Martin',
-    url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
-    likes: 10,
-    __v: 0
-  },
-  {
-    _id: '5a422ba71b54a676234d17fb',
-    title: 'TDD harms architecture',
-    author: 'Robert C. Martin',
-    url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
-    likes: 0,
-    __v: 0
-  },
-  {
-    _id: '5a422bc61b54a676234d17fc',
-    title: 'Type wars',
-    author: 'Robert C. Martin',
-    url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
-    likes: 2,
-    __v: 0
-  }  
-]
-
 beforeEach(async() => {
   await Blog.deleteMany({})
   console.log('cleared')
-  for (let blog of initialBlogs) {
+  for (let blog of helper.initialBlogs) {
     let blogObject = new Blog(blog)
     await blogObject.save()
     console.log('blogs saved')
@@ -78,7 +28,7 @@ test('return all blogs', async () => {
   console.log('fetching response')
   console.log('response length: ', response.body.length)
 
-  expect(response.body).toHaveLength(initialBlogs.length)
+  expect(response.body).toHaveLength(helper.initialBlogs.length)
 })
 
 test('One of the title of the blogs must be "TDD harms architecture"', async () => {
@@ -110,11 +60,12 @@ test('a valid blog can be added', async () => {
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
-  const response = await api.get('/api/blogs')
+  const blogsAtEnd = await helper.blogsInDb()
+  console.log('blogsAtEnd: ', blogsAtEnd)
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
 
-  const titles = response.body.map(r => r.title)
-
-  expect(response.body).toHaveLength(initialBlogs.length + 1)
+  const titles = blogsAtEnd.map(r => r.title)
+  console.log('titles: ', titles)
   expect(titles).toContainEqual('Responsive Web Design')
 })
 
@@ -132,7 +83,7 @@ test('blog without a title is not added', async () => {
 
   const response = await api.get('/api/blogs')
 
-  expect(response.body).toHaveLength(initialBlogs.length)
+  expect(response.body).toHaveLength(helper.initialBlogs.length)
   expect(response.body).not.toContainEqual(newBlog)
 })
   
@@ -151,7 +102,7 @@ test('blog without an URL is not added', async () => {
 
   const response = await api.get('/api/blogs')
 
-  expect(response.body).toHaveLength(initialBlogs.length)
+  expect(response.body).toHaveLength(helper.initialBlogs.length)
   expect(response.body).not.toContainEqual(newBlog)
 })
 
@@ -174,8 +125,26 @@ test('blog without any likes will have a 0 default value', async () => {
 
   console.log(likes)
 
-  expect(response.body).toHaveLength(initialBlogs.length + 1)
+  expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
   expect(likes).toEqual([0])
+})
+
+test('blog without an author is added', async () => {
+  const newBlog = {
+    title: 'Responsive Web Design',
+    url: 'https://alistapart.com/article/responsive-web-design/',
+    likes: 10
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+
+  expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
 })
 
 afterAll(async () => {

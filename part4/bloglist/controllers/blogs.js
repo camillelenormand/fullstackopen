@@ -13,28 +13,22 @@ blogsRouter.post('/seed', async (request, response) => {
     likes: faker.number.int(100)
   }))
 
-  await Blog.insertMany(fakeBlogs)
-    .then(createdBlogs => {
-      console.log('Fake blogs seeded successfully:', createdBlogs)
-      response.status(201).json({ message: 'Fake blogs seeded successfully' })
-    })
-    .catch(error => {
-      console.log(error)
-      response.status(500).json({ error: error.message })
-    })
+  const newBlogs = await Blog.insertMany(fakeBlogs)
+  console.log('Fake blogs seeded successfully:', newBlogs)
+  response.status(201).json({ message: 'Fake blogs seeded successfully' })
 })
+
 
 // Get all blogs
 blogsRouter.get('/', async (request, response) => {
-  await Blog.find({})
-    .then(blogs => {
-      response.json(blogs)
-    })
+  await Blog.find({}).then(blogs => {
+    response.json(blogs)
+  })
 })
 
 // Create a blog
-blogsRouter.post('/', async (request, response, next) => {
-  const body = await request.body
+blogsRouter.post('/', async (request, response) => {
+  const body = request.body
 
   const blog = new Blog({
     title: body.title,
@@ -43,11 +37,14 @@ blogsRouter.post('/', async (request, response, next) => {
     likes: body.likes
   })
 
-  blog.save()
-    .then(savedBlog => {
-      response.status(201).json(savedBlog)
-    })
-    .catch(error => next(error))
+  const savedBlog = await blog.save()
+  response.status(201).json(savedBlog)
+})
+  
+// Delete a blog
+blogsRouter.delete('/:id', async (request, response) => {
+  await Blog.findByIdAndRemove(request.params.id)
+  response.status(204).end()
 })
 
 module.exports = blogsRouter
