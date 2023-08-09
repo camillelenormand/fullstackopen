@@ -15,18 +15,23 @@ const unknownEndpoint = (request, response) => {
 const errorHandler = (error, request, response, next) => {
   logger.error(error.message)
 
-  if (error.name === 'CastError') {
+  switch (error.name) {
+  case 'CastError':
     return response.status(400).send({ error: 'malformatted id' })
-  } else if (error.name === 'ValidationError') {
-    // Check if the error is a Mongoose validation error
+  case 'ValidationError': {
     if (error.errors) {
-      const validationErrors = Object.values(error.errors).map(err => err.message).toString()
+      const validationErrors = Object.values(error.errors).map(err => err.message).join(', ')
       return response.status(400).json({ error: validationErrors })
     }
     return response.status(400).json({ error: error.message })
   }
-  
-  next(error)
+  case 'JsonWebTokenError':
+    return response.status(400).json({ error: error.message })
+  case 'TokenExpiredError':
+    return response.status(401).json({ error: 'token expired' })
+  default:
+    next(error)
+  }
 }
 
 module.exports = {
