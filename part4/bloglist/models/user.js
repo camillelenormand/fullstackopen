@@ -2,6 +2,12 @@ const mongoose = require('mongoose')
 const uniqueValidator = require('mongoose-unique-validator')
 
 const userSchema = new mongoose.Schema({
+  blogs: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Blog'
+    }
+  ],
   username: {
     type: String,
     required: true,
@@ -15,13 +21,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Password is required'],
     minlength: [3, 'Password must be at least {MINLENGTH} characters long.']
-  },
-  blogs: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Blog'
-    }
-  ],
+  }
 })
 
 userSchema.set('toJSON', {

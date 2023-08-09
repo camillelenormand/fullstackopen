@@ -1,6 +1,10 @@
 const mongoose = require('mongoose')
 
 const blogSchema = new mongoose.Schema({
+  url: {
+    type: String,
+    required: true
+  },
   title: {
     type: String,
     required: true
@@ -9,17 +13,13 @@ const blogSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-  url: {
-    type: String,
-    required: true
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   },
   likes: {
     type: Number,
     default: 0
-  },
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
   }
 })
 
@@ -31,4 +31,6 @@ blogSchema.set('toJSON', {
   }
 })
 
-module.exports = mongoose.model('BLog', blogSchema)
+const Blog = mongoose.model('Blog', blogSchema)
+
+module.exports = Blog

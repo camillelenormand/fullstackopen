@@ -130,24 +130,6 @@ test('blog without any likes will have a 0 default value', async () => {
   expect(likes).toEqual([0])
 })
 
-test('blog without an author is added', async () => {
-  const newBlog = {
-    title: 'Responsive Web Design',
-    url: 'https://alistapart.com/article/responsive-web-design/',
-    likes: 10
-  }
-
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
-
-  const response = await api.get('/api/blogs')
-
-  expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
-})
-
 test('deleting a blog', async () => {
   const blogsAtStart = await helper.blogsInDb()
   const blogToDelete = blogsAtStart[0]

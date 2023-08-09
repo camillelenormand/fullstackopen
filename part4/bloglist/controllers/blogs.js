@@ -1,6 +1,7 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const { faker } = require('@faker-js/faker')
+const User = require('../models/user')
 
 // Seed new blogs
 blogsRouter.post('/seed', async (request, response) => {
@@ -21,9 +22,11 @@ blogsRouter.post('/seed', async (request, response) => {
 
 // Get all blogs
 blogsRouter.get('/', async (request, response) => {
-  await Blog.find({}).then(blogs => {
-    response.json(blogs)
-  })
+  const blogs = await Blog
+    .find({}).populate('user', { username: 1, name: 1, id: 1 })
+
+  response.json(blogs)
+
 })
 
 // Get a specific blog
@@ -37,14 +40,20 @@ blogsRouter.get('/:id', async (request, response) => {
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
 
+  const user = await User.findById(body.userId)
+
   const blog = new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes
+    likes: body.likes,
+    user: user.id
   })
 
   const savedBlog = await blog.save()
+  user.blogs = user.blogs.concat(savedBlog._id)
+  await user.save()
+  
   response.status(201).json(savedBlog)
 })
   
