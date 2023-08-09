@@ -5,13 +5,16 @@ const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique: true
+    unique: [true, 'Username must be unique'],
+    minlength: [3, 'Username must be at least {MINLENGTH} characters long.']
   },
   name: {
-    String
+    type: String
   },
   passwordHash:{
-    String
+    type: String,
+    required: [true, 'Password is required'],
+    minlength: [3, 'Password must be at least {MINLENGTH} characters long.']
   },
   blogs: [
     {
@@ -20,8 +23,6 @@ const userSchema = new mongoose.Schema({
     }
   ],
 })
-
-userSchema.plugin(uniqueValidator)
 
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
@@ -33,6 +34,7 @@ userSchema.set('toJSON', {
   }
 })
 
+userSchema.plugin(uniqueValidator, { message: '{PATH} must be unique.'})
 const User = mongoose.model('User', userSchema)
 
 module.exports = User

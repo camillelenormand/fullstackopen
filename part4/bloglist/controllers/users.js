@@ -16,6 +16,19 @@ usersRouter.post('/', async (request, response) => {
     passwordHash
   })
 
+  if (!password || password.length < 3) {
+    return response.status(400).json({
+      error: 'Password must be at least 3 characters long.'
+    })
+  }
+
+  const passwordSaved = await bcrypt.compare(password, user.passwordHash)
+  console.log('checkPassword', passwordSaved)
+  if (!passwordSaved) {
+    return response.status(401).json({
+      error: 'Invalid password'
+    })
+  }
   const savedUser = await user.save()
   response.status(201).json(savedUser)
 })

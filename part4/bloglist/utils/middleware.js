@@ -18,9 +18,14 @@ const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
+    // Check if the error is a Mongoose validation error
+    if (error.errors) {
+      const validationErrors = Object.values(error.errors).map(err => err.message).toString()
+      return response.status(400).json({ error: validationErrors })
+    }
     return response.status(400).json({ error: error.message })
   }
-
+  
   next(error)
 }
 
