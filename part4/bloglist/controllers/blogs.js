@@ -3,7 +3,6 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 const { faker } = require('@faker-js/faker')
 const jwt = require('jsonwebtoken')
-const tokenExtractor = ('./utils/middleware')
 
 
 // Seed new blogs
@@ -65,13 +64,35 @@ blogsRouter.post('/', async (request, response) => {
   
 // Delete a blog
 blogsRouter.delete('/:id', async (request, response) => {
-  await Blog.findByIdAndRemove(request.params.id)
-  response.status(204).end()
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  // Check if token is valid
+  !request.token ? response.status(401).json({ error: 'token invalid'}) : decodedToken.id
+
+  // Find user associated with token
+  const user = await User.findById(decodedToken.id)
+
+  // Find blog to delete
+  const blog = await Blog.findById(request.params.id)
+
+  if (blog.user.toString() === decodedToken.id.toString()) {
+    
+    // remove blog from blog collection
+    await Blog.findByIdAndRemove(request.params.id)
+
+    // remove blog reference from user's blog collection
+    user.blogs = user.blogs.filter(b => b.toString() !== blog._id.toString())
+    await user.save()
+    response.status(204).end()
+  }
+  else {
+    response.status(401).json({ error: 'unauthorized' })
+  }
 })
 
 // Update a blog
 blogsRouter.put('/:id', async (request, response) => {
   const body = request.body
+
   const blog = {
     title: body.title,
     author: body.author,
