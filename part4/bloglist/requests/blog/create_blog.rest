@@ -1,6 +1,6 @@
 POST http://localhost:3003/api/blogs  HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNhbWlsbGVsZW5vcm1hbmRAZmFrZS5jb20iLCJpZCI6IjY0ZDM3MTc5YmMxMGQ4YzRjOWU0ZjY4NyIsImlhdCI6MTY5MTU4NTgxOSwiZXhwIjoxNjkxNTg5NDE5fQ.QAb68zT7d4IT58Bk5dUXiRzuZx1Q6TidwDpiODAQuo0
+Authorization: Bearer 
 
 {
   "title": "Hello World Blog created with Bearer token",
