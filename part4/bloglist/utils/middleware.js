@@ -1,4 +1,5 @@
 const logger = require('./logger')
+const jwt = require('jsonwebtoken')
 
 const requestLogger = (request, response, next) => {
   logger.info('Method:', request.method)
@@ -17,24 +18,31 @@ const errorHandler = (error, request, response, next) => {
 
   switch (error.name) {
   case 'CastError':
-    return response.status(400).send({ error: 'malformatted id' })
-  case 'ValidationError': {
+    response.status(400).send({ error: 'malformatted id' })
+    break
+  case 'ValidationError':
     if (error.errors) {
       const validationErrors = Object.values(error.errors).map(err => err.message).join(', ')
-      return response.status(400).json({ error: validationErrors })
+      response.status(400).json({ error: validationErrors })
+    } else {
+      response.status(400).json({ error: error.message })
     }
-    return response.status(400).json({ error: error.message })
-  }
+    break
   case 'JsonWebTokenError':
-    return response.status(400).json({ error: error.message })
+    response.status(400).json({ error: error.message })
+    break
   case 'TokenExpiredError':
-    return response.status(401).json({ error: 'token expired' })
+    response.status(401).json({ error: 'token expired' })
+    break
+  case 'UnauthorizedError':
+    response.status(401).json({ error: 'unauthorized' })
+    break
   default:
     next(error)
   }
 }
 
-const tokenExtractor = (request, response, next) => {
+const tokenExtractor = async (request, response, next) => {
   const authorizationHeader = request.get('authorization')
   if (authorizationHeader && authorizationHeader.startsWith('Bearer ')) {
     request.token = authorizationHeader.split(' ')[1]
@@ -42,9 +50,29 @@ const tokenExtractor = (request, response, next) => {
   next()
 }
 
+const userExtractor = async (request, response, next) => {
+  try {
+    const token = request.token
+    const secret = process.env.SECRET
+    
+    const decodedToken = jwt.verify(token, secret)
+    const userId = decodedToken.id
+    
+    if (!token || !userId) {
+      return response.status(401).json({ error: 'token invalid' })
+    }
+    
+    request.user = userId
+    next()
+  } catch (error) {
+    return response.status(500).json({ error: 'internal server error' })
+  }
+}
+
 module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler,
-  tokenExtractor
+  tokenExtractor,
+  userExtractor
 }
