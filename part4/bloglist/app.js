@@ -31,6 +31,7 @@ app.use(express.static('build'))
 app.use(express.json())
 app.use(middleware.requestLogger)
 app.use(middleware.tokenExtractor)
+app.use(middleware.userExtractor)
 
 // Routes
 app.use('/api/blogs', blogsRouter)
@@ -39,4 +40,5 @@ app.use('/api/login', loginRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
+
 module.exports = app
