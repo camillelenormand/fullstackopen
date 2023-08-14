@@ -5,6 +5,7 @@ import loginService from './services/login'
 import BlogList from './components/BlogList'
 import Notification from './components/Notification'
 import UserInfo from './components/UserInfo'
+import Button from './components/Button'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -21,10 +22,16 @@ const App = () => {
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
+
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       blogService.setToken(user.token)
+    } 
+
+    else {
+      setUser(null)
+      window.localStorage.removeItem('loggedBlogUser')
     }
   }, [])
 
@@ -58,9 +65,22 @@ const App = () => {
       <Notification message={errorMessage} />
       {
         user === null 
-          ? <LoginForm username={username} password={password} setUsername={setUsername} setPassword={setPassword} handleLogin={handleLogin} />
+          ? <LoginForm 
+            username={username} 
+            password={password} 
+            setUsername={setUsername} 
+            setPassword={setPassword} 
+            handleLogin={handleLogin} 
+            />
           : 
-            <><UserInfo user={user} /><BlogList blogs={blogs} /></> 
+            <>
+              <UserInfo user={user} />
+              <BlogList blogs={blogs} />
+              <Button 
+                label='Sign out' 
+                onClick={() => setUser(null)}
+              />
+            </> 
       }
     </div>
   )
