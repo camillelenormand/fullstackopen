@@ -6,6 +6,7 @@ import BlogList from './components/BlogList'
 import Notification from './components/Notification'
 import UserInfo from './components/UserInfo'
 import Button from './components/Button'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -13,6 +14,9 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState('')
+  const [author, setAuthor] = useState('')
+  const [title, setTitle] = useState('')
+  const [url, setUrl] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -59,6 +63,31 @@ const App = () => {
     }
   }
 
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedBlogUser')
+    setUser(null)
+  }
+
+  const handleCreate = async (event) => {
+    event.preventDefault()
+    console.log('creating new blog', title, author, url)
+
+    try {
+      const blog = await blogService.create({ title, author, url })
+      console.log(blog)
+      setBlogs(blogs.concat(blog))
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+    } catch (exception) {
+      setErrorMessage('Error creating blog')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+
+  }
+
   return (
     <div>  
       <h2>Blogs</h2>
@@ -75,10 +104,19 @@ const App = () => {
           : 
             <>
               <UserInfo user={user} />
-              <BlogList blogs={blogs} />
+              <BlogForm 
+                handleCreate={handleCreate} 
+                title={title} 
+                setTitle={setTitle} 
+                author={author} 
+                setAuthor={setAuthor} 
+                url={url} 
+                setUrl={setUrl} />
+              <BlogList 
+                blogs={blogs} />
               <Button 
                 label='Sign out' 
-                onClick={() => setUser(null)}
+                onClick={handleLogout}
               />
             </> 
       }

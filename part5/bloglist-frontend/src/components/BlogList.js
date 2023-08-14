@@ -2,11 +2,20 @@ import Blog from './Blog'
 
 const BlogList = ({ blogs }) => {
   return (
-    <div>
-      {blogs.map(blog =>
+    <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Url</th>
+      </tr>
+    </thead>
+    <tbody>
+      {blogs.map((blog, index) => (
         <Blog key={blog.id} blog={blog} />
-      )}
-    </div>
+      ))}
+    </tbody>
+  </table>
   )
 }
 
