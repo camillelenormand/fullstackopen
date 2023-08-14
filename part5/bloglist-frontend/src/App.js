@@ -13,10 +13,11 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState('')
   const [author, setAuthor] = useState('')
   const [title, setTitle] = useState('')
   const [url, setUrl] = useState('')
+  const [message, setMessage] = useState(null)
+  const [color, setColor] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -43,25 +44,31 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault()
     console.log('logging in with', username, password)
-
+  
     try {
       const user = await loginService({
         username, password
       })
+  
       window.localStorage.setItem('loggedBlogUser', JSON.stringify(user))
       console.log(user)
       blogService.setToken(user.token)
       setUsername('')
       setPassword('')
       setUser(user)
-      
+  
+      setMessage('Logged in successfully')
+      setColor('green')
     } catch (exception) {
-      setErrorMessage('Wrong username or password')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      setMessage('Wrong username or password')
+      setColor('red')
     }
+  
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
   }
+  
 
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogUser')
@@ -70,8 +77,8 @@ const App = () => {
 
   const handleCreate = async (event) => {
     event.preventDefault()
-    console.log('creating new blog', title, author, url)
-
+    console.log('creating a new blog', title, author, url)
+  
     try {
       const blog = await blogService.create({ title, author, url })
       console.log(blog)
@@ -79,19 +86,24 @@ const App = () => {
       setTitle('')
       setAuthor('')
       setUrl('')
+  
+      setMessage(`Blog created with success! ${blog.title} by ${blog.author}`)
+      setColor('green')
     } catch (exception) {
-      setErrorMessage('Error creating blog')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      setMessage('Error when creating a new blog')
+      setColor('red')
     }
-
+  
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
   }
+  
 
   return (
     <div>  
       <h2>Blogs</h2>
-      <Notification message={errorMessage} />
+      <Notification message={message} color={color}/>
       {
         user === null 
           ? <LoginForm 
