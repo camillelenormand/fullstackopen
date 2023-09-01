@@ -14,12 +14,11 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [author, setAuthor] = useState('')
-  const [title, setTitle] = useState('')
-  const [url, setUrl] = useState('')
   const [message, setMessage] = useState(null)
   const [color, setColor] = useState('')
   const [loginVisible, setLoginVisible] = useState(false)  
+
+  const blogFormRef = useRef()
 
   // Get all blogs
   useEffect(() => {
@@ -80,31 +79,27 @@ const App = () => {
     setUser(null)
   }
 
-  // Create a new blog
-  const handleCreate = (blogObject) => {
-    console.log('creating a new blog', title, author, url)
+// Create a new blog
+const handleCreate = async ( blogObject ) => {
+  try {
+    console.log('Creating a new blog', blogObject.title, blogObject.author, blogObject.url)
+    blogFormRef.current.toggleVisibility()
     
-    blogService
-      .create({ blogObject })
-      console.log(blogObject)
-      .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        setMessage(`A new blog ${title} by ${author} added`)
-        setColor('green')
-      })
-      .catch(error => {
-        setMessage(error.response.data.error)
-        setColor('red')
-      })
-
-    // Notification timeout
-    setTimeout(() => {
-      setMessage(null)
-    }, 5000)
+    const returnedBlog = await blogService.create(blogObject)
+    setBlogs(blogs.concat(returnedBlog))
+    setMessage(`A new blog ${blogObject.title} by ${blogObject.author} with url ${blogObject.url} added successfully`)
+    setColor('green')
+  } catch (error) {
+    setMessage('Failed to create a new blog')
+    setColor('red')
   }
 
-  // Pass ref to BlogForm
-  const blogFormRef = useRef()
+  // Notification timeout
+  setTimeout(() => {
+    setMessage(null)
+  }, 5000)
+}
+
 
     return (
       <div>  
@@ -131,13 +126,7 @@ const App = () => {
                 ref={blogFormRef} 
               >
                 <BlogForm 
-                  handleCreate={handleCreate} 
-                  title={title} 
-                  setTitle={setTitle} 
-                  author={author} 
-                  setAuthor={setAuthor} 
-                  url={url} 
-                  setUrl={setUrl}
+                  createBlog={handleCreate}
                 />
               </Togglable>
               <BlogList 
