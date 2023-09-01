@@ -16,8 +16,8 @@ const Blog = ({ blog }) => {
   return (
     <>
       <tr>
-        <td>{blog.title}</td>
-        <td>{blog.author}</td>
+        <td>{blog.title ? blog.title : 'No title'}</td>
+        <td>{blog.author ? blog.author : 'No author'}</td>
         <td>
           <button onClick={() => toggleRow(blog.id)}>
             {expandedRows.includes(blog.id) ? 'Hide Details' : 'Read more'}
@@ -27,7 +27,7 @@ const Blog = ({ blog }) => {
       {expandedRows.includes(blog.id) && (
         <tr>
           <th>URL</th>
-          <td colSpan="2">{blog.url}</td>
+          <td colSpan="2">{blog.url ? blog.url : 'No url'}</td>
         </tr>
       )}
       {expandedRows.includes(blog.id) && (
@@ -40,7 +40,7 @@ const Blog = ({ blog }) => {
         {expandedRows.includes(blog.id) && (
         <tr>
           <th>User</th>
-          <td colSpan='2'>{blog.user.name || 'No user'}</td>
+          <td colSpan='2'>{blog.user && blog.user.name ? blog.user.name : 'No user'}</td>
         </tr>
       )}
     </>
