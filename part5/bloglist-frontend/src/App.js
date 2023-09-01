@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import blogService from './services/blogs'
-import LoginForm from './components/Login'
+import LoginForm from './components/LoginForm'
 import loginService from './services/login'
 import BlogList from './components/BlogList'
 import Notification from './components/Notification'
 import UserInfo from './components/UserInfo'
 import Button from './components/Button'
 import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -18,13 +19,16 @@ const App = () => {
   const [url, setUrl] = useState('')
   const [message, setMessage] = useState(null)
   const [color, setColor] = useState('')
+  const [loginVisible, setLoginVisible] = useState(false)  
 
+  // Get all blogs
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs(blogs)
     )  
   }, [])
 
+  // Check if user is logged
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
 
@@ -40,7 +44,7 @@ const App = () => {
     }
   }, [])
 
-
+  // Log in
   const handleLogin = async (event) => {
     event.preventDefault()
     console.log('logging in with', username, password)
@@ -49,16 +53,17 @@ const App = () => {
       const user = await loginService({
         username, password
       })
-  
+      // save the user to local storage
       window.localStorage.setItem('loggedBlogUser', JSON.stringify(user))
       console.log(user)
       blogService.setToken(user.token)
       setUsername('')
       setPassword('')
       setUser(user)
-  
       setMessage('Logged in successfully')
       setColor('green')
+      setLoginVisible(false)
+
     } catch (exception) {
       setMessage('Wrong username or password')
       setColor('red')
@@ -69,61 +74,72 @@ const App = () => {
     }, 5000)
   }
   
-
+  // Log out
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogUser')
     setUser(null)
   }
 
-  const handleCreate = async (event) => {
-    event.preventDefault()
+  // Create a new blog
+  const handleCreate = (blogObject) => {
     console.log('creating a new blog', title, author, url)
-  
-    try {
-      const blog = await blogService.create({ title, author, url })
-      console.log(blog)
-      setBlogs(blogs.concat(blog))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-  
-      setMessage(`Blog created with success! ${blog.title} by ${blog.author}`)
-      setColor('green')
-    } catch (exception) {
-      setMessage('Error when creating a new blog')
-      setColor('red')
-    }
-  
+    
+    blogService
+      .create({ blogObject })
+      console.log(blogObject)
+      .then(returnedBlog => {
+        setBlogs(blogs.concat(returnedBlog))
+        setMessage(`A new blog ${title} by ${author} added`)
+        setColor('green')
+      })
+      .catch(error => {
+        setMessage(error.response.data.error)
+        setColor('red')
+      })
+
+    // Notification timeout
     setTimeout(() => {
       setMessage(null)
     }, 5000)
   }
-  
 
-  return (
-    <div>  
-      <h2>Blogs</h2>
-      <Notification message={message} color={color}/>
-      {
-        user === null 
-          ? <LoginForm 
-            username={username} 
-            password={password} 
-            setUsername={setUsername} 
-            setPassword={setPassword} 
-            handleLogin={handleLogin} 
+  // Pass ref to BlogForm
+  const blogFormRef = useRef()
+
+    return (
+      <div>  
+        <h2>Blogs</h2>
+        <Notification message={message} color={color}/>
+        {
+          user === null 
+          ? <Togglable 
+              buttonLabel='Sign in'
+              visible={loginVisible}>
+            <LoginForm 
+              username={username} 
+              password={password} 
+              handlePasswordChange={(e) => setPassword(e.target.value)} 
+              handleUsernameChange={(e) => setUsername(e.target.value)} 
+              handleLogin={handleLogin} 
             />
+            </Togglable>
           : 
             <>
               <UserInfo user={user} />
-              <BlogForm 
-                handleCreate={handleCreate} 
-                title={title} 
-                setTitle={setTitle} 
-                author={author} 
-                setAuthor={setAuthor} 
-                url={url} 
-                setUrl={setUrl} />
+              <Togglable 
+                buttonLabel='Create New Blog'
+                ref={blogFormRef} 
+              >
+                <BlogForm 
+                  handleCreate={handleCreate} 
+                  title={title} 
+                  setTitle={setTitle} 
+                  author={author} 
+                  setAuthor={setAuthor} 
+                  url={url} 
+                  setUrl={setUrl}
+                />
+              </Togglable>
               <BlogList 
                 blogs={blogs} />
               <Button 
@@ -131,9 +147,9 @@ const App = () => {
                 onClick={handleLogout}
               />
             </> 
-      }
-    </div>
-  )
-}
+          }
+        </div>
+      )
+    }
 
 export default App

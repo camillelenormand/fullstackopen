@@ -1,19 +1,22 @@
 const notification = ({ message, color }) => {
   const style = {
     color: color,
-    background: 'lightgrey',
+    background: 'white',
     fontSize: 20,
     borderStyle: 'solid',
-    borderRadius: 5,
+    borderRadius: 10,
     padding: 10,
-    marginBottom: 10
+    marginBottom: 10,
+    fontWeight: 'bold'
   }
 
   return (
-    <div className={style}>
-      {message}
-    </div>
-  )}
+    !!message ?
+      <div style={style}>{message}</div>
+    :
+      null
+    )
+}
   
 
 export default notification
