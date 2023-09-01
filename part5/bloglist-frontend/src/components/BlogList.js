@@ -7,7 +7,7 @@ const BlogList = ({ blogs }) => {
       <tr>
         <th>Title</th>
         <th>Author</th>
-        <th>Url</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
