@@ -9,6 +9,10 @@ const Blog = ({ blog }) => {
       : setExpandedRows(expandedRows.concat(rowId))
   }
 
+  const blogRowStyle = {
+    textAlign: 'center'
+  }
+
   return (
     <>
       <tr>
@@ -34,7 +38,8 @@ const Blog = ({ blog }) => {
       {expandedRows.includes(blog.id) && (
         <tr>
           <th>Likes</th>
-          <td colSpan="2">{blog.likes}</td>
+          <td colSpan="1">{blog.likes}</td>
+          <td colSpan="1" style={blogRowStyle}><button><i class="gg-heart"></i></button></td>
         </tr>
       )}
        {expandedRows.includes(blog.id) && (
