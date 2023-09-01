@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateBlog }) => {
+  const [blogObject, setBlogObject] = useState(blog)
   const [expandedRows, setExpandedRows] = useState([])
 
   const toggleRow = (rowId) => {
@@ -11,6 +12,20 @@ const Blog = ({ blog }) => {
 
   const blogRowStyle = {
     textAlign: 'center'
+  }
+
+  useEffect(() => {
+    setBlogObject(blog)
+  }, [blog])
+
+  const addLike = () => {
+    console.log('Adding like to blog', blog.id)
+    const updatedBlog = { 
+      ...blog, likes: blog.likes + 1 
+    }
+    updateBlog(updatedBlog)
+    console.log('Updated blog', updatedBlog)
+    setBlogObject(updatedBlog)
   }
 
   return (
@@ -32,9 +47,9 @@ const Blog = ({ blog }) => {
       )}
       {expandedRows.includes(blog.id) && (
         <tr>
-          <th>Likes</th>
-          <td colSpan='1'>{blog.likes}</td>
-          <td colSpan='2' style={blogRowStyle}><button><i className="gg-heart"></i></button></td>
+          <th>Likes:</th>
+          <td colSpan='1'>{blogObject.likes}</td>
+          <td colSpan='2' style={blogRowStyle}><button onClick={addLike}><i className="gg-heart"></i></button></td>
         </tr>
       )}
         {expandedRows.includes(blog.id) && (

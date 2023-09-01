@@ -1,6 +1,8 @@
 import Blog from './Blog'
 
-const BlogList = ({ blogs }) => {
+const BlogList = ({ blog, updateBlog }) => {
+  console.log(blog)
+  console.log(updateBlog)
   return (
     <table>
       <thead>
@@ -11,8 +13,12 @@ const BlogList = ({ blogs }) => {
         </tr>
       </thead>
       <tbody>
-        {blogs?.map((blog, index) => (
-          <Blog key={blog.id} blog={blog} />
+        {blog?.map((blog, index) => (
+          <Blog 
+            key={blog.id} 
+            blog={blog} 
+            updateBlog={updateBlog}
+          />
         ))}
       </tbody>
     </table>

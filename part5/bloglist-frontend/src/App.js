@@ -16,7 +16,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
   const [color, setColor] = useState('')
-  const [loginVisible, setLoginVisible] = useState(false)  
+  const [loginVisible, setLoginVisible] = useState(false) 
 
   const blogFormRef = useRef()
 
@@ -66,7 +66,9 @@ const App = () => {
       setColor('green')
       setLoginVisible(false)
 
-    } catch (exception) {
+    } 
+
+    catch (error) {
       setMessage('Wrong username or password')
       setColor('red')
     }
@@ -92,7 +94,8 @@ const handleCreate = async ( blogObject ) => {
     setBlogs(blogs.concat(returnedBlog))
     setMessage(`A new blog ${blogObject.title} by ${blogObject.author} with url ${blogObject.url} added successfully`)
     setColor('green')
-  } catch (error) {
+  } 
+  catch (error) {
     setMessage('Failed to create a new blog')
     setColor('red')
   }
@@ -103,6 +106,25 @@ const handleCreate = async ( blogObject ) => {
   }, 5000)
 }
 
+  // Update a blog
+  const handleUpdate = async ( blogObject ) => {
+    console.log('Blog Object', blogObject)
+    console.log('Updating a blog', blogObject.title, blogObject.author, blogObject.url)
+    try {
+      console.log('Updating a blog', blogObject.title, blogObject.author, blogObject.url, blogObject.id)
+      blogFormRef.current.toggleVisibility()
+      
+      const returnedBlog = await blogService.update(blogObject.id, blogObject)
+      console.log(returnedBlog)
+      setBlogs(blogs.map(blog => blog.id !== returnedBlog.id ? blog : returnedBlog))
+      setMessage(`Blog ${blogObject.title} by ${blogObject.author} with url ${blogObject.url} updated successfully`)
+      setColor('green')
+    } 
+    catch (error) {
+      setMessage('Failed to update a blog')
+      setColor('red')
+    }
+  }
 
     return (
       <div>  
@@ -133,7 +155,10 @@ const handleCreate = async ( blogObject ) => {
                 />
               </Togglable>
               <BlogList 
-                blogs={blogs} />
+                key={blogs.id}
+                blog={blogs} 
+                updateBlog={handleUpdate}
+              />
               <Button 
                 label='Sign out' 
                 onClick={handleLogout}
