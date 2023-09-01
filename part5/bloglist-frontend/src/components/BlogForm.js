@@ -10,7 +10,7 @@ const BlogForm = ({ createBlog }) => {
     createBlog({
       title,
       author,
-      url,
+      url
     });
     console.log("Adding blog", { title, author, url });
     console.log("clearing values...");

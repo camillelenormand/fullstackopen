@@ -22,10 +22,13 @@ const App = () => {
 
   // Get all blogs
   useEffect(() => {
-    blogService.getAll().then(blogs =>
+    blogService.getAll().then(async blogs =>
       setBlogs(blogs)
     )  
   }, [])
+
+  console.log(blogs)
+
 
   // Check if user is logged
   useEffect(() => {

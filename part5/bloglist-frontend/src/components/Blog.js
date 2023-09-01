@@ -26,11 +26,6 @@ const Blog = ({ blog }) => {
       </tr>
       {expandedRows.includes(blog.id) && (
         <tr>
-          <td colSpan="3"></td> {/* Empty cell for spacing */}
-        </tr>
-      )}
-      {expandedRows.includes(blog.id) && (
-        <tr>
           <th>URL</th>
           <td colSpan="2">{blog.url}</td>
         </tr>
@@ -38,13 +33,14 @@ const Blog = ({ blog }) => {
       {expandedRows.includes(blog.id) && (
         <tr>
           <th>Likes</th>
-          <td colSpan="1">{blog.likes}</td>
-          <td colSpan="1" style={blogRowStyle}><button><i class="gg-heart"></i></button></td>
+          <td colSpan='1'>{blog.likes}</td>
+          <td colSpan='2' style={blogRowStyle}><button><i className="gg-heart"></i></button></td>
         </tr>
       )}
-       {expandedRows.includes(blog.id) && (
+        {expandedRows.includes(blog.id) && (
         <tr>
-          <td colSpan="3"></td> {/* Empty cell for spacing */}
+          <th>User</th>
+          <td colSpan='2'>{blog.user.name || 'No user'}</td>
         </tr>
       )}
     </>
