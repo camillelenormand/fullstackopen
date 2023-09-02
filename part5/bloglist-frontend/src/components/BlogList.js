@@ -1,6 +1,6 @@
 import Blog from './Blog'
 
-const BlogList = ({ blog, updateBlog }) => {
+const BlogList = ({ blog, updateBlog, deleteBlog }) => {
   console.log(blog)
 
   const sortedBlog = blog.sort((a, b) => {
@@ -13,6 +13,7 @@ const BlogList = ({ blog, updateBlog }) => {
         <tr>
           <th>Title</th>
           <th>Author</th>
+          <th>View</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -22,6 +23,7 @@ const BlogList = ({ blog, updateBlog }) => {
             key={blog.id} 
             blog={blog} 
             updateBlog={updateBlog}
+            deleteBlog={deleteBlog}
           />
         ))}
       </tbody>

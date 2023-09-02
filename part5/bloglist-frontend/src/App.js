@@ -22,7 +22,7 @@ const App = () => {
 
   // Get all blogs
   useEffect(() => {
-    blogService.getAll().then(async blogs =>
+    blogService.getAllBlogs().then(async blogs =>
       setBlogs(blogs)
     )  
   }, [])
@@ -90,7 +90,7 @@ const handleCreate = async ( blogObject ) => {
     console.log('Creating a new blog', blogObject.title, blogObject.author, blogObject.url)
     blogFormRef.current.toggleVisibility()
     
-    const returnedBlog = await blogService.create(blogObject)
+    const returnedBlog = await blogService.createBlog(blogObject)
     setBlogs(blogs.concat(returnedBlog))
     setMessage(`A new blog ${blogObject.title} by ${blogObject.author} with url ${blogObject.url} added successfully`)
     setColor('green')
@@ -114,7 +114,7 @@ const handleCreate = async ( blogObject ) => {
       console.log('Updating a blog', blogObject.title, blogObject.author, blogObject.url, blogObject.id)
       blogFormRef.current.toggleVisibility()
       
-      const returnedBlog = await blogService.update(blogObject.id, blogObject)
+      const returnedBlog = await blogService.updateBlog(blogObject.id, blogObject)
       console.log(returnedBlog)
       setBlogs(blogs.map(blog => blog.id !== returnedBlog.id ? blog : returnedBlog))
       setMessage(`Blog ${blogObject.title} by ${blogObject.author} with url ${blogObject.url} updated successfully`)
@@ -122,6 +122,22 @@ const handleCreate = async ( blogObject ) => {
     } 
     catch (error) {
       setMessage('Failed to update a blog')
+      setColor('red')
+    }
+  }
+
+  // Delete a blog
+  const handleDelete = async ( blogObject ) => {
+    try {
+      console.log('Deleting a blog', blogObject.id)
+      window.confirm('Are you sure you want to delete this blog?')
+      await blogService.deleteBlog(blogObject.id)
+      setBlogs(blogs.filter(blog => blog.id !== blogObject.id))
+      setMessage(`${blogObject.title} deleted successfully`)
+      setColor('green')
+    } 
+    catch (error) {
+      setMessage('Failed to delete a blog')
       setColor('red')
     }
   }
@@ -158,6 +174,7 @@ const handleCreate = async ( blogObject ) => {
                 key={blogs.id}
                 blog={blogs} 
                 updateBlog={handleUpdate}
+                deleteBlog={handleDelete}
               />
               <Button 
                 label='Sign out' 

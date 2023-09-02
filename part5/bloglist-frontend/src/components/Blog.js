@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
+import Button from './Button'
 
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ blog, updateBlog, deleteBlog }) => {
   const [blogObject, setBlogObject] = useState(blog)
   const [expandedRows, setExpandedRows] = useState([])
 
@@ -35,9 +36,10 @@ const Blog = ({ blog, updateBlog }) => {
         <td>{blog.author ? blog.author : 'No author'}</td>
         <td>
           <button onClick={() => toggleRow(blog.id)}>
-            {expandedRows.includes(blog.id) ? 'Hide Details' : 'Read more'}
+            {expandedRows.includes(blog.id) ? 'Hide Details' : 'View more'}
           </button>
         </td>
+        <td><Button label="Delete" onClick={() => deleteBlog(blog)} /></td>
       </tr>
       {expandedRows.includes(blog.id) && (
         <tr>
