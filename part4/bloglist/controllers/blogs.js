@@ -88,15 +88,26 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) =
 ////////////////////////////////////////////////////////////////////
 
 // Update a blog
-blogsRouter.put('/:id', async (request, response) => {
-  const blog = request.body
-  console.log('blog', blog)
+blogsRouter.put('/:id', async (request, response, next) => {
+  const body = request.body
 
-  const updatedBlog = await Blog
-    .findByIdAndUpdate(request.params.id, blog, { new: true })
-  console.log('updatedBlog', updatedBlog)
-  response.status(200)
-    .json(updatedBlog)
+  const blog = {
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes,
+    user: {
+      username: body.user.name,
+      name: body.user.username,
+      _id: body.user.id
+    }
+  }
+
+  Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+    .then(updatedNote => {
+      response.json(updatedNote)
+    })
+    .catch(error => next(error))
 })
 
 module.exports = blogsRouter
