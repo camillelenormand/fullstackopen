@@ -1,25 +1,26 @@
-import { useState } from 'react';
+import { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const BlogForm = ({ createBlog }) => {
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   const addBlog = e => {
-    e.preventDefault();
+    e.preventDefault()
     createBlog({
       title,
       author,
       url
-    });
-    console.log("Adding blog", { title, author, url });
-    console.log("clearing values...");
-    setTitle('');
-    setAuthor('');
-    setUrl('');
-  };
+    })
+    console.log("Adding blog", { title, author, url })
+    console.log("clearing values...")
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
 
-  console.log("Rendering with state values:", { title, author, url });
+  console.log("Rendering with state values:", { title, author, url })
 
   return (
     <div>
@@ -31,8 +32,8 @@ const BlogForm = ({ createBlog }) => {
           value={title}
           name="Title"
           onChange={e => {
-            console.log("Title input value:", e.target.value);
-            setTitle(e.target.value);
+            console.log("Title input value:", e.target.value)
+            setTitle(e.target.value)
           }}
         />
         <label>Author:</label>
@@ -41,8 +42,8 @@ const BlogForm = ({ createBlog }) => {
           value={author}
           name="Author"
           onChange={e => {
-            console.log("Author input value:", e.target.value);
-            setAuthor(e.target.value);
+            console.log("Author input value:", e.target.value)
+            setAuthor(e.target.value)
           }}
         />
         <label>URL</label>
@@ -51,15 +52,19 @@ const BlogForm = ({ createBlog }) => {
           name="Url"
           value={url}
           onChange={e => {
-            console.log("URL input value:", e.target.value);
-            setUrl(e.target.value);
+            console.log("URL input value:", e.target.value)
+            setUrl(e.target.value)
           }}
         />
         <br />
         <button type="submit">Save</button>
       </form>
     </div>
-  );
-};
+  )
+}
+
+BlogForm.propTypes = {
+  createBlog: PropTypes.func.isRequired
+}
 
 export default BlogForm;

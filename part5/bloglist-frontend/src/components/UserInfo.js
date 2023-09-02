@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types'
+
 const UserInfo = ({ user }) => {
   return (
     <div>
@@ -9,6 +11,10 @@ const UserInfo = ({ user }) => {
       <hr />
     </div>
   )
+}
+
+UserInfo.propTypes = {
+  user: PropTypes.object.isRequired
 }
 
 export default UserInfo

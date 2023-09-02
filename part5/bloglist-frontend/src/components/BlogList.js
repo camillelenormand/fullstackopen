@@ -1,4 +1,5 @@
 import Blog from './Blog'
+import PropTypes from 'prop-types'
 
 const BlogList = ({ blog, updateBlog, deleteBlog }) => {
   console.log(blog)
@@ -13,7 +14,7 @@ const BlogList = ({ blog, updateBlog, deleteBlog }) => {
         <tr>
           <th>Title</th>
           <th>Author</th>
-          <th>View</th>
+          <th>Details</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -28,7 +29,13 @@ const BlogList = ({ blog, updateBlog, deleteBlog }) => {
         ))}
       </tbody>
     </table>
-  );
+  )
+}
+
+BlogList.propTypes = {
+  blog: PropTypes.array.isRequired,
+  updateBlog: PropTypes.func.isRequired,
+  deleteBlog: PropTypes.func.isRequired
 }
 
 export default BlogList

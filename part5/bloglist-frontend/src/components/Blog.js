@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Button from './Button'
+import PropTypes from 'prop-types'
 
 const Blog = ({ blog, updateBlog, deleteBlog }) => {
   const [blogObject, setBlogObject] = useState(blog)
@@ -34,9 +35,9 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
       <tr>
         <td>{blog.title ? blog.title : 'No title'}</td>
         <td>{blog.author ? blog.author : 'No author'}</td>
-        <td>
+        <td style={blogRowStyle}>
           <button onClick={() => toggleRow(blog.id)}>
-            {expandedRows.includes(blog.id) ? 'Hide Details' : 'View more'}
+            {expandedRows.includes(blog.id) ? 'Hide' : 'Show'}
           </button>
         </td>
         <td><Button label="Delete" onClick={() => deleteBlog(blog)} /></td>
@@ -44,7 +45,7 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
       {expandedRows.includes(blog.id) && (
         <tr>
           <th>URL</th>
-          <td colSpan="2">{blog.url ? blog.url : 'No url'}</td>
+          <td colSpan="3">{blog.url ? blog.url : 'No url'}</td>
         </tr>
       )}
       {expandedRows.includes(blog.id) && (
@@ -57,11 +58,17 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
         {expandedRows.includes(blog.id) && (
         <tr>
           <th>User</th>
-          <td colSpan='2'>{blog.user && blog.user.name ? blog.user.name : 'No user'}</td>
+          <td colSpan='3'>{blog.user && blog.user.name ? blog.user.name : 'No user'}</td>
         </tr>
       )}
     </>
   )
+}
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  updateBlog: PropTypes.func.isRequired,
+  deleteBlog: PropTypes.func.isRequired
 }
 
 export default Blog

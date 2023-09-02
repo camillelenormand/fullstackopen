@@ -16,7 +16,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
   const [color, setColor] = useState('')
-  const [loginVisible, setLoginVisible] = useState(false) 
+  const [loginVisible, setLoginVisible] = useState(false)
 
   const blogFormRef = useRef()
 
@@ -24,7 +24,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAllBlogs().then(async blogs =>
       setBlogs(blogs)
-    )  
+    )
   }, [])
 
   console.log(blogs)
