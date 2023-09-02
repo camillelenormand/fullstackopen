@@ -2,7 +2,11 @@ import Blog from './Blog'
 
 const BlogList = ({ blog, updateBlog }) => {
   console.log(blog)
-  console.log(updateBlog)
+
+  const sortedBlog = blog.sort((a, b) => {
+    return b.likes - a.likes
+  })
+
   return (
     <table>
       <thead>
@@ -13,7 +17,7 @@ const BlogList = ({ blog, updateBlog }) => {
         </tr>
       </thead>
       <tbody>
-        {blog?.map((blog, index) => (
+        {sortedBlog?.map((blog) => (
           <Blog 
             key={blog.id} 
             blog={blog} 
