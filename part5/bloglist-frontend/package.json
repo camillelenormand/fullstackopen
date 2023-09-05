@@ -15,8 +15,11 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest",
     "eject": "react-scripts eject"
+  },
+  "jest": {
+    "testEnvironment": "jsdom"
   },
   "eslintConfig": {
     "extends": [
@@ -38,7 +41,9 @@
   },
   "proxy": "http://localhost:3003",
   "devDependencies": {
+    "@babel/preset-react": "^7.22.15",
     "eslint-plugin-jest": "^27.2.3",
-    "eslint-plugin-react-refresh": "^0.4.3"
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "jest": "^27.5.1"
   }
 }

@@ -31,10 +31,10 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
   }
 
   return (
-    <>
+    <tbody>
       <tr>
-        <td>{blog.title ? blog.title : 'No title'}</td>
-        <td>{blog.author ? blog.author : 'No author'}</td>
+        <td className='title'>{blog.title ? blog.title : 'No title'}</td>
+        <td className='author'>{blog.author ? blog.author : 'No author'}</td>
         <td style={blogRowStyle}>
           <button onClick={() => toggleRow(blog.id)}>
             {expandedRows.includes(blog.id) ? 'Hide' : 'Show'}
@@ -61,7 +61,7 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
           <td colSpan='3'>{blog.user && blog.user.name ? blog.user.name : 'No user'}</td>
         </tr>
       )}
-    </>
+    </tbody>
   )
 }
 

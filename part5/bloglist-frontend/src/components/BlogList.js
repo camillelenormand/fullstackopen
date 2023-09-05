@@ -18,7 +18,6 @@ const BlogList = ({ blog, updateBlog, deleteBlog }) => {
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody>
         {sortedBlog?.map((blog) => (
           <Blog 
             key={blog.id} 
@@ -27,7 +26,6 @@ const BlogList = ({ blog, updateBlog, deleteBlog }) => {
             deleteBlog={deleteBlog}
           />
         ))}
-      </tbody>
     </table>
   )
 }
