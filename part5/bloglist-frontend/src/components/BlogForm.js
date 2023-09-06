@@ -26,30 +26,39 @@ const BlogForm = ({ createBlog }) => {
     <div>
       <h2>Create a new blog</h2>
       <form onSubmit={addBlog}>
-        <label>Title:</label>
+        <label id='titleLabel'>Title</label>
         <input
+          id='title'
           type="text"
-          value={title}
           name="Title"
+          placeholder='Enter a title'
+          aria-labelledby='titleLabel'
+          value={title}
           onChange={e => {
             console.log("Title input value:", e.target.value)
             setTitle(e.target.value)
           }}
         />
-        <label>Author:</label>
+        <label id='authorLabel'>Author</label>
         <input
+          id='author'
           type="text"
-          value={author}
           name="Author"
+          placeholder='Enter an author'
+          aria-labelledby='authorLabel'
+          value={author}
           onChange={e => {
             console.log("Author input value:", e.target.value)
             setAuthor(e.target.value)
           }}
         />
-        <label>URL</label>
+        <label id='urlLabel'>URL</label>
         <input
+          id='url'
           type="text"
-          name="Url"
+          name="url"
+          placeholder='Enter a URL'
+          aria-labelledby='urlLabel'
           value={url}
           onChange={e => {
             console.log("URL input value:", e.target.value)
