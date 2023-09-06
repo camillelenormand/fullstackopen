@@ -1,19 +1,17 @@
-import { useEffect, useState } from 'react'
-import Button from './Button'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
+import Button from './Button'
 
 const Blog = ({ blog, updateBlog, deleteBlog }) => {
-  const [blogObject, setBlogObject] = useState(blog)
   const [expandedRows, setExpandedRows] = useState([])
+  const [blogObject, setBlogObject] = useState(blog)
 
   const toggleRow = (rowId) => {
-    expandedRows.includes(rowId)
-      ? setExpandedRows(expandedRows.filter((id) => id !== rowId))
-      : setExpandedRows(expandedRows.concat(rowId))
-  }
-
-  const blogRowStyle = {
-    textAlign: 'center'
+    setExpandedRows((prevExpandedRows) =>
+      prevExpandedRows.includes(rowId)
+        ? prevExpandedRows.filter((id) => id !== rowId)
+        : [...prevExpandedRows, rowId]
+    )
   }
 
   useEffect(() => {
@@ -21,54 +19,47 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
   }, [blog])
 
   const addLike = () => {
-    console.log('Adding like to blog', blog.id)
-    const updatedBlog = { 
-      ...blog, likes: blog.likes + 1 
-    }
+    const updatedBlog = { ...blog, likes: blog.likes + 1 }
     updateBlog(updatedBlog)
-    console.log('Updated blog', updatedBlog)
     setBlogObject(updatedBlog)
   }
 
   return (
-    <tbody>
-      <tr>
-        <td className='title'>{blog.title ? blog.title : 'No title'}</td>
-        <td className='author'>{blog.author ? blog.author : 'No author'}</td>
-        <td style={blogRowStyle}>
-          <button onClick={() => toggleRow(blog.id)}>
-            {expandedRows.includes(blog.id) ? 'Hide' : 'Show'}
-          </button>
-        </td>
-        <td><Button label="Delete" onClick={() => deleteBlog(blog)} /></td>
-      </tr>
+    <article>
+      <dl>
+        <dt>Blog Information</dt>
+        <dd className='title'>Title: {blog.title || 'No title'}</dd>
+        <dd className='author'>Author: {blog.author || 'No author'}</dd>
+      </dl>
       {expandedRows.includes(blog.id) && (
-        <tr>
-          <th>URL</th>
-          <td colSpan="3">{blog.url ? blog.url : 'No url'}</td>
-        </tr>
+        <>
+          <dd>URL: {blog.url || 'No url'}</dd>
+          <dd>Likes: {blogObject.likes}</dd>
+          <dd>
+            <Button
+              onClick={addLike}
+              label='Like'
+              className='likeButton'
+            />
+          </dd>
+          <dd>User: {blog.user?.name || 'No user'}</dd>
+        </>
       )}
-      {expandedRows.includes(blog.id) && (
-        <tr>
-          <th>Likes:</th>
-          <td colSpan='1'>{blogObject.likes}</td>
-          <td colSpan='2' style={blogRowStyle}><button onClick={addLike}><i className="gg-heart"></i></button></td>
-        </tr>
-      )}
-        {expandedRows.includes(blog.id) && (
-        <tr>
-          <th>User</th>
-          <td colSpan='3'>{blog.user && blog.user.name ? blog.user.name : 'No user'}</td>
-        </tr>
-      )}
-    </tbody>
+      <dd className='showDetails'>
+        <Button
+          onClick={() => toggleRow(blog.id)}
+          label={expandedRows.includes(blog.id) ? 'Hide' : 'Show'}
+          className='showDetailsButton'
+          style={{ marginRight: '5px' }}
+        />
+        <Button label="Delete" onClick={() => deleteBlog(blog)} />
+      </dd>
+    </article>
   )
 }
 
 Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  updateBlog: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired
+  blog: PropTypes.object.isRequired
 }
 
 export default Blog
