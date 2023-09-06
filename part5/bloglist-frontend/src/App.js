@@ -178,6 +178,8 @@ const handleCreate = async ( blogObject ) => {
                 deleteBlog={handleDelete}
               />
               <Button 
+                id='logout-button'
+                name='logout'
                 label='Sign out' 
                 onClick={handleLogout}
               />

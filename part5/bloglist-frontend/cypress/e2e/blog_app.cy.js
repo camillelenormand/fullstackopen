@@ -16,8 +16,33 @@ describe('Blog app', () => {
     cy.contains('Application Blog from Fullstackopen.com by Camille Lenormand')
   })
 
-  it('login form can be opened', () => {
+  it('login form is shown', () => {
     cy.contains('Sign in').click()
+  })
+
+  describe('Login', () => {
+    it('succeeds with correct credentials', () => {
+      cy.contains('Sign in').click()
+      cy.get('#username').type('camillelenormand@fake.com')
+      cy.get('#password').type('password@123')
+      cy.get('#login-button').click()
+      cy.contains('Personal Information')
+      cy.contains('Username: camillelenormand@fake.com')
+      cy.contains('Name: camillelenormand')
+    })
+
+    it('login fails with wrong password', () => {
+      cy.contains('Sign in').click()
+      cy.get('#username').type('camillelenormand@fake.com')
+      cy.get('#password').type('wrong')
+      cy.get('#login-button').click()
+
+      cy.get('.notification').should('contain', 'Wrong username or password')
+      cy.get('.notification').should('have.css', 'color', 'rgb(255, 0, 0)')
+      cy.get('.notification').should('have.css', 'border-style', 'solid')
+
+      cy.get('html').should('not.contain', 'Personal Information')
+    })
   })
 
   describe('when logged in', () => {
@@ -26,9 +51,6 @@ describe('Blog app', () => {
       cy.get('#username').type('camillelenormand@fake.com')
       cy.get('#password').type('password@123')
       cy.get('#login-button').click()
-      cy.contains('Personal Information')
-      cy.contains('Username: camillelenormand@fake.com')
-      cy.contains('Name: camillelenormand')
     })
 
     it('a blog can be created', () => {
@@ -39,9 +61,6 @@ describe('Blog app', () => {
       cy.get('#create-button').click()
     })
   })
-
-
- 
 })
 
 
