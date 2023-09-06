@@ -53,7 +53,7 @@ describe('Blog app', () => {
       cy.get('#login-button').click()
     })
 
-    it('a blog can be created', () => {
+    it('a blog post can be created', () => {
       cy.contains('Create New Blog').click()
       cy.get('#title').type('Test blog')
       cy.get('#author').type('Camille')
