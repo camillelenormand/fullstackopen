@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
   },
   passwordHash:{
     type: String,
-    required: [true, 'Password is required'],
+    required: [true, 'PasswordHash is required'],
     minlength: [3, 'Password must be at least {MINLENGTH} characters long.']
   },
   password: {

@@ -145,6 +145,7 @@ const handleCreate = async ( blogObject ) => {
     return (
       <div>  
         <h2>Blogs</h2>
+        <h4>Application Blog from Fullstackopen.com by Camille Lenormand</h4>
         <Notification message={message} color={color}/>
         {
           user === null 
