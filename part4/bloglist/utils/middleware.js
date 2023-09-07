@@ -56,10 +56,12 @@ const userExtractor = async (request, response, next) => {
   if (token) {
     const realToken = jwt.verify(token, process.env.SECRET)
     const user = await User.findById(realToken.id)
+    console.log('---user---', user)
     if (user === null) {
       return response.status(401).json({ error: 'Unauthorized user' })
     } else {
       request.user = user
+      console.log('user', user)
     }
   } 
 

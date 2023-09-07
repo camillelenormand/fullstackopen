@@ -163,7 +163,8 @@ const handleCreate = async ( blogObject ) => {
           : 
             <>
               <UserInfo user={user} />
-              <Togglable 
+              <Togglable
+                id='newBlogButton'
                 buttonLabel='Create New Blog'
                 ref={blogFormRef} 
               >

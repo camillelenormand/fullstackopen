@@ -1,14 +1,12 @@
 describe('Blog app', () => {
   beforeEach(() => {
-    cy.request('POST', 'http://localhost:3003/api/testing/reset')
-    const user = {
+    cy.resetData()
+    cy.createUser({
       username: 'camillelenormand@fake.com',
       name: 'camillelenormand',
       password: 'password@123',
-    }
-
-    cy.request('POST', 'http://localhost:3003/api/users/', user)
-    cy.visit('http://localhost:3000')
+      blogs: []
+    })
   })
 
   it('front page can be opened', () => {
@@ -20,7 +18,7 @@ describe('Blog app', () => {
     cy.contains('Sign in').click()
   })
 
-  describe('Login', () => {
+  describe('Login via form', () => {
     it('succeeds with correct credentials', () => {
       cy.contains('Sign in').click()
       cy.get('#username').type('camillelenormand@fake.com')
@@ -45,22 +43,29 @@ describe('Blog app', () => {
     })
   })
 
-  describe('when logged in', () => {
+  describe('when logged in ', () => {
     beforeEach(() => {
-      cy.contains('Sign in').click()
-      cy.get('#username').type('camillelenormand@fake.com')
-      cy.get('#password').type('password@123')
-      cy.get('#login-button').click()
+      cy.login({
+        username: 'camillelenormand@fake.com',
+        password: 'password@123'
+      })
     })
 
-    it('a blog post can be created', () => {
-      cy.contains('Create New Blog').click()
+    it('a new blog can be created', () => {
+      cy.get('#newBlogButton').click()
       cy.get('#title').type('Test blog')
       cy.get('#author').type('Camille')
       cy.get('#url').type('http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html')
-      cy.get('#create-button').click()
+      cy.get('#createButton').click()
     })
+
+    it('it can be liked', () => {
+      cy.get('#showDetailsButton').click()
+      cy.contains('Test blog')
+      cy.contains('Likes: 0')
+      cy.get('#likeButton').click()
+      cy.contains('Likes: 1')
+    })
+
   })
 })
-
-

@@ -37,6 +37,7 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
           <dd>Likes: {blogObject.likes}</dd>
           <dd>
             <Button
+              id='likeButton'
               onClick={addLike}
               label='Like'
               className='likeButton'
@@ -47,12 +48,17 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
       )}
       <dd className='showDetails'>
         <Button
+          id='showDetailsButton'
           onClick={() => toggleRow(blog.id)}
           label={expandedRows.includes(blog.id) ? 'Hide' : 'Show'}
           className='showDetailsButton'
           style={{ marginRight: '5px' }}
         />
-        <Button label="Delete" onClick={() => deleteBlog(blog)} />
+        <Button
+          id='deleteButton'
+          label="Delete"
+          onClick={() => deleteBlog(blog)}
+        />
       </dd>
     </article>
   )

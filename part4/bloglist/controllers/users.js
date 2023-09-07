@@ -5,6 +5,10 @@ const User = require('../models/user')
 // New user
 usersRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body
+  console.log('password', password)
+  console.log('username', username)
+  console.log('name', name)
+  console.log('request body', request.body)
   
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(password, saltRounds)
@@ -27,9 +31,12 @@ usersRouter.post('/', async (request, response) => {
     return response.status(401).json({
       error: 'Invalid password'
     })
-  }
+  } 
+
   const savedUser = await user.save()
+  console.log('savedUser', savedUser)
   response.status(201).json(savedUser)
+
 })
 
 // Get all users
