@@ -43,7 +43,7 @@ describe('Blog app', () => {
     })
   })
 
-  describe('when logged in ', () => {
+  describe('when logged in', () => {
     beforeEach(() => {
       cy.login({
         username: 'camillelenormand@fake.com',
@@ -65,6 +65,16 @@ describe('Blog app', () => {
       cy.contains('Likes: 0')
       cy.get('#likeButton').click()
       cy.contains('Likes: 1')
+    })
+
+    it('it can be deleted', () => {
+      cy.get('#newBlogButton').click()
+      cy.get('#title').type('Test blog')
+      cy.get('#author').type('Camille')
+      cy.get('#url').type('http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html')
+      cy.get('#createButton').click()
+      cy.get('#showDetailsButton').click()
+      cy.get('#deleteButton').click()
     })
 
   })
