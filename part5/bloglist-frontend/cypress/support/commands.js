@@ -22,12 +22,12 @@ Cypress.Commands.add('login', ({ username, password }) => {
 //
 //
 // -- This is a child command --
-Cypress.Commands.add('createBlog', ({ title, author, url, likes, user }) => {
+Cypress.Commands.add('createBlog', ({ title, author, url, likes }) => {
   cy.request({
     url: `${Cypress.env('BACKEND')}/blogs`,
     method: 'POST',
     contentType: 'application/json',
-    body: { title, author, url, likes, user },
+    body: { title, author, url, likes },
     headers: {
       'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedBlogUser')).token}`
     }

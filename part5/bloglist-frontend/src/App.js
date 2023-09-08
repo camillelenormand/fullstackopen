@@ -145,12 +145,13 @@ const handleCreate = async ( blogObject ) => {
     return (
       <div>  
         <h2>Blogs</h2>
-        <h4>Application Blog from Fullstackopen.com by Camille Lenormand</h4>
+        <h4>Application Blog from Fullstackopen.com</h4>
         <Notification message={message} color={color}/>
         {
           user === null 
           ? <Togglable 
               buttonLabel='Sign in'
+              id='loginButton'
               visible={loginVisible}>
             <LoginForm 
               username={username} 
@@ -177,6 +178,7 @@ const handleCreate = async ( blogObject ) => {
                 blog={blogs} 
                 updateBlog={handleUpdate}
                 deleteBlog={handleDelete}
+                user={user}
               />
               <Button 
                 id='logout-button'

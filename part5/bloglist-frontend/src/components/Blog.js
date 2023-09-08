@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import Button from './Button'
 
-const Blog = ({ blog, updateBlog, deleteBlog }) => {
+const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
   const [expandedRows, setExpandedRows] = useState([])
   const [blogObject, setBlogObject] = useState(blog)
 
@@ -24,8 +24,11 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
     setBlogObject(updatedBlog)
   }
 
+  console.log(user.username)
+  console.log(blog.user.username)
+
   return (
-    <article>
+    <article className='blog'>
       <dl>
         <dt>Blog Information</dt>
         <dd className='title'>Title: {blog.title || 'No title'}</dd>
@@ -43,7 +46,7 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
               className='likeButton'
             />
           </dd>
-          <dd>User: {blog.user?.name || 'No user'}</dd>
+          <dd>User: {blog.user?.username || 'No user'}</dd>
         </>
       )}
       <dd className='showDetails'>
@@ -54,11 +57,13 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
           className='showDetailsButton'
           style={{ marginRight: '5px' }}
         />
-        <Button
-          id='deleteButton'
-          label="Delete"
-          onClick={() => deleteBlog(blog)}
-        />
+        {user.username === blog.user.username && (
+          <Button
+            id='deleteButton'
+            label="Delete"
+            onClick={() => deleteBlog(blog)}
+          />
+        )}
       </dd>
     </article>
   )

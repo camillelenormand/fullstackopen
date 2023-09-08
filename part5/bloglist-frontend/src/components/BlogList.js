@@ -1,7 +1,7 @@
 import Blog from './Blog'
 import PropTypes from 'prop-types'
 
-const BlogList = ({ blog, updateBlog, deleteBlog }) => {
+const BlogList = ({ blog, updateBlog, deleteBlog, user }) => {
   console.log(blog)
 
   const sortedBlog = blog.sort((a, b) => {
@@ -11,11 +11,12 @@ const BlogList = ({ blog, updateBlog, deleteBlog }) => {
   return (
     <main>
       {sortedBlog?.map((blog) => (
-        <Blog 
+        <Blog
           key={blog.id} 
           blog={blog} 
           updateBlog={updateBlog}
           deleteBlog={deleteBlog}
+          user={user}
         />
       ))}
     </main>
