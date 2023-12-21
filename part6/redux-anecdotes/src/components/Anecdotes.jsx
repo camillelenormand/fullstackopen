@@ -1,0 +1,49 @@
+import { useDispatch, useSelector } from 'react-redux'
+import { voteAnecdote } from '../reducers/anecdoteReducer'
+import PropTypes from 'prop-types'
+
+
+const Anecdote = ({ anecdote, handleClick }) => {
+  return (
+    <>
+      <div>
+        {anecdote.content}
+      </div>
+      <div>
+        has {anecdote.votes}
+        <button onClick={handleClick}>vote</button>
+      </div>
+    </>
+  )
+}
+
+const Anecdotes = () => {
+  const dispatch = useDispatch()
+  // Assuming anecdotes are stored under 'anecdotes' in the Redux state
+  const anecdotes = useSelector(state => state)
+  console.log(anecdotes)
+
+  return (
+    <div>
+      <h2>Anecdotes</h2>
+      {anecdotes.map(anecdote =>
+        <Anecdote
+          key={anecdote.id}
+          anecdote={anecdote}
+          handleClick={() => dispatch(voteAnecdote(anecdote.id))}
+        />
+      )}
+    </div>
+  )
+}
+
+Anecdote.propTypes = {
+  anecdote: PropTypes.shape({
+    content: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
+    votes: PropTypes.number.isRequired
+  }).isRequired,
+  handleClick: PropTypes.func.isRequired
+}
+
+export default Anecdotes
