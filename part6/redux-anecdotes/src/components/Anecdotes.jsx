@@ -20,7 +20,7 @@ const Anecdote = ({ anecdote, handleClick }) => {
 const Anecdotes = () => {
   const dispatch = useDispatch()
   // Assuming anecdotes are stored under 'anecdotes' in the Redux state
-  const anecdotes = useSelector(state => state)
+  const anecdotes = useSelector(state => [...state].sort((a, b) => b.votes - a.votes))
   console.log(anecdotes)
 
   return (
