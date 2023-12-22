@@ -7,12 +7,11 @@ const Anecdote = ({ anecdote, handleClick }) => {
   return (
     <>
       <div>
+      < br/>
         <i> - {anecdote.content}</i>
       </div>
-      <div>
-        Number of votes: {anecdote.votes}
-      </div>
-      <button onClick={handleClick}>Vote</button>
+      < br/>
+      <button onClick={handleClick}> {anecdote.votes} Votes 🗳️ </button>
     </>
   )
 }

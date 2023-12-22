@@ -18,7 +18,7 @@ const NewAnecdote = () => {
 
   return (
     <>
-      <h5> Enter a new anecdote </h5>
+      <h5> Create a new anecdote </h5>
       <form onSubmit={addAnecdote}>
         <div>
           <label>New anecdote</label>
