@@ -6,7 +6,7 @@ const Filter = () => {
 
   const handleChange = (event) => {
     event.preventDefault()
-    const search = event.target.value
+    const search = event.target.value.trim()
     dispatch(filterChange(search))
     // input-field value is in variable event.target.value
   }
