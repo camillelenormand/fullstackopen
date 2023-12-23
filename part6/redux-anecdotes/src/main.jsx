@@ -2,6 +2,7 @@ import ReactDOM from 'react-dom/client'
 import { createStore, combineReducers } from 'redux'
 import { composeWithDevTools } from '@redux-devtools/extension';
 import { Provider } from 'react-redux'
+
 import App from './App'
 
 // Import reducers
