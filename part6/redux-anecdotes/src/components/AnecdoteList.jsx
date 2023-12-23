@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { voteAnecdote } from '../reducers/anecdoteReducer'
 import PropTypes from 'prop-types'
-
+import { showNotification } from '../reducers/anecdoteNotificationReducer'
 
 const Anecdote = ({ anecdote, handleClick }) => {
   return (
@@ -25,7 +25,7 @@ const Anecdotes = () => {
 
   // Filter and sort anecdotes
   const filteredAnecdotes = anecdotes
-  .filter(anecdote => anecdote.content.includes(filter.toLowerCase()))
+  .filter(anecdote => anecdote.content.toLowerCase().includes(filter.toLowerCase()))
   .sort((a, b) => b.votes - a.votes)
 
   console.log(filteredAnecdotes)
@@ -34,13 +34,18 @@ const Anecdotes = () => {
     return <p>No results found for {filter}.</p>
   }
 
+  const voteAndNotify = (anecdote) => {
+    dispatch(voteAnecdote(anecdote.id))
+    dispatch(showNotification(`You voted '${anecdote.content}'`))
+  }
+
   return (
     <div>
       {filteredAnecdotes.map(anecdote =>
         <Anecdote
           key={anecdote.id}
           anecdote={anecdote}
-          handleClick={() => dispatch(voteAnecdote(anecdote.id))}
+          handleClick={() => voteAndNotify(anecdote)}
         />
       )}
     </div>

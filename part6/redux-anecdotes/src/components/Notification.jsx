@@ -1,18 +1,32 @@
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { hideNotification } from '../reducers/anecdoteNotificationReducer'
+import { useEffect } from 'react'
 
 const Notification = () => {
-
   const notification = useSelector(state => state.notification)
-  const style = {
-    border: 'solid',
-    padding: 10,
-    borderWidth: 1
-  }
-  return notification ? (
-    <div style={style}>
+  const dispatch = useDispatch()
 
-      {notification}
-    </div>
+  useEffect(() => {
+    if (notification.visibility) {
+      // Add a method to scroll to the notification 
+      window.scrollTo(0, 0)
+
+      const timer = setTimeout(() => {
+        dispatch(hideNotification())
+      }, 3500)
+
+      return () => clearTimeout(timer)
+    }
+  }, [notification.visibility, dispatch])
+
+  if (!notification.visibility) {
+    return null
+  }
+
+  return notification ? (
+    <p className="notice">
+       {notification.message}
+    </p>
   ) : null
 }
 
