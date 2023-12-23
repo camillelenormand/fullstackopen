@@ -25,14 +25,17 @@ const Anecdotes = () => {
 
   // Filter and sort anecdotes
   const filteredAnecdotes = anecdotes
-  .filter(anecdote => anecdote.content.includes(filter))
+  .filter(anecdote => anecdote.content.includes(filter.toLowerCase()))
   .sort((a, b) => b.votes - a.votes)
 
   console.log(filteredAnecdotes)
 
+  if (filteredAnecdotes.length === 0) {
+    return <p>No results found for {filter}.</p>
+  }
+
   return (
     <div>
-      <h2>Anecdotes</h2>
       {filteredAnecdotes.map(anecdote =>
         <Anecdote
           key={anecdote.id}

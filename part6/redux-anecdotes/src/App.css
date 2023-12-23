@@ -1,4 +1,16 @@
-button {
-  padding: 1em;
-  margin: 1em;
+.input-icon-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.input-icon-wrapper .icon {
+  position: absolute;
+  left: 10px; /* Adjust as needed */
+  top: 45%;
+  transform: translateY(-50%);
+  color: #aaa; /* Adjust color as needed */
+}
+
+.input-icon-wrapper input {
+  padding-left: 40px; /* Adjust padding to make room for the icon */
 }
