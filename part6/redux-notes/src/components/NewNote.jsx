@@ -14,10 +14,15 @@ const NewNote = () => {
   }
 
   return (
-    <form onSubmit={addNote}>
-      <input name="note" />
-      <button type="submit">add</button>
-    </form>
+    <>
+      <form onSubmit={addNote}>
+        <br />
+        <label>Title</label>
+        <input name="note" placeholder='Enter your note'/>
+        <br />
+        <button type="submit">Save</button>
+      </form>
+    </>
   )
 }
 
