@@ -11,21 +11,29 @@ const Anecdote = ({ anecdote, handleClick }) => {
         <i> - {anecdote.content}</i>
       </div>
       < br/>
-      <button onClick={handleClick}> {anecdote.votes} Votes 🗳️ </button>
+      <button onClick={handleClick}> {anecdote.votes} Votes </button>
     </>
   )
 }
 
 const Anecdotes = () => {
   const dispatch = useDispatch()
+
   // Assuming anecdotes are stored under 'anecdotes' in the Redux state
-  const anecdotes = useSelector(state => [...state].sort((a, b) => b.votes - a.votes))
-  console.log(anecdotes)
+  const anecdotes = useSelector(state => state.anecdotes)
+  const filter = useSelector(state => state.filter)
+
+  // Filter and sort anecdotes
+  const filteredAnecdotes = anecdotes
+  .filter(anecdote => anecdote.content.includes(filter))
+  .sort((a, b) => b.votes - a.votes)
+
+  console.log(filteredAnecdotes)
 
   return (
     <div>
       <h2>Anecdotes</h2>
-      {anecdotes.map(anecdote =>
+      {filteredAnecdotes.map(anecdote =>
         <Anecdote
           key={anecdote.id}
           anecdote={anecdote}
