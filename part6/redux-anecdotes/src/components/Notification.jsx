@@ -11,6 +11,7 @@ const Notification = () => {
       // Add a method to scroll to the notification 
       window.scrollTo(0, 0)
 
+      // set timeout to make the notification disappear after 3500s
       const timer = setTimeout(() => {
         dispatch(hideNotification())
       }, 3500)
