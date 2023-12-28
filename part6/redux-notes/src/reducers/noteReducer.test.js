@@ -1,4 +1,4 @@
-import noteReducer, { createNote, toggleImportanceOf } from './noteReducer'
+import noteReducer, { appendNote, toggleImportanceOf } from './noteReducer'
 import deepFreeze from 'deep-freeze'
 
 describe('noteReducer', () => {

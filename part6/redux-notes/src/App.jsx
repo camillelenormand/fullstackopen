@@ -15,7 +15,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>Note App</h1>
+      <h2>Create a Note</h2>
       <NewNote />
       <VisibilityFilter />
       <Notes />
