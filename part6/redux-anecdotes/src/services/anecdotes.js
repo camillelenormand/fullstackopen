@@ -8,9 +8,14 @@ const getAll = async () => {
 }
 
 const createNew = async (content) => {
-  const object = { content, important: false, vote: 0 }
+  const object = { content, important: false }
   const res = await axios.post(baseUrl, object)
   return res.data
 }
 
-export default { getAll, createNew }
+const newVote = async (id, anecdote) => {
+  const res = await axios.patch(`${baseUrl}/${id}`, anecdote)
+  return res.data
+}
+
+export default { getAll, createNew, newVote }
