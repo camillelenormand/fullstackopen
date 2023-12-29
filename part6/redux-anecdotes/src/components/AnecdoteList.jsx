@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { voteAnecdote } from '../reducers/anecdoteReducer'
 import PropTypes from 'prop-types'
-import { showNotification } from '../reducers/anecdoteNotificationReducer'
+import { displayNotification } from '../reducers/anecdoteNotificationReducer'
 
 const Anecdote = ({ anecdote, handleClick }) => {
   return (
@@ -38,7 +38,13 @@ const Anecdotes = () => {
 
   const voteAndNotify = (anecdote) => {
     dispatch(voteAnecdote(anecdote.id))
-    dispatch(showNotification(`You voted '${anecdote.content}'`))
+      .then(() => {
+      dispatch(displayNotification(`You voted '${anecdote.content}'`, 2))
+     })
+     .catch(err => {
+      console.log(err)
+      dispatch(displayNotification('Error occurred while voting. Please try again.', 10))
+     })
   }
 
   return (

@@ -5,12 +5,14 @@ const anecdoteNotificationSlice = createSlice({
   name: 'notification',
   initialState: {
     message: '',
-    visibility: false
+    visibility: false,
+    timeout: 5000
   },
   reducers: {
-    showNotification(state, action) {
-      state.message = action.payload
-      state.visibility = true
+    setNotification(state, action) {
+      state.message = action.payload.message,
+      state.visibility = true,
+      state.timeout = action.payload.timeout || 5000
     },
     hideNotification(state) {
       state.message ='',
@@ -19,5 +21,16 @@ const anecdoteNotificationSlice = createSlice({
   }
 })
 
-export const { showNotification, hideNotification } = anecdoteNotificationSlice.actions
+export const { setNotification, hideNotification } = anecdoteNotificationSlice.actions
+
+export const displayNotification = (message, duration) => {
+  return dispatch => {
+    dispatch(setNotification({ message }))
+
+    setTimeout(() => {
+      dispatch(hideNotification())
+    }, duration * 1000)
+  }
+}
+
 export default anecdoteNotificationSlice.reducer
