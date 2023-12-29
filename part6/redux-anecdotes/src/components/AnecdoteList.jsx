@@ -21,7 +21,9 @@ const Anecdotes = () => {
 
   // Assuming anecdotes are stored under 'anecdotes' in the Redux state
   const anecdotes = useSelector(state => state.anecdotes)
+  console.log(anecdotes)
   const filter = useSelector(state => state.filter)
+  console.log(filter)
 
   // Filter and sort anecdotes
   const filteredAnecdotes = anecdotes
@@ -56,7 +58,7 @@ Anecdote.propTypes = {
   anecdote: PropTypes.shape({
     content: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
-    votes: PropTypes.number.isRequired
+    votes: PropTypes.number
   }).isRequired,
   handleClick: PropTypes.func.isRequired
 }

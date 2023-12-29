@@ -1,6 +1,5 @@
 import { useDispatch } from 'react-redux'
 import { createAnecdote } from '../reducers/anecdoteReducer'
-import anecdoteService from '../services/anecdotes'
 
 const NewAnecdote = () => {
 
@@ -11,9 +10,8 @@ const NewAnecdote = () => {
     e.preventDefault()
     const content = e.target.anecdote.value
     e.target.anecdote.value = ''
-    const newNote = await anecdoteService.createNew(content)
-    // Send anecdote content to store
-    dispatch(createAnecdote(newNote))
+    dispatch(createAnecdote(content))
+    console.log(content)
   }
 
   return (
