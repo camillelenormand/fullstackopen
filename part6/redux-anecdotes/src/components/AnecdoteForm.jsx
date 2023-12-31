@@ -19,7 +19,7 @@ const NewAnecdote = () => {
       <form onSubmit={addAnecdote}>
         <div>
           <label>New anecdote</label>
-          <input name='anecdote' placeholder='Once upon a time...'/>
+          <input name='anecdote' placeholder='2 years ago,I had...'/>
         </div>
         <button type="submit"> Save </button>
       </form>
