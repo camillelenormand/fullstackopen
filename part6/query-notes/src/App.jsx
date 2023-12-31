@@ -15,7 +15,7 @@ const App = () => {
 
   const result = useQuery({
     queryKey: ['notes'],
-    queryFn: () => getNotes
+    queryFn: getNotes
   })
   console.log(JSON.parse(JSON.stringify(result)))
 
