@@ -12,12 +12,12 @@
     },
     {
       "content": "state is stored in the backend",
-      "important": false,
+      "important": true,
       "id": 3
     },
     {
       "content": "jhhjh",
-      "important": true,
+      "important": false,
       "id": 4
     },
     {

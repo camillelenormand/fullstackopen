@@ -22,7 +22,7 @@ const App = () => {
   const updateNoteMutation = useMutation({
     mutationFn: updateNote,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notes']})
+      queryClient.invalidateQueries(['notes'])
     }
   })
 
@@ -51,12 +51,22 @@ const App = () => {
         <input name="note" />
         <button type="submit">add</button>
       </form>
-      {notes.map(note =>
-        <li key={note.id} onClick={() => toggleImportance(note)}>
-          {note.content} 
-          <strong> {note.important ? 'important' : ''}</strong>
-        </li>
-      )}
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Importance</th>
+          </tr>
+        </thead>
+        <tbody>
+          {notes.map(note => (
+            <tr key={note.id} onClick={() => toggleImportance(note)}>
+              <td><i>{note.content}</i></td>
+              <td><strong>{note.important ? 'Important' : ''}</strong></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 }
