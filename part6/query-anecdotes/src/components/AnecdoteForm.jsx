@@ -35,7 +35,11 @@ const AnecdoteForm = () => {
 
     newAnecdoteMutation.mutate({ content, vote: 0 })
     event.target.anecdote.value = ''
-    notificationDispatch({ type: 'SHOW_NOTIFICATION', message: 'Created!', visible: true })
+    notificationDispatch({ type: 'SHOW_NOTIFICATION', message: 'Created!' })
+    const timer = setTimeout(() => {
+      notificationDispatch({ type: 'SHOW_NOTIFICATION', message: '' });
+    }, 5000)
+    return () => clearTimeout(timer)
   }
 
   return (

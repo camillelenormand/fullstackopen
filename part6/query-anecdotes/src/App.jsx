@@ -5,15 +5,9 @@ import notificationReducer from './reducers/notificationReducer'
 import { useReducer } from 'react'
 
 const Notification = ({ message }) => {
-  const style = {
-    border: 'solid',
-    padding: 10,
-    borderWidth: 1,
-    marginBottom: 5
-  }
 
   return (
-    <div style={style}>
+    <div>
       {message}
     </div>
   )
@@ -50,7 +44,11 @@ const App = () => {
     const anecdoteToVote = anecdotes.find(a => a.id === id)
     console.log(anecdoteToVote)
     updateAnecdoteMutation.mutate({ ...anecdoteToVote, votes: anecdoteToVote.votes + 1 })
-    notificationDispatch({ type: 'SHOW_NOTIFICATION', message: "Voted!" })
+    notificationDispatch({ type: 'SHOW_NOTIFICATION', message: 'Voted!' })
+    const timer = setTimeout(() => {
+      notificationDispatch({ type: 'SHOW_NOTIFICATION', message: '' });
+    }, 5000)
+    return () => clearTimeout(timer)
   }
 
   return (

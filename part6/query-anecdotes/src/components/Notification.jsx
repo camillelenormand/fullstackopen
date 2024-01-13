@@ -2,7 +2,7 @@ const Notification = ({ message }) => {
 
   return (
     <div>
-      <p className="Notice">{message}</p>
+      {message}
     </div>
   )
 }

@@ -1,6 +1,6 @@
 // notificationReducer.js
 
-const notificationReducer = ( state, action ) => {
+const notificationReducer = (state, action) => {
   switch (action.type) {
     case 'SHOW_NOTIFICATION':
       return {
