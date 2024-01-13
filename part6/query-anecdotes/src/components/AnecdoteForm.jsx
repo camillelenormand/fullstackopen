@@ -1,27 +1,21 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createAnecdote } from '../requests'
-import { useState, useReducer } from 'react'
+import { useReducer } from 'react'
 import notificationReducer from '../reducers/notificationReducer'
 import Notification from './Notification'
 
 const AnecdoteForm = () => {
   const queryClient = useQueryClient()
-  const [errorMessage, setErrorMessage] = useState('')
   const [notification, notificationDispatch] = useReducer(notificationReducer, ' ')
-
-  const validateInput = (content) => {
-    if (content.length < 5) {
-      setErrorMessage('Anecdote content must be at least 5 characters long')
-      return false
-    }
-    setErrorMessage('')
-    return true
-  }
 
   const newAnecdoteMutation = useMutation({
     mutationFn: createAnecdote,
     onSuccess: (newAnecdote) => {
       queryClient.setQueryData(['anecdotes'], (oldAnecdotes) => [...oldAnecdotes, newAnecdote]);
+    },
+    onError: (error) => {
+      console.log(error)
+      notificationDispatch({ type: 'SHOW_NOTIFICATION', message: 'Error posting data: ', error})
     }
   })
 
@@ -29,16 +23,23 @@ const AnecdoteForm = () => {
     event.preventDefault()
     const content = event.target.anecdote.value.trim()
 
-    if (!validateInput(content)) {
-      return
+    if (content.length < 5) {
+      // Handle the error, e.g., by showing a notification
+      notificationDispatch({ 
+        type: 'SHOW_NOTIFICATION', 
+        message: 'Anecdote is too short. Please enter at least 5 characters.' 
+      })
+      return 
     }
 
     newAnecdoteMutation.mutate({ content, vote: 0 })
     event.target.anecdote.value = ''
+
     notificationDispatch({ type: 'SHOW_NOTIFICATION', message: 'Created!' })
     const timer = setTimeout(() => {
       notificationDispatch({ type: 'SHOW_NOTIFICATION', message: '' });
     }, 5000)
+
     return () => clearTimeout(timer)
   }
 
@@ -47,7 +48,6 @@ const AnecdoteForm = () => {
       <Notification message={notification.message} />
       <form onSubmit={onCreate}>
         <input name='anecdote' placeholder='Enter a new anecdote...' disabled={newAnecdoteMutation.isLoading}/>
-        {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
         <button type='submit' disabled={newAnecdoteMutation.isLoading}>
           {newAnecdoteMutation.isLoading ? 'Creating...' : 'New'}
         </button>
