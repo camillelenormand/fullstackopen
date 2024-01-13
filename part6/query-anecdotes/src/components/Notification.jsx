@@ -1,16 +1,8 @@
-const Notification = () => {
-  const style = {
-    border: 'solid',
-    padding: 10,
-    borderWidth: 1,
-    marginBottom: 5
-  }
-  
-  if (true) return null
+const Notification = ({ message }) => {
 
   return (
-    <div style={style}>
-      
+    <div>
+      <p className="Notice">{message}</p>
     </div>
   )
 }

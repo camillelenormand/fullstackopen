@@ -1,10 +1,13 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { createAnecdote } from "../requests"
-import { useState } from "react"
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { createAnecdote } from '../requests'
+import { useState, useReducer } from 'react'
+import notificationReducer from '../reducers/notificationReducer'
+import Notification from './Notification'
 
 const AnecdoteForm = () => {
   const queryClient = useQueryClient()
   const [errorMessage, setErrorMessage] = useState('')
+  const [notification, notificationDispatch] = useReducer(notificationReducer, ' ')
 
   const validateInput = (content) => {
     if (content.length < 5) {
@@ -32,14 +35,16 @@ const AnecdoteForm = () => {
 
     newAnecdoteMutation.mutate({ content, vote: 0 })
     event.target.anecdote.value = ''
+    notificationDispatch({ type: 'SHOW_NOTIFICATION', message: 'Created!', visible: true })
   }
 
   return (
     <div>
+      <Notification message={notification.message} />
       <form onSubmit={onCreate}>
-        <input name='anecdote' placeholder="Enter a new anecdote..." disabled={newAnecdoteMutation.isLoading}/>
+        <input name='anecdote' placeholder='Enter a new anecdote...' disabled={newAnecdoteMutation.isLoading}/>
         {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
-        <button type="submit" disabled={newAnecdoteMutation.isLoading}>
+        <button type='submit' disabled={newAnecdoteMutation.isLoading}>
           {newAnecdoteMutation.isLoading ? 'Creating...' : 'New'}
         </button>
       </form>
