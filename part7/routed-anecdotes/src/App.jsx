@@ -1,4 +1,5 @@
 import Menu from "./components/Menu"
+import Footer from "./components/Footer"
 
 const App = () => {
 
@@ -6,6 +7,7 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+      <Footer />
     </div>
   )
 }
