@@ -15,7 +15,7 @@ const AnecdoteForm = () => {
     },
     onError: (error) => {
       console.log(error)
-      notificationDispatch({ type: 'SHOW_NOTIFICATION', message: 'Error posting data: ', error})
+      notificationDispatch({ type: 'SHOW_NOTIFICATION', message: error.response.data.error})
     }
   })
 
