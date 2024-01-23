@@ -4,6 +4,8 @@ import CreateNew from './CreateNew'
 import About from './About'
 import { useState } from 'react'
 import data from '../data'
+import NotFound from './NotFound'
+import Anecdote from './Anecdote'
 
 
 const Menu = () => {
@@ -15,10 +17,6 @@ const addNew = (anecdote) => {
   anecdote.id = Math.round(Math.random() * 10000)
   setAnecdotes(anecdotes.concat(anecdote))
 }
-
-  const padding = {
-    paddingRight: 5
-  }
 
   const [notification, setNotification] = useState('')
 
@@ -39,15 +37,17 @@ const addNew = (anecdote) => {
 
   return (
     <>
-      <div>
-        <Link style={padding} to='/'> Anecdotes </Link>
-        <Link style={padding} to='/new'> Create New </Link>
-        <Link style={padding} to='/about'> About </Link>
-      </div>
+      <nav>
+        <Link to='/'>Anecdotes</Link>
+        <Link to='/new'>New Anecdote</Link>
+        <Link to='/about'>About</Link>
+      </nav>
       <Routes>
+        <Route path="/anecdotes/:id" element={<Anecdote anecdotes={anecdotes} />} />
         <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />}></Route>
         <Route path='/new' element={<CreateNew addNew={addNew} />}></Route>
         <Route path='/about' element={<About/>}></Route>
+        <Route pth='*' element={<NotFound/>}></Route>
       </Routes>
     </>
   )

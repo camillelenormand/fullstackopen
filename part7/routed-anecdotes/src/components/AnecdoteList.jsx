@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 const AnecdoteList = ({ anecdotes }) => {
   if (!anecdotes || anecdotes.length === 0) {
@@ -13,7 +14,10 @@ const AnecdoteList = ({ anecdotes }) => {
       <h2>Anecdotes</h2>
       <ul>
         {anecdotes.map(anecdote => 
-          <li key={anecdote.id} >{anecdote.content}</li>)}
+          <li key={anecdote.id}>
+            <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+          </li>
+        )}
       </ul>
     </div>
   )
