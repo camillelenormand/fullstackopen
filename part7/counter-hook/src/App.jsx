@@ -1,5 +1,6 @@
 
 import './App.css'
+import UserForm from './components/userForm'
 import useCounter from './hooks/useCounter'
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
       <button onClick={counter.zero}>
         zero
       </button>
+      <UserForm />
     </>
   )
 }
