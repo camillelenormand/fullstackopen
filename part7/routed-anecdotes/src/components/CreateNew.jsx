@@ -23,9 +23,6 @@ const CreateNew = (props) => {
       }
     )
     navigate('/')
-    content.onClear()
-    author.onClear()
-    info.onClear()
   }
 
   const handleReset = () => {
@@ -49,7 +46,7 @@ const CreateNew = (props) => {
         </div>
         <button>Submit</button>
         <br />
-        <button onClick={handleReset}>Reset</button>
+        <button type='button' onClick={handleReset}>Reset</button>
       </form>
     </div>
   )
