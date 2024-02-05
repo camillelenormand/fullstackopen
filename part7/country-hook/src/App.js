@@ -58,9 +58,11 @@ const Country = ({ country }) => {
   return (
     <div>
       <h3>{country.data.name.common} </h3>
-      <div>capital {country.data.capital} </div>
-      <div>population {country.data.population}</div> 
-      <img src={country.data.flags.svg} height='100' alt={country.data.flags.alt}/>  
+      <ul>
+        <li>Capital City: {country.data.capital}</li>
+        <li>Population: {country.data.population} inhabitants</li>
+      </ul>
+      <img src={country.data.flags.svg} height='100' alt={country.data.flags.alt}/>
     </div>
   )
 }
