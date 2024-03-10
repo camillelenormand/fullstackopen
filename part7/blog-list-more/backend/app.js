@@ -7,7 +7,6 @@ const logger = require('./utils/logger')
 const mongoose = require('mongoose')
 
 
-
 // Router
 const blogsRouter = require('./controllers/blogs')
 const usersRouter = require('./controllers/users')
