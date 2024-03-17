@@ -19,6 +19,7 @@ const loginSlice = createSlice({
     setError: (state, action) => {
       state.error = action.payload
   }
+  }
 })
 
 export const login = (username, password) => {

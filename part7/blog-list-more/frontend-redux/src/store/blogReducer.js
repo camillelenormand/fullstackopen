@@ -6,38 +6,40 @@ export const blogSlice = createSlice({
   name: 'blogs',
   initialState: {
     blogs: [],
-    isLoading: false,
+    isLoading: false
   },
   reducers: {
-    setBlogs(state, action) {
-      return { ...state, blogs: action.payload }  // This is the same as state.blogs = action.payload
+    isLoading(state, action) {
+      state.isLoading = action.payload
     },
-    setLoading(state, action) {
-      return { ...state, isLoading: action.payload } // This is the same as state.isLoading = action.payload
+    setBlogs(state, action) {
+      state.blogs = action.payload
     },
     addBlog(state, action) {
-      state.blogs.push(action.payload)
+      state.push(action.payload)
     }
   }
 })
 
 export const initializeBlogs = () => {
   return async dispatch => {
-    dispatch(setLoading(true))
+    dispatch(isLoading(true))
     const blogs = await blogService.getAllBlogs()
     console.log('blogs', blogs)
     dispatch(setBlogs(blogs))
-    dispatch(setLoading(false))
+    console.log('blogs', blogs)
+    dispatch(isLoading(false))
   }
 }
 
 export const createBlog = (blog) => {
   return async dispatch => {
     const newBlog = await blogService.createBlog(blog)
-    dispatch(createBlog(newBlog))
+    console.log('newBlog', newBlog)
+    dispatch(addBlog(newBlog))
   }
 }
 
-export const { setBlogs, setLoading, addBlog } = blogSlice.actions
+export const { setBlogs, addBlog, isLoading } = blogSlice.actions
 
 export default blogSlice.reducer

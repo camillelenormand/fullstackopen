@@ -1,7 +1,8 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { initializeBlogs } from '../store/blogReducer'
-import { useEffect } from 'react'
+import { initializeBlogs, setBlogs } from '../store/blogReducer'
 import styled from 'styled-components'
+import { useEffect } from 'react'
+
 
 const BlogContainer = styled.article`
   font-family: Arial, sans-serif;
@@ -61,15 +62,14 @@ const Blog = ({ blog }) => {
 
 const BlogList = () => {
   const dispatch = useDispatch()
-  const blogs = useSelector(state => state.blogs)
+  const { blogs, isLoading } = useSelector(state => state.blogs) // state.blogs is from the blogReducer.js file
+
   console.log('blogs', blogs)
-  const isLoading = useSelector(state => state.blogs.isLoading)
   console.log('isLoading', isLoading)
 
   useEffect(() => {
-    dispatch(initializeBlogs(blogs))
-    console.log(blogs)
-  }, [dispatch, blogs]) // Added 'blogs' as a dependency
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
   return (
     <div>
