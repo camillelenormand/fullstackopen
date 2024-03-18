@@ -1,25 +1,43 @@
 import { useDispatch, useSelector } from 'react-redux'
+import { loginUser, setError } from '../store/loginReducer'
+import { useState } from 'react'
 
 const LoginForm = () => {
+  const [credentials, setCredentials] = useState({
+    username: '',
+    password: ''
+  })
+  const error = useSelector((state) => state.login.error)
+  const isLoading = useSelector((state) => state.login.isLoading)
   const dispatch = useDispatch()
-  const user = useSelector(state => state.login.user)
-  const isLoading = useSelector(state => state.login.isLoading)
-  const error = useSelector(state => state.login.error)
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    const updatedUser = { ...user, [name]: value}
-    dispatch(updatedUser)
+    setCredentials(prevCredentials => ({
+      ...prevCredentials,
+      [name]: value
+    })
+    )
   }
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log('logging, user: ', user)
+    dispatch(loginUser(credentials))
+    console.log('credentials', credentials)
+    console.log('error', error)
+    console.log('isLoading', isLoading)
+    console.log('username', credentials.username) 
+
+    if (!credentials.username.trim() || !credentials.password.trim()) {
+      console.log('Username and password are required')
+      dispatch(setError('Username and password are required'))
+      return
+    }
   }
 
   return (
     <>
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleSubmit}>
         <label>
           Username
         </label>
@@ -27,7 +45,9 @@ const LoginForm = () => {
           id="username"
           type="text"
           name="username"
+          value={credentials.username}
           onChange={handleChange}
+          required
         />
         <label>
           Password
@@ -36,8 +56,10 @@ const LoginForm = () => {
           id="password"
           type="password"
           name="password"
+          value={credentials.password}
           autoComplete='off'
           onChange={handleChange}
+          required
         />
         <button id="login-button" type="submit" disabled={isLoading}>
           {isLoading ? 'Loading...' : 'Login'}

@@ -5,20 +5,25 @@ import LoginForm from "./components/LoginForm"
 import { useSelector } from "react-redux"
 
 const App = () => {
-  const user = useSelector(state => state.login.user)
+  const user = useSelector(state => state.login.username)
+  console.log('user', user)
 
-  return (  
-    <div>
-      {user === null ? <LoginForm /> : (
-        <>
-        <Heading text="My blog" />
+  if (!user) {
+    return (
+      <>
+        <Heading text="Log in to application" />
         <LoginForm />
+      </>
+    )
+  }
+
+    return (
+      <>
+        <Heading text="Blogs" />
         <BlogForm />
         <BlogList />
-        </>
-      )}
-  </div>
-  )
-}
+      </>
+    )
+  }
 
 export default App

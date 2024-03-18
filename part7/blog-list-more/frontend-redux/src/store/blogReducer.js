@@ -32,11 +32,11 @@ export const initializeBlogs = () => {
   }
 }
 
-export const createBlog = (blog) => {
+export const createBlog = (object) => {
   return async dispatch => {
-    const newBlog = await blogService.createBlog(blog)
-    console.log('newBlog', newBlog)
-    dispatch(addBlog(newBlog))
+    const blog = await blogService.createBlog(object)
+    console.log('newBlog', blog)
+    dispatch(addBlog(blog))
   }
 }
 

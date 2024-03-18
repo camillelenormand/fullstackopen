@@ -1,9 +1,12 @@
 import { createBlog } from '../store/blogReducer'
 import { useDispatch } from 'react-redux'
 import Title from './Title'
+import { useSelector } from 'react-redux'
 
 const BlogForm = () => {
   const dispatch = useDispatch()
+  const user = useSelector(state => state.login)
+  console.log('user', user)
 
   const addBlog = async e => {
     e.preventDefault()
@@ -14,7 +17,8 @@ const BlogForm = () => {
     const newBlog = {
       title: newTitle,
       author: newAuthor,
-      url: newUrl
+      url: newUrl,
+      user: user 
     }
 
     dispatch(createBlog(newBlog))
