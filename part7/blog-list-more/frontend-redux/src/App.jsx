@@ -3,10 +3,10 @@ import BlogForm from "./components/BlogForm"
 import Heading from "./components/Title"
 import LoginForm from "./components/LoginForm"
 import { useSelector } from "react-redux"
+import Notification from "./components/Notification"
 
 const App = () => {
   const user = useSelector(state => state.login.username)
-  console.log('user', user)
 
   if (!user) {
     return (
@@ -20,6 +20,7 @@ const App = () => {
     return (
       <>
         <Heading text="Blogs" />
+        <Notification />
         <BlogForm />
         <BlogList />
       </>

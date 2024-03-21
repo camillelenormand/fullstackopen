@@ -33,7 +33,8 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 	console.log('user', user)
 
 	if (!user) {
-		response.status(401).json({ error: 'unauthorized' })
+		response.status(401).json({ error: 'unauthorized user' })
+		console.log('unauthorized user', user)
 	}
 
 	blog.user = user._id

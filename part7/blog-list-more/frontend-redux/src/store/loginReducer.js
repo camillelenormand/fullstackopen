@@ -7,14 +7,14 @@ const initialState = {
   token: '',
   status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
   error: '',
-  isLoading: false
+  isLoading: false,
+  isLoggedIn: false
 }
 
 export const loginUser = createAsyncThunk(
   'login/loginUser',
   async (userData) => {
     const response = await loginService(userData)
-    console.log('response.data', response)
     return response    
   })
 
@@ -22,12 +22,17 @@ const loginSlice = createSlice({
   name: 'login',
   initialState: initialState,
   reducers: {
-    logout: (state) => {
+    setLoggedIn: (state) => {
+      state.isLoggedIn = true
+    },
+    setLoggedOut: (state) => {
       state.user = null,
       state.token = null,
       state.status = 'idle',
       state.error = '',
-      state.isLoading = false
+      state.isLoading = false,
+      state.isLoggedIn = false;
+      localStorage.removeItem('loggedBlogUser')
     }, 
     setError: (state, action) => {
       state.error = action.payload
@@ -59,6 +64,6 @@ const loginSlice = createSlice({
   }
 })
 
-export const { logout, setError, setLoading } = loginSlice.actions
+export const { setLoggedIn, setLoggedOut, setError, setLoading } = loginSlice.actions
 
 export default loginSlice.reducer

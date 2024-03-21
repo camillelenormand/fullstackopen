@@ -11,6 +11,7 @@ const NewAnecdote = () => {
     const content = e.target.anecdote.value
     e.target.anecdote.value = ''
     dispatch(createAnecdote(content))
+    dispatch(displayNotification(`You added '${content}'`, 2))
     console.log(content)
   }
 

@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { initializeBlogs, setBlogs } from '../store/blogReducer'
+import { initializeBlogs } from '../store/blogReducer'
 import styled from 'styled-components'
 import { useEffect } from 'react'
 

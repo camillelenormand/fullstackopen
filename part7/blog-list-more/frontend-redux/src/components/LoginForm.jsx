@@ -1,15 +1,17 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { loginUser, setError } from '../store/loginReducer'
+import { loginUser, setError, setLoading } from '../store/loginReducer'
 import { useState } from 'react'
 
 const LoginForm = () => {
+  const dispatch = useDispatch()
+
   const [credentials, setCredentials] = useState({
     username: '',
     password: ''
   })
+
   const error = useSelector((state) => state.login.error)
   const isLoading = useSelector((state) => state.login.isLoading)
-  const dispatch = useDispatch()
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -22,11 +24,8 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setLoading && console.log('Loading...')
     dispatch(loginUser(credentials))
-    console.log('credentials', credentials)
-    console.log('error', error)
-    console.log('isLoading', isLoading)
-    console.log('username', credentials.username) 
 
     if (!credentials.username.trim() || !credentials.password.trim()) {
       console.log('Username and password are required')
