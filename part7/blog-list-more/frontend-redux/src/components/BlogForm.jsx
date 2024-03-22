@@ -31,14 +31,16 @@ const BlogForm = () => {
 
     dispatch(createBlog(newBlog))
       .then(() => {
-        dispatch(displayNotification(`A new blog "${newTitle}" by ${newAuthor} added`))
+        dispatch(displayNotification(`A new blog "${newTitle}" by ${newAuthor} was added`, 5000, 'success'))
         console.log('New blog added:', newBlog)
         console.log('Notification displayed')
+        console.log('Notification hidden after 5 seconds')
+
       })
       .catch((error) => {
         console.error('Failed to create a new blog:', error)
         dispatch(setError('Failed to create a new blog'))
-        dispatch(displayNotification('Failed to create a new blog'))
+        dispatch(displayNotification('Failed to create a new blog', 5000, 'error'))
       })
 
     e.target.reset()
