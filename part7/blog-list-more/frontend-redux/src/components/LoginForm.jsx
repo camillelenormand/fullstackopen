@@ -18,6 +18,7 @@ const StyledForm = styled.form`
 const StyledLabel = styled.label`
   margin-bottom: 5px;
   margin-top: 10px;
+  font-family: Arial, sans-serif;
 `
 
 const StyledInput = styled.input`

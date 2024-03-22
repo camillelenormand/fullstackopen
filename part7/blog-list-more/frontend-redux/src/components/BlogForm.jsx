@@ -7,6 +7,7 @@ import styled from 'styled-components'
 // Styled components
 
 const StyledForm = styled.form`
+  font-family: Arial, sans-serif;
   max-width: 600px;
   margin: auto;
   padding: 20px;

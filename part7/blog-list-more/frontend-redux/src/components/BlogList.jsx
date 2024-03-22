@@ -4,8 +4,9 @@ import styled from 'styled-components'
 import { useEffect } from 'react'
 
 const Table = styled.table`
+  font-family: Arial, sans-serif;
   width: 100%;
-  max-width: 800px;
+  max-width: 1200px;
   margin: 20px auto;
   border-collapse: collapse;
 `
