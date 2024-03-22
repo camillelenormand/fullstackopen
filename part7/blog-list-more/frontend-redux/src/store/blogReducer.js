@@ -1,11 +1,63 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import blogService from '../services/blogs'
 
+export const getAllBlogs = createAsyncThunk(
+  'blogs/getAllBlogs',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await blogService.getAllBlogs()
+      console.log('response.data', response)
+      return response
+    } catch (error) {
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
 export const createBlog = createAsyncThunk(
   'blogs/createBlog',
   async (object, { rejectWithValue }) => {
     try {
       const response = await blogService.createBlog(object)
+      console.log('response.data', response)
+      return response
+    } catch (error) {
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
+export const deleteBlog = createAsyncThunk(
+  'blogs/deleteBlog',
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await blogService.deleteBlog(id)
+      console.log('response.data', response)
+      return response
+    } catch (error) {
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
+const updateBlog = createAsyncThunk(
+  'blogs/updateBlog',
+  async (object, { rejectWithValue }) => {
+    try {
+      const response = await blogService.updateBlog(object.id, object)
+      console.log('response.data', response)
+      return response
+    } catch (error) {
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
+export const likeBlog = createAsyncThunk(
+  'blogs/likeBlog',
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await blogService.likeBlog(id)
       console.log('response.data', response)
       return response
     } catch (error) {
@@ -34,6 +86,18 @@ export const blogSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(getAllBlogs.pending, (state) => {
+        state.isLoading = true
+        state.error = null
+      })
+      .addCase(getAllBlogs.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.blogs = action.payload
+      })
+      .addCase(getAllBlogs.rejected, (state, action) => {
+        state.isLoading = false
+        state.error = action.payload
+      })
       .addCase(createBlog.pending, (state) => {
         state.isLoading = true
         state.error = null
@@ -47,24 +111,51 @@ export const blogSlice = createSlice({
         state.isLoading = false
         state.error = action.payload
       })
+      .addCase(deleteBlog.pending, (state) => {
+        state.isLoading = true
+        state.error = null
+        console.log('deleteBlog.pending')
+      })
+      .addCase(deleteBlog.fulfilled, (state, action) => {
+        state.isLoading = false
+        // Remove the deleted blog from the blogs array
+        state.blogs = state.blogs.filter(blog => blog.id !== action.payload.id)
+        console.log('deleteBlog.fulfilled')
+      })
+      .addCase(deleteBlog.rejected, (state, action) => {
+        state.isLoading = false
+        state.error = action.payload
+        console.log('deleteBlog.rejected')
+      })
+      .addCase(updateBlog.pending, (state) => {
+        state.isLoading = true
+        state.error = null
+      })
+      .addCase(updateBlog.fulfilled, (state, action) => {
+        state.isLoading = false
+        // Update the blog in the blogs array
+        state.blogs = state.blogs.map(blog => blog.id === action.payload.id ? action.payload : blog)
+      })
+      .addCase(updateBlog.rejected, (state, action) => {
+        state.isLoading = false
+        state.error = action.payload
+      })
+      .addCase(likeBlog.pending, (state) => {
+        state.isLoading = true
+        state.error = null
+      })
+      .addCase(likeBlog.fulfilled, (state, action) => {
+        state.isLoading = false
+        // Update the votes property of the blog in the blogs array
+        state.blogs = state.blogs.map(blog => blog.id === action.payload.id ? action.payload : blog)
+      })
+      .addCase(likeBlog.rejected, (state, action) => {
+        state.isLoading = false
+        state.error = action.payload
+      })
   }
 })
 
-export const initializeBlogs = () => {
-  return async dispatch => {
-    dispatch(setLoading(true))
-    try {
-      const blogs = await blogService.getAllBlogs()
-      dispatch(setBlogs(blogs))
-      console.log('blogs', blogs)
-    } catch (error) {
-      console.error('Error initializing blogs', error)
-      dispatch(setError('Error initializing blogs'))
-    } finally {
-      dispatch(setLoading(false))
-    }
-  }
-}
 
 export const { setBlogs, setLoading, setError } = blogSlice.actions
 

@@ -55,6 +55,11 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 // Delete a blog
 blogsRouter.delete('/:id', userExtractor, async (request, response) => {
 	const blogToDelete = await Blog.findById(request.params.id)
+	console.log('blogToDelete', blogToDelete)
+
+	if (!blogToDelete) {
+		return response.status(404).json({ error: 'Blog not found' });
+	}
 
 	const user = request.user
 	console.log('---- user ----', user)
@@ -68,7 +73,8 @@ blogsRouter.delete('/:id', userExtractor, async (request, response) => {
 	)
 
 	await user.save()
-	await blogToDelete.remove()
+
+	await Blog.deleteOne({ _id: request.params.id })
 
 	response.status(204).end()
 })

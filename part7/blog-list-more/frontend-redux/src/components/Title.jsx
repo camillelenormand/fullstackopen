@@ -7,7 +7,7 @@ const StyledTitle = styled.h1`
   padding: 16px;
 `
 
-const Title = ({ text, size }) => {
+const Title = ({ text }) => {
   return (
     <StyledTitle>{text}</StyledTitle>
   )

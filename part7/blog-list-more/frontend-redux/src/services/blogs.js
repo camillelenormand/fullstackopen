@@ -33,13 +33,13 @@ const getAllBlogs = async () => {
 const createBlog = async newBlog => {
   const token = localStorage.getItem('loggedBlogUser')
   const config = {
-    headers: { 
+    headers: {
       Authorization: `Bearer ${token}`
     },
   }
   console.log('newBlog', newBlog)
   console.log('config', config)
-  
+
   try {
     const response = await axios.post(baseUrl, newBlog, config)
     console.log('response', response.data)
@@ -57,8 +57,11 @@ const createBlog = async newBlog => {
  * @returns {Promise<Object>} The updated blog post data.
  */
 const updateBlog = async (id, newBlog) => {
+  const token = localStorage.getItem('loggedBlogUser')
   const config = {
-    headers: { Authorization: token }
+    headers: { 
+      Authorization: `Bearer ${token}`
+    }
   }
   try {
     const response = await axios.put(`${baseUrl}/${id}`, newBlog, config)
@@ -75,11 +78,15 @@ const updateBlog = async (id, newBlog) => {
  * @returns {Promise<Object>} The response data from the delete operation.
  */
 const deleteBlog = async (id) => {
+  const token = localStorage.getItem('loggedBlogUser')
   const config = {
-    headers: { Authorization: token }
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
   }
   try {
     const response = await axios.delete(`${baseUrl}/${id}`, config)
+    console.log('response', response.data)
     return response.data
   } catch (error) {
     console.error('Error deleting blog', error)

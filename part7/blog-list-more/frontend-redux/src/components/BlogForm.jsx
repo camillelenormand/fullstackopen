@@ -108,7 +108,6 @@ const BlogForm = () => {
 
   return (
     <>
-      <Title text="New Blog Post" />
       <StyledForm onSubmit={addBlog}>
         <FormField>
           <StyledLabel htmlFor='title'>Title:</StyledLabel>

@@ -11,7 +11,7 @@ const App = () => {
   if (!user) {
     return (
       <>
-        <Heading text="Log in to application" />
+        <Heading text="My blog app" />
         <LoginForm />
       </>
     )
@@ -19,7 +19,7 @@ const App = () => {
 
     return (
       <>
-        <Heading text="Blogs" />
+        <Heading text="My blog app" />
         <Notification />
         <BlogForm />
         <BlogList />
