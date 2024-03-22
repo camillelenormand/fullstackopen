@@ -1,6 +1,54 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { loginUser, setError, setLoading } from '../store/loginReducer'
 import { useState } from 'react'
+import styled from 'styled-components'
+
+// Styled components
+const StyledForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+`
+
+const StyledLabel = styled.label`
+  margin-bottom: 5px;
+  margin-top: 10px;
+`
+
+const StyledInput = styled.input`
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+`
+
+const StyledButton = styled.button`
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+
+  &:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+`
+
+const ErrorMsg = styled.p`
+  color: red;
+`
 
 const LoginForm = () => {
   const dispatch = useDispatch()
@@ -36,11 +84,11 @@ const LoginForm = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <label>
+      <StyledForm onSubmit={handleSubmit}>
+        <StyledLabel>
           Username
-        </label>
-        <input
+        </StyledLabel>
+        <StyledInput
           id="username"
           type="text"
           name="username"
@@ -48,10 +96,10 @@ const LoginForm = () => {
           onChange={handleChange}
           required
         />
-        <label>
+        <StyledLabel>
           Password
-        </label>
-        <input
+        </StyledLabel>
+        <StyledInput
           id="password"
           type="password"
           name="password"
@@ -60,11 +108,11 @@ const LoginForm = () => {
           onChange={handleChange}
           required
         />
-        <button id="login-button" type="submit" disabled={isLoading}>
+        <StyledButton id="login-button" type="submit" disabled={isLoading}>
           {isLoading ? 'Loading...' : 'Login'}
-        </button>
-        {error && <p>{error}</p>}
-      </form>
+        </StyledButton>
+        {error && <ErrorMsg>{error}</ErrorMsg>}
+      </StyledForm>
     </>
   )
 }
