@@ -31,9 +31,9 @@ export const deleteBlog = createAsyncThunk(
   'blogs/deleteBlog',
   async (id, { rejectWithValue }) => {
     try {
-      const response = await blogService.deleteBlog(id)
-      console.log('response.data', response)
-      return response
+      await blogService.deleteBlog(id)
+      console.log('response.data', id)
+      return id
     } catch (error) {
       return rejectWithValue(error.response.data)
     }
@@ -119,7 +119,7 @@ export const blogSlice = createSlice({
       .addCase(deleteBlog.fulfilled, (state, action) => {
         state.isLoading = false
         // Remove the deleted blog from the blogs array
-        state.blogs = state.blogs.filter(blog => blog.id !== action.payload.id)
+        state.blogs = state.blogs.filter(blog => blog.id !== action.payload);
         console.log('deleteBlog.fulfilled')
       })
       .addCase(deleteBlog.rejected, (state, action) => {

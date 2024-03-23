@@ -1,39 +1,45 @@
 // src/store/loginReducer.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import loginService from '../services/login'
+import safeLocalStorage from '../utils/safeLocalStorage'
 
 const initialState = {
-  user: '',
-  token: '',
+  user: null || safeLocalStorage.getItem('loggedBlogUser'),
   status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
   error: '',
   isLoading: false,
-  isLoggedIn: false
+  token: safeLocalStorage.getItem('loggedBlogUser') || null,
+  isLoggedIn: !!safeLocalStorage.getItem('loggedBlogUser')
 }
 
 export const loginUser = createAsyncThunk(
   'login/loginUser',
-  async (userData) => {
-    const response = await loginService(userData)
-    return response    
-  })
+  async (userData, { rejectWithValue }) => {
+    try {
+      const response = await loginService(userData)
+      safeLocalStorage.setItem('loggedBlogUser', response.token) // store token in local storage
+      safeLocalStorage.setItem('loggedBlogUserName', response.user) // store user in local storage
+      return response
+    } catch (error) {
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
 
 const loginSlice = createSlice({
   name: 'login',
   initialState: initialState,
   reducers: {
-    setLoggedIn: (state) => {
-      state.isLoggedIn = true
-    },
     setLoggedOut: (state) => {
       state.user = null,
-      state.token = null,
-      state.status = 'idle',
-      state.error = '',
-      state.isLoading = false,
-      state.isLoggedIn = false;
-      localStorage.removeItem('loggedBlogUser')
-    }, 
+        state.token = null,
+        state.status = 'idle',
+        state.error = '',
+        state.isLoading = false,
+        state.isLoggedIn = false;
+        safeLocalStorage.removeItem('loggedBlogUser')
+        safeLocalStorage.removeItem('loggedBlogUserToken')
+    },
     setError: (state, action) => {
       state.error = action.payload
     },
@@ -46,24 +52,22 @@ const loginSlice = createSlice({
       .addCase(loginUser.pending, (state, action) => {
         state.status = 'loading'
         state.isLoading = true
-        console.log('loginUser.pending', action.payload)
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = 'succeeded'
-        state.username = action.payload.username
-        state.token = action.payload.token
+        state.user = action.payload.user
         state.isLoading = false
-        console.log('loginUser.fulfilled', action.payload)
+        state.isLoggedIn = true
+        state.token = action.payload.token // store token in state
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = 'failed'
-        state.error = action.error.message
+        state.error = action.payload || 'Login failed'
         state.isLoading = false
-        console.log('loginUser.rejected', action.error.message)
       })
   }
 })
 
-export const { setLoggedIn, setLoggedOut, setError, setLoading } = loginSlice.actions
+export const { setLoggedOut, setError, setLoading } = loginSlice.actions
 
 export default loginSlice.reducer

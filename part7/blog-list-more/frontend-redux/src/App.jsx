@@ -6,9 +6,11 @@ import { useSelector } from "react-redux"
 import Notification from "./components/Notification"
 
 const App = () => {
-  const user = useSelector(state => state.login.username)
+  const token = useSelector(state => state.login.token)
+  const user = useSelector(state => state.login.user) 
+  console.log('User:', user)  
 
-  if (!user) {
+  if (!token) {
     return (
       <>
         <Heading text="My blog app" />

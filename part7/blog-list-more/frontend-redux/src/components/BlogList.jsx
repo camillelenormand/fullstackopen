@@ -3,33 +3,26 @@ import { deleteBlog, getAllBlogs } from '../store/blogReducer'
 import styled from 'styled-components'
 import { useEffect } from 'react'
 
-const Table = styled.table`
-  font-family: Arial, sans-serif;
-  width: 100%;
-  max-width: 800px;
-  margin: 20px auto;
-  border-collapse: collapse;
+const CardsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* Centers the cards in the container */
+  gap: 20px; /* Spacing between cards */
+  margin: 20px auto; /* Adjust as needed */
+  padding: 0 20px; /* Padding on the sides */
 `
 
-const Thead = styled.thead`
-  background-color: #f5f5f5;
+const Card = styled.div`
+  background-color: white;
+  border-radius: 20px;
+  border: 2px solid #e0e0e0;
+  width: calc((100% - 100px) / 5); /* Adjust based on gap and container padding */
+  margin-bottom: 20px; /* Spacing between rows */
+  overflow: hidden;
 `
 
-const Th = styled.th`
-  padding: 10px;
-  text-align: left;
-  border-bottom: 2px solid #ddd;
-`
-
-const Td = styled.td`
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-`
-
-const Tr = styled.tr`
-  &:nth-child(even) {
-    background-color: #f9f9f9;
-  }
+const CardContent = styled.div`
+  padding: 30px;
 `
 
 const UrlLink = styled.a`
@@ -79,47 +72,36 @@ const BlogList = () => {
     dispatch(getAllBlogs())
   }, [dispatch])
 
-const handleDelete = async (event) => {
-  const id = event.target.id
-  console.log('id', id)
-  if (window.confirm('Are you sure you want to delete this blog?')) {
-    try {
-      dispatch(deleteBlog(id))
-    } catch (error) {
-      console.error('Error deleting blog:', error)
-    } finally {
-      dispatch(getAllBlogs())
+  const handleDelete = async (event) => {
+    const id = event.target.id
+    console.log('id', id)
+    if (window.confirm('Are you sure you want to delete this blog?')) {
+      try {
+        dispatch(deleteBlog(id))
+      } catch (error) {
+        console.error('Error deleting blog:', error)
+      }
     }
   }
-}
 
   return (
     <>
       {isLoading ? (
         <LoadingMessage>Loading blogs...</LoadingMessage>
       ) : blogs.length > 0 ? (
-        <Table>
-          <Thead>
-            <tr>
-              <Th>Title</Th>
-              <Th>Author</Th>
-              <Th>URL</Th>
-              <Th>Likes</Th>
-              <Th>Actions</Th>
-            </tr>
-          </Thead>
-          <tbody>
-            {blogs.map((blog) => (
-              <Tr key={blog.id}>
-                <Td>{blog.title}</Td>
-                <Td>{blog.author}</Td>
-                <Td>
+        <CardsContainer>
+          {blogs.map((blog) => (
+            <Card key={blog.id}>
+              <CardContent>
+                <h3>{blog.title}</h3>
+                <p>Author: {blog.author}</p>
+                <p>
                   <UrlLink href={blog.url} target="_blank" rel="noreferrer noopener">
                     Visit
                   </UrlLink>
-                </Td>
-                <Td>{blog.likes} likes</Td>
-                <Td>
+                </p>
+                <p>{blog.likes} likes</p>
+                <div>
                   <Button>Edit</Button>
                   <Button>Like</Button>
                   <Button
@@ -127,11 +109,11 @@ const handleDelete = async (event) => {
                     onClick={handleDelete}
                     color='red'>Delete
                   </Button>
-                </Td>
-              </Tr>
-            ))}
-          </tbody>
-        </Table>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </CardsContainer>
       ) : (
         <NoBlogsMessage>No blogs found.</NoBlogsMessage>
       )}
