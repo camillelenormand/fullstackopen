@@ -69,7 +69,7 @@ export const blogSlice = createSlice({
     },
     setBlogs: (state, action) => {
       state.blogs = action.payload
-    },
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -110,25 +110,19 @@ export const blogSlice = createSlice({
         console.log('deleteBlog.fulfilled')
       })
       .addCase(deleteBlog.rejected, (state, action) => {
-        state.isLoading = false
         state.error = action.payload
         console.log('deleteBlog.rejected')
       })
       .addCase(updateBlog.pending, (state) => {
-        state.isLoading = true
         state.error = null
       })
       .addCase(updateBlog.fulfilled, (state, action) => {
-        state.isLoading = false
         state.error = null
-        const index = state.blogs.findIndex(blog => blog.id === action.payload.id);
-        if (index !== -1) {
-          state.blogs[index] = action.payload; // Update the blog with the new data
-        }
-        console.log('state.blogs', state.blogs)
-        console.log('updateBlog.fulfilled')
+        state.blogs = state.blogs.map(blog => blog.id === action.payload.id ? action.payload : blog)
+        state.isLoading = false
       })
       .addCase(updateBlog.rejected, (state, action) => {
+        state.isLoading = false
         state.isLoading = false
         state.error = action.payload
       })

@@ -87,6 +87,8 @@ const BlogList = () => {
   const handleLike = async (e) => {
     const blogId = e.currentTarget.getAttribute('data-id')
     const blogToLike = blogs.find(blog => blog.id.toString() === blogId)
+    console.log('blogId', blogId)
+    console.log('blogToLike', blogToLike)
     
     if (!blogToLike) {
       console.error('Blog not found')
@@ -99,7 +101,7 @@ const BlogList = () => {
 
     try {
       const updatedBlog = { ...blogToLike, likes: blogToLike.likes + 1 }
-      dispatch(updateBlog(updatedBlog)).unwrap()
+      dispatch(updateBlog(updatedBlog, updatedBlog))
     } catch (error) {
       console.error('Error updating blog:', error)
       {<NoBlogsMessage>Error updating blog</NoBlogsMessage>}
