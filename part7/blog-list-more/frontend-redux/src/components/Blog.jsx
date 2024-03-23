@@ -1,6 +1,6 @@
 
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, handleClick }) => {
   // Destructure author, url, and title from the blog object
 
   return (
@@ -8,7 +8,9 @@ const Blog = ({ blog }) => {
       <h3>{blog.title}</h3>
       <p><i>- {blog.author}</i></p>
         {blog.url}
+        <button onClick={handleClick}> {blog.likes} Likes </button>
     </div>
+
   )
 }
 

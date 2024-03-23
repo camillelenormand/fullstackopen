@@ -1,6 +1,5 @@
 import { createBlog, setError } from '../store/blogReducer'
 import { useDispatch, useSelector } from 'react-redux'
-import Title from './Title'
 import { displayNotification } from '../store/notificationsReducer'
 import styled from 'styled-components'
 

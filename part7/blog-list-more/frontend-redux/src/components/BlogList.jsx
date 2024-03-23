@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { deleteBlog, getAllBlogs, updateBlog } from '../store/blogReducer'
+import { deleteBlog, initializeBlogs, updateBlog } from '../store/blogReducer'
 import styled from 'styled-components'
 import { useEffect } from 'react'
 
@@ -69,7 +69,7 @@ const BlogList = () => {
   console.log('blogs', blogs)
 
   useEffect(() => {
-    dispatch(getAllBlogs())
+    dispatch(initializeBlogs(blogs))
   }, [dispatch])
 
   const handleDelete = async (e) => {
