@@ -40,24 +40,11 @@ export const deleteBlog = createAsyncThunk(
   }
 )
 
-const updateBlog = createAsyncThunk(
+export const updateBlog = createAsyncThunk(
   'blogs/updateBlog',
   async (object, { rejectWithValue }) => {
     try {
       const response = await blogService.updateBlog(object.id, object)
-      console.log('response.data', response)
-      return response
-    } catch (error) {
-      return rejectWithValue(error.response.data)
-    }
-  }
-)
-
-export const likeBlog = createAsyncThunk(
-  'blogs/likeBlog',
-  async (id, { rejectWithValue }) => {
-    try {
-      const response = await blogService.likeBlog(id)
       console.log('response.data', response)
       return response
     } catch (error) {
@@ -133,23 +120,15 @@ export const blogSlice = createSlice({
       })
       .addCase(updateBlog.fulfilled, (state, action) => {
         state.isLoading = false
-        // Update the blog in the blogs array
-        state.blogs = state.blogs.map(blog => blog.id === action.payload.id ? action.payload : blog)
+        state.error = null
+        const index = state.blogs.findIndex(blog => blog.id === action.payload.id);
+        if (index !== -1) {
+          state.blogs[index] = action.payload; // Update the blog with the new data
+        }
+        console.log('state.blogs', state.blogs)
+        console.log('updateBlog.fulfilled')
       })
       .addCase(updateBlog.rejected, (state, action) => {
-        state.isLoading = false
-        state.error = action.payload
-      })
-      .addCase(likeBlog.pending, (state) => {
-        state.isLoading = true
-        state.error = null
-      })
-      .addCase(likeBlog.fulfilled, (state, action) => {
-        state.isLoading = false
-        // Update the votes property of the blog in the blogs array
-        state.blogs = state.blogs.map(blog => blog.id === action.payload.id ? action.payload : blog)
-      })
-      .addCase(likeBlog.rejected, (state, action) => {
         state.isLoading = false
         state.error = action.payload
       })

@@ -65,6 +65,7 @@ const updateBlog = async (id, newBlog) => {
   }
   try {
     const response = await axios.put(`${baseUrl}/${id}`, newBlog, config)
+    console.log('response', response.data)
     return response.data
   } catch (error) {
     console.error('Error updating blog', error)

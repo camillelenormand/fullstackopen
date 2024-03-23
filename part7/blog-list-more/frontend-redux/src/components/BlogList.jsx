@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { deleteBlog, getAllBlogs } from '../store/blogReducer'
+import { deleteBlog, getAllBlogs, updateBlog } from '../store/blogReducer'
 import styled from 'styled-components'
 import { useEffect } from 'react'
 
@@ -72,15 +72,37 @@ const BlogList = () => {
     dispatch(getAllBlogs())
   }, [dispatch])
 
-  const handleDelete = async (event) => {
-    const id = event.target.id
-    console.log('id', id)
+  const handleDelete = async (e) => {
+    const blogToDeleteId = e.currentTarget.getAttribute('data-id')
+    console.log('id', blogToDeleteId)
     if (window.confirm('Are you sure you want to delete this blog?')) {
       try {
-        dispatch(deleteBlog(id))
+        dispatch(deleteBlog(blogToDeleteId))
       } catch (error) {
         console.error('Error deleting blog:', error)
       }
+    }
+  }
+
+  const handleLike = async (e) => {
+    const blogId = e.currentTarget.getAttribute('data-id')
+    const blogToLike = blogs.find(blog => blog.id.toString() === blogId)
+    
+    if (!blogToLike) {
+      console.error('Blog not found')
+      {<NoBlogsMessage>Blog not found</NoBlogsMessage>}
+      return
+    }
+
+    console.log('Found blog to like:', blogToLike);
+
+
+    try {
+      const updatedBlog = { ...blogToLike, likes: blogToLike.likes + 1 }
+      dispatch(updateBlog(updatedBlog)).unwrap()
+    } catch (error) {
+      console.error('Error updating blog:', error)
+      {<NoBlogsMessage>Error updating blog</NoBlogsMessage>}
     }
   }
 
@@ -103,11 +125,17 @@ const BlogList = () => {
                 <p>{blog.likes} likes</p>
                 <div>
                   <Button>Edit</Button>
-                  <Button>Like</Button>
                   <Button
-                    id={blog.id}
+                    data-id={blog.id}
+                    color='#007bff'
+                    onClick={handleLike}>
+                      Like
+                  </Button>
+                  <Button
+                    data-id={blog.id}
                     onClick={handleDelete}
-                    color='red'>Delete
+                    color='red'>
+                      Delete
                   </Button>
                 </div>
               </CardContent>
