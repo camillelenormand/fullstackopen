@@ -5,12 +5,9 @@ const baseUrl = '/api/blogs'
  * Sets the authorization token.
  * @param {string} token The new token to be used for authorization.
  */
-const setToken = () => {
-  let token = localStorage.getItem('loggedBlogUser')
-  console.log('token', token)
+const setToken = (token) => {
   if (token) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    console.log('token', token)
   } else {
     delete axios.defaults.headers.common['Authorization']
   }
@@ -30,19 +27,9 @@ const getAllBlogs = async () => {
  * @param {Object} newBlog The blog post to create.
  * @returns {Promise<Object|null>} The created blog post data on success, or null on failure.
  */
-const createBlog = async newBlog => {
-  const token = localStorage.getItem('loggedBlogUser')
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    },
-  }
-  console.log('newBlog', newBlog)
-  console.log('config', config)
-
+const createBlog = async (newBlog) => {
   try {
-    const response = await axios.post(baseUrl, newBlog, config)
-    console.log('response', response.data)
+    const response = await axios.post(baseUrl, newBlog)
     return response.data
   } catch (error) {
     console.error('Error creating blog', error)
@@ -57,19 +44,12 @@ const createBlog = async newBlog => {
  * @returns {Promise<Object>} The updated blog post data.
  */
 const updateBlog = async (id, newBlog) => {
-  const token = localStorage.getItem('loggedBlogUser')
-  const config = {
-    headers: { 
-      Authorization: `Bearer ${token}`
-    }
-  }
   try {
-    const response = await axios.put(`${baseUrl}/${id}`, newBlog, config)
-    console.log('response', response.data)
+    const response = await axios.put(`${baseUrl}/${id}`, newBlog)
     return response.data
   } catch (error) {
     console.error('Error updating blog', error)
-    throw error // Ensure consistent error handling by rethrowing the error
+    throw error
   }
 }
 
@@ -79,19 +59,12 @@ const updateBlog = async (id, newBlog) => {
  * @returns {Promise<Object>} The response data from the delete operation.
  */
 const deleteBlog = async (id) => {
-  const token = localStorage.getItem('loggedBlogUser')
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    },
-  }
   try {
-    const response = await axios.delete(`${baseUrl}/${id}`, config)
-    console.log('response', response.data)
+    const response = await axios.delete(`${baseUrl}/${id}`)
     return response.data
   } catch (error) {
     console.error('Error deleting blog', error)
-    throw error // Ensure consistent error handling by rethrowing the error
+    throw error
   }
 }
 
