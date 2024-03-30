@@ -11,7 +11,7 @@ const BlogCard = styled.div`
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  background-color: black;
+  background-color: #f9f9f9;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 `
 
@@ -24,7 +24,6 @@ const BlogAuthor = styled.p`
   margin: 0;
   font-style: italic;
 `
-
 const BlogUrl = styled.a`
   display: block;
   margin-top: 10px;

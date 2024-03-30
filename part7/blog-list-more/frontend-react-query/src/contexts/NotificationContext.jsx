@@ -1,6 +1,8 @@
-import { useReducer, useMemo } from 'react'
-import NotificationContext from '../contexts/NotificationContext' // Adjust the import path as needed
+// NotificationContext.js
+import { createContext, useReducer, useMemo } from 'react'
 // Optional: import PropTypes from 'prop-types'
+
+const NotificationContext = createContext()
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -15,7 +17,6 @@ const reducer = (state, action) => {
 
 export const NotificationContextProvider = ({ children }) => {
   const [notification, dispatch] = useReducer(reducer, null)
-
   const contextValue = useMemo(() => ({ notification, dispatch }), [notification])
 
   return (
@@ -25,9 +26,4 @@ export const NotificationContextProvider = ({ children }) => {
   )
 }
 
-// Optional: Add prop types for validation
-// NotificationContextProvider.propTypes = {
-//   children: PropTypes.node.isRequired,
-// }
-
-export default NotificationContextProvider
+export default NotificationContext

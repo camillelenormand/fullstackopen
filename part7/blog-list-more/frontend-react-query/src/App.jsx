@@ -1,28 +1,23 @@
 import './App.css'
-import BlogForm from './components/BlogForm'
-import BlogList from './components/BlogList'
-import { NotificationContextProvider } from './components/NotificationContextProvider'
-import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
+import HomePage from './components/HomePage'
+import { NotificationContextProvider } from './contexts/NotificationContext'
+import { QueryClient, QueryClientProvider } from 'react-query'
+import { useAuth } from './contexts/AuthContext'
+import LoginForm from './components/LoginForm'
 
 function App() {
-
-  const queryClient = new QueryClient()
+  const user = useAuth()
+  console.log('user:', user)
 
   return (
-    <>
-      <QueryClientProvider client={queryClient}>
         <NotificationContextProvider>
           <div className="App">
             <header className="App-header">
-              <h1>Blog List</h1>
-              <BlogForm />
-              <BlogList />
+              <h1>My Blog</h1>
             </header>
+            {!user ? <LoginForm /> : <HomePage />}
           </div>
         </NotificationContextProvider>
-      </QueryClientProvider>
-
-    </>
   )
 }
 

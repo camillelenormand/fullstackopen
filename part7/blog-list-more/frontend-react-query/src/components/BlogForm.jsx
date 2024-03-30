@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from 'react-query'
 import blogService from '../services/blogs'
+import { BlogFormContainer, BlogFormInput, BlogFormButton, BlogFormLabel } from './BlogFormStyles'
 
-import { useNotify } from '../contexts/NotificationContext'
+import { useNotify } from '../hooks/useNotify'
 
 const BlogForm = () => {
   const queryClient = useQueryClient()
@@ -27,15 +28,15 @@ const BlogForm = () => {
   }
 
   return (
-    <form onSubmit={onCreation}>
-      <label htmlFor='title'>Title</label>
-      <input id='title' name='title' />
-      <label htmlFor='author'>Author</label>
-      <input id='author' name='author' />
-      <label htmlFor='url'>URL</label>
-      <input id='url' name='url' />
-      <button type='submit'>create</button>
-    </form>
+    <BlogFormContainer onSubmit={onCreation}>
+      <BlogFormLabel htmlFor='title'>Title</BlogFormLabel>
+      <BlogFormInput id='title' name='title' />
+      <BlogFormLabel htmlFor='author'>Author</BlogFormLabel>
+      <BlogFormInput id='author' name='author' />
+      <BlogFormLabel htmlFor='url'>URL</BlogFormLabel>
+      <BlogFormInput id='url' name='url' />
+      <BlogFormButton type='submit'>Create</BlogFormButton>
+    </BlogFormContainer>
   )
 }
 
