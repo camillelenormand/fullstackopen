@@ -20,13 +20,19 @@ const LoginForm = () => {
       return
     }
     try {
-      await login(credentials)
+      const trimmedCredentials = {
+        username: credentials.username.trim(),
+        password: credentials.password.trim(),
+      }
+      await login(trimmedCredentials)
       notifyWith('Logged in successfully')
       setCredentials({ username: '', password: '' })
+      console.log('Logged in successfully')
 
     } catch (error) {
       console.error('Failed to login: ', error)
       notify('Failed to login', error.response?.data?.message || 'Please try again.')
+      console.log('Failed to login: ', error)
     }
   }
 
@@ -35,22 +41,24 @@ const LoginForm = () => {
       <h2>Log in </h2>
       <form onSubmit={handleSubmit} disabled={isLoading}>
         <div>
-          <label htmlFor="username">Username: </label>
           <input
             type="text"
             id="username"
             name="username"
+            placeholder='username'
             required
+            autoComplete='username'
             value={credentials.username}
             onChange={handleChange}
           />
         </div>
         <div>
-          <label htmlFor="password">Password: </label>
           <input
             type="password"
             id="password"
             name="password"
+            autoComplete='current-password'
+            placeholder='password'
             required
             value={credentials.password}
             onChange={handleChange}
