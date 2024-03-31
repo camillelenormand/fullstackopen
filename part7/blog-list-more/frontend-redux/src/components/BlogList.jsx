@@ -62,7 +62,6 @@ const Button = styled.button`
   }
 `
 
-
 const BlogList = () => {
   const dispatch = useDispatch()
   const { blogs, isLoading } = useSelector(state => state.blogs)

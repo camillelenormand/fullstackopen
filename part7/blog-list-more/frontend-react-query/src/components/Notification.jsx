@@ -1,4 +1,4 @@
-import { useNotificationValue } from "../hooks/useNotificationValue"
+import { useNotificationValue } from "../contexts/NotificationContext"
 
 const Notification = () => {
   const style = {
@@ -6,15 +6,18 @@ const Notification = () => {
     padding: 10,
     borderWidth: 1,
     marginBottom: 5,
+    color: 'green'
   }
 
   const notification = useNotificationValue()
 
-  if (!notification) {
-    return null
-  }
+  if (!notification) return null
 
-  return <div className={style}>{notification}</div>
+  return (
+    <div style={style}>
+      {notification}
+    </div>
+  )
 }
 
 export default Notification

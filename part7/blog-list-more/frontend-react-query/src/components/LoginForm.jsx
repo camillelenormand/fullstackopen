@@ -1,10 +1,11 @@
-import { useNotify } from '../hooks/useNotify'
 import { useAuth } from '../contexts/AuthContext'
 import { useState } from 'react'
 
+import { useNotify } from '../contexts/NotificationContext'
+
 const LoginForm = () => {
-  const { login, isLoading, isError, error } = useAuth()
-  const notify = useNotify()
+  const { login, isLoading } = useAuth()
+  const notifyWith = useNotify()
   const [credentials, setCredentials] = useState({ username: '', password: '' })
 
   const handleChange = (e) => {
@@ -14,30 +15,43 @@ const LoginForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    login(credentials)
-    notify('Logged in successfully')
+    if (isLoading) {
+      console.log('Loading...')
+      return
+    }
+    try {
+      await login(credentials)
+      notifyWith('Logged in successfully')
+      setCredentials({ username: '', password: '' })
+
+    } catch (error) {
+      console.error('Failed to login: ', error)
+      notify('Failed to login', error.response?.data?.message || 'Please try again.')
+    }
   }
 
   return (
     <div>
       <h2>Log in </h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} disabled={isLoading}>
         <div>
-          <label htmlFor="username">username</label>
+          <label htmlFor="username">Username: </label>
           <input
             type="text"
             id="username"
             name="username"
+            required
             value={credentials.username}
             onChange={handleChange}
           />
         </div>
         <div>
-          <label htmlFor="password">password</label>
+          <label htmlFor="password">Password: </label>
           <input
             type="password"
             id="password"
             name="password"
+            required
             value={credentials.password}
             onChange={handleChange}
           />
@@ -45,7 +59,6 @@ const LoginForm = () => {
         <button type="submit" disabled={isLoading}>
           Login
         </button>
-        {isError && useNotify('Failed to login', error.response?.data?.message) || 'Please try again.'}
       </form>
     </div>
   )

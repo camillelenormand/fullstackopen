@@ -15,7 +15,13 @@ const errorHandler = (error, request, response, next) => {
 		return response.status(400).json({ error: error.message })
 	} else if (error.name === 'JsonWebTokenError') {
 		return response.status(400).json({ error: 'token missing or invalid' })
-	}
+	} else if (error.name === 'TokenExpiredError') {
+		return response.status(401).json({ error: 'token expired' })
+	} else if (error.name === 'MongoError' && error.code === 11000) {
+		return response.status(400).json({ error: 'username already exists' })
+	} else if (error.name === 'SyntaxError') {
+		return response.status(400).json({ error: 'malformatted request' })
+	} 
 
 	next(error)
 }
@@ -40,7 +46,7 @@ const userExtractor = async (request, response, next) => {
 		const decodedToken = jwt.verify(token, process.env.SECRET)
 		if (!decodedToken.id) {
 			return response.status(401).json({ error: 'token invalid' })
-		}
+		} 
 
 		request.user = await User.findById(decodedToken.id)
 	}
