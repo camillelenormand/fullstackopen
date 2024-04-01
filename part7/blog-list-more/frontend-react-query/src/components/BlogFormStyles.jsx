@@ -30,4 +30,10 @@ const BlogFormButton = styled.button`
   width: 100%;
 `
 
-export { BlogFormContainer, BlogFormTitle, BlogFormInput, BlogFormButton, BlogFormLabel }
+const BlogLikes = styled.span`
+  margin: 0 0 10px 0;
+  padding: 5px;
+  width: 100%;
+`
+
+export { BlogFormContainer, BlogFormTitle, BlogFormInput, BlogFormButton, BlogFormLabel, BlogLikes }

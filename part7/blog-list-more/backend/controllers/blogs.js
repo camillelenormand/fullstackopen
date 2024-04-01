@@ -91,6 +91,8 @@ blogsRouter.put('/:id', async (request, response) => {
 		{ new: true },
 	)
 
+	console.log('updatedBlog', updatedBlog)
+
 	response.status(200).json({ message: 'Blog updated', updatedBlog }) ??
     response.status(404).json({ error: 'Blog not found or invalid' })
 })

@@ -55,7 +55,8 @@ const createBlog = async (newBlog, authToken) => {
  * @param {Object} newBlog The updated blog data.
  * @returns {Promise<Object>} The updated blog post data.
  */
-const updateBlog = async (id, newBlog, authToken) => {
+const updateBlog = async ({ id, newBlog, authToken }) => {
+  console.log('newBlog', newBlog)
   const config = {
     headers: { 
       Authorization: `Bearer ${authToken}`
@@ -63,7 +64,8 @@ const updateBlog = async (id, newBlog, authToken) => {
   }
   try {
     const response = await axios.put(`${baseUrl}/${id}`, newBlog, config)
-    console.log('response', response.data)
+    console.log('newBlog', newBlog)
+    console.log('response', response.data.updatedBlog.likes)
     return response.data
   } catch (error) {
     console.error('Error updating blog', error)
