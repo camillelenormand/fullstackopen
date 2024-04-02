@@ -4,17 +4,22 @@ import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 
 function App() {
+  const user = window.localStorage.getItem('loggedBlogUsername')
+  console.log('user:', user)
 
-    return (
-      <div className="App">
-        <header className="App-header">
-          <h1>My Blog</h1>
-          <Notification />
-        </header>
-        <LoginForm />
+  return (
+    <div className="App">
+      <header className="App-header">
+        <h1>My Blog</h1>
+        <Notification />
+      </header>
+      {!!user ?
         <HomePage />
-      </div>
-    )
-  }
+        :
+        <LoginForm />
+      }
+    </div>
+  )
+}
 
 export default App

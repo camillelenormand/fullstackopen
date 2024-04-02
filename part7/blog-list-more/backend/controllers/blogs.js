@@ -7,9 +7,43 @@ const { userExtractor } = require('../utils/middleware')
 
 // Get blogs
 blogsRouter.get('/', async (request, response) => {
-	const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
+	// Default values for pagination
+	const page = request.query.page || 1
+	const limit = request.query.limit || 10
 
-	response.json(blogs)
+	const startIndex = (page - 1) * limit
+	const endIndex = page * limit
+
+	const results = {}
+	try {
+		results.totalCount = await Blog.countDocuments({}).exec()
+
+		results.blogs = await Blog.find({})
+			.populate('user', { username: 1, name: 1 })
+			.limit(limit)
+			.skip(startIndex)
+			.exec()
+
+		// Calculate total pages
+		results.totalPages = Math.ceil(results.totalCount / limit)
+
+		// Calculate next and previous pages
+		if (startIndex > 0) {
+			results.previous = {
+				page: page - 1,
+				limit: limit,
+			}
+		}
+		if (endIndex < results.totalCount) {
+			results.next = {
+				page: page + 1,
+				limit: limit,
+			}
+		}
+		response.status(200).json(results)
+	} catch (error) {
+		response.status(500).json({ message: error.message })
+	}
 })
 
 ////////////////////////////////////////////////////////////////////
@@ -94,7 +128,7 @@ blogsRouter.put('/:id', async (request, response) => {
 	console.log('updatedBlog', updatedBlog)
 
 	response.status(200).json({ message: 'Blog updated', updatedBlog }) ??
-    response.status(404).json({ error: 'Blog not found or invalid' })
+		response.status(404).json({ error: 'Blog not found or invalid' })
 })
 
 module.exports = blogsRouter

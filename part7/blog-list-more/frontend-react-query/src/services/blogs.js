@@ -20,9 +20,17 @@ const setToken = () => {
  * Fetches all blogs.
  * @returns {Promise<Array>} A promise that resolves to the array of blogs.
  */
-const getAllBlogs = async () => {
-  const response = await axios.get(baseUrl)
-  return response.data
+const getAllBlogs = async ({ page = 1, limit = 10}) => {
+  try {
+    const response = await axios.get(baseUrl, {
+      params: { page, limit }
+    })
+    return response.data
+  }
+  catch (error) {
+    console.error('Error fetching blogs', error)
+    throw error 
+  }
 }
 
 /**
