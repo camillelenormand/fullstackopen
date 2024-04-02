@@ -78,7 +78,9 @@ const updateBlog = async ({ id, newBlog, authToken }) => {
  * @param {string} id The ID of the blog to delete.
  * @returns {Promise<Object>} The response data from the delete operation.
  */
-const deleteBlog = async (id, authToken) => {
+const deleteBlog = async ({ id, authToken }) => {
+  console.log('id', id)
+  console.log('authToken', authToken)
   const config = {
     headers: {
       Authorization: `Bearer ${authToken}`
@@ -87,6 +89,8 @@ const deleteBlog = async (id, authToken) => {
   try {
     const response = await axios.delete(`${baseUrl}/${id}`, config)
     console.log('response', response.data)
+    console.log('id', id)
+    console.log('Blog deleted successfully')
     return response.data
   } catch (error) {
     console.error('Error deleting blog', error)

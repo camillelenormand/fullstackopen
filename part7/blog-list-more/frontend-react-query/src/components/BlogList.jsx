@@ -6,7 +6,10 @@ import { useNotify } from '../contexts/NotificationContext'
 
 const Blogs = () => {
   const queryClient = useQueryClient()
-  const query = useQuery({ queryKey: ['blogs'], queryFn: blogService.getAllBlogs })
+  const query = useQuery({ 
+    queryKey: ['blogs'], 
+    queryFn: blogService.getAllBlogs 
+  })
   console.log('query:', query)
   const { isLoading, isError, error } = query
 
@@ -17,7 +20,7 @@ const Blogs = () => {
     onMutate: async (updatedBlog) => {
       await queryClient.cancelQueries(['blogs'])
       const previousBlogs = queryClient.getQueryData(['blogs'])
-      queryClient.setQueryData(['blogs'], old => old.map(blog => blog.id === updatedBlog.id ? {...blog, likes: blog.likes + 1} : blog))
+      queryClient.setQueryData(['blogs'], old => old.map(blog => blog.id === updatedBlog.id ? { ...blog, likes: blog.likes + 1 } : blog))
       return { previousBlogs }
     },
     onSuccess: (data) => {
@@ -33,13 +36,33 @@ const Blogs = () => {
   }
   )
 
+  const deleteMutation = useMutation({
+    mutationFn: blogService.deleteBlog,
+    onMutate: async (deletedBlog) => {
+      await queryClient.cancelQueries(['blogs'])
+      const previousBlogs = queryClient.getQueryData(['blogs'])
+      queryClient.setQueryData(['blogs'], old => old.filter(blog => blog.id !== deletedBlog.id))
+      return { previousBlogs }
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] })
+      notifyWith('Blog deleted successfully')
+      console.log('Mutation successful with data:', data)
+    },
+    onError: (error, deletedBlog, context) => {
+      queryClient.setQueryData(['blogs'], context.previousBlogs)
+      notifyWith(error)
+      console.error('Failed to delete blog: ', error)
+    }
+  })
+
   if (isLoading) return <div>Loading...</div>
   if (isError) return <div>Error: {error.message}</div>
 
   const handleLike = (blog) => {
     const token = JSON.parse(window.localStorage.getItem('loggedBlogToken'))
     console.log(blog)
-    const likedBlog = { ...blog, likes: blog.likes + 1}
+    const likedBlog = { ...blog, likes: blog.likes + 1 }
     console.log(likedBlog)
     likeMutation.mutate({
       id: likedBlog.id,
@@ -48,8 +71,18 @@ const Blogs = () => {
     })
   }
 
-  if (query.data && query.data.length === 0) return <div>No blogs to display.</div>
+  const handleDelete = (blog) => {
+    const token = JSON.parse(window.localStorage.getItem('loggedBlogToken'))
+    console.log(blog)
+    console.log(blog.id)
+    console.log(token)
+    deleteMutation.mutate({
+      id: blog.id,
+      authToken: token,
+    })
+  }
 
+  if (query.data && query.data.length === 0) return <div>No blogs to display.</div>
 
   return (
     <GridContainer>
@@ -59,6 +92,7 @@ const Blogs = () => {
           <BlogAuthor>{blog.author}</BlogAuthor>
           <BlogUrl as="a" href={blog.url} target="_blank" rel="noopener noreferrer">{blog.url}</BlogUrl>
           <Button id="like" onClick={() => handleLike(blog)} disabled={likeMutation.isLoading}>{blog.likes} Likes</Button>
+          <Button id="delete" onClick={() => handleDelete(blog)} disabled={deleteMutation.isLoading}>Delete</Button>
         </BlogCard>
       ))}
     </GridContainer>
