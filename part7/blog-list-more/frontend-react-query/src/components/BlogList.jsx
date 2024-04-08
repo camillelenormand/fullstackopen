@@ -5,6 +5,8 @@ import { BlogCard, BlogTitle, BlogAuthor, GridContainer, BlogUrl } from './BlogL
 import Button from './Button'
 import { useNotify } from '../contexts/NotificationContext'
 import { useAuth } from '../contexts/AuthContext'
+import { Link } from 'react-router-dom'
+import Blog from './Blog'
 
 const Blogs = () => {
   // Define state variables for pagination
@@ -129,7 +131,7 @@ const Blogs = () => {
       <GridContainer>
         {query.data.blogs?.map(blog => (
           <BlogCard key={blog.id}>
-            <BlogTitle>{blog.title}</BlogTitle>
+            <BlogTitle><Link to={`/blogs/${blog.id}`} element={<Blog />}>{blog.title}</Link></BlogTitle>
             <BlogAuthor>{blog.author}</BlogAuthor>
             <BlogUrl
               as="a"

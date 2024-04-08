@@ -13,6 +13,7 @@ import {
 import { useAuth } from './contexts/AuthContext'
 import LogoutButton from './components/LogOutButton'
 import User from './components/User'
+import Blog from './components/Blog'
 
 function App() {
   const user = useAuth()
@@ -39,6 +40,7 @@ function App() {
         <Route path="/users" element={user.username === null ? <Navigate replace to="/login" /> : <UserList/>} />
         <Route path="/" element={<HomePage />} />
         <Route path="/users/:id" element={<User/>} />
+        <Route path="/blogs/:id" element={<Blog/>} />
       </Routes>
       <footer>
         <p>Blog app April 2024</p>

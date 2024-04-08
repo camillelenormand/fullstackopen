@@ -1,6 +1,6 @@
 import UserService from '../services/users'
 import { useQuery } from 'react-query'
-import { Link, useMatch } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import User from './User'
 
 const UserList = () => {
@@ -9,14 +9,11 @@ const UserList = () => {
     'users', 
     UserService.getAllUsers
   )
-  const match = useMatch('/users/:id') 
-  const user = match 
-    ? users?.find(user => user.id === match.params.id) 
-    : null
 
-
-  if (isLoading) return <div>Loading...</div>
-  if (isError) return <div>Error: {error.message}</div>
+  if (isLoading) 
+    return <div>Loading...</div>
+  if (isError) 
+    return <div>Error: {error.message}</div>
 
   // Check if there are no users after loading is complete
   if (!isLoading && users?.length === 0) 
@@ -40,7 +37,7 @@ const UserList = () => {
                   to={`/users/${user.id}`} 
                   element=
                   {
-                  <User user={user} />
+                  <User />
                   }
                 >
                   {user.name}

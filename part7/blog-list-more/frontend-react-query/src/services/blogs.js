@@ -35,6 +35,23 @@ const getAllBlogs = async ({ page = 1, limit = 10}) => {
 }
 
 /**
+ * Fetch a blog
+ * @param {Object} blog
+ * @returns {Promise<Object>} The blog post data.
+ */
+
+const getBlog = async (id) => {
+  try {
+    const response = await axios.get(`${baseUrl}/${id}`)
+    console.log('response', response.data)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching blog', error)
+    throw error
+  }
+}
+
+/**
  * Creates a new blog post.
  * @param {Object} newBlog The blog post to create.
  * @returns {Promise<Object|null>} The created blog post data on success, or null on failure.
@@ -103,4 +120,4 @@ const deleteBlog = async ({ id, authToken }) => {
   }
 }
 
-export default { getAllBlogs, createBlog, setToken, updateBlog, deleteBlog }
+export default { getAllBlogs, getBlog, createBlog, setToken, updateBlog, deleteBlog }

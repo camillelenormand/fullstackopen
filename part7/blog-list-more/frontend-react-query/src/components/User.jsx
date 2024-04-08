@@ -1,4 +1,4 @@
-import UserService from "../services/users"
+import UserService from '../services/users'
 import { useQuery } from 'react-query'
 import { useMatch } from 'react-router-dom'
 
@@ -14,13 +14,12 @@ const User = () => {
 
   const user = match
     ? users?.find(user => user.id === match.params.id)
-    : null
+    : <p>No user found</p>
 
   if (!user) return null
 
-
   if (isLoading) return <div>Loading...</div>
-  if (isError) return <div>Error: {query.error.message}</div>
+  if (isError) return <div>Error: {error.message}</div>
 
   return (
     <>

@@ -5,6 +5,16 @@ const { userExtractor } = require('../utils/middleware')
 
 ////////////////////////////////////////////////////////////////////
 
+// Get a single blog
+blogsRouter.get('/:id', async (request, response) => {
+	const blog = await Blog.findById(request.params.id)
+	if (blog) {
+		response.json(blog)
+	} else {
+		response.status(404).end()
+	}
+})
+
 // Get blogs
 blogsRouter.get('/', async (request, response) => {
 	// Default values for pagination
