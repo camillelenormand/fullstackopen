@@ -1,23 +1,37 @@
 import './App.css'
-import HomePage from './components/HomePage'
+import HomePage from './pages/HomePage'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
+import UserList from './components/UserList'
+import {
+  BrowserRouter as Router,
+  Routes, Route, Link, Navigate
+} from 'react-router-dom'
+import { useAuth } from './contexts/AuthContext'
 
 function App() {
-  const user = window.localStorage.getItem('loggedBlogUsername')
+  const user = useAuth()
   console.log('user:', user)
 
   return (
     <div className="App">
       <header className="App-header">
-        <h1>My Blog</h1>
         <Notification />
+        <div>
+          <Link to="/blogs">Blogs</Link>
+          <Link to="/users">Users</Link>
+          {user.username === null ? <Link to="/login">Login</Link> : `${user.username} logged in`}
+        </div>
       </header>
-      {!!user ?
-        <HomePage />
-        :
-        <LoginForm />
-      }
+      <Routes>
+        <Route path="/blogs" element={<HomePage />} />
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/users" element={user.username === null ? <Navigate replace to="/login" /> : <UserList/>} />
+        <Route path="/" element={<HomePage />} />
+      </Routes>
+      <footer>
+        <p>Blog app April 2024</p>
+      </footer>
     </div>
   )
 }

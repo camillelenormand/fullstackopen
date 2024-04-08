@@ -1,9 +1,10 @@
 import { useAuth } from '../contexts/AuthContext'
 import { useState } from 'react'
-
+import { useNavigate } from 'react-router-dom'
 import { useNotify } from '../contexts/NotificationContext'
 
 const LoginForm = () => {
+  const navigate = useNavigate()
   const { login, isLoading } = useAuth()
   const notifyWith = useNotify()
   const [credentials, setCredentials] = useState({ username: '', password: '' })
@@ -27,6 +28,7 @@ const LoginForm = () => {
       await login(trimmedCredentials)
       notifyWith('Logged in successfully')
       setCredentials({ username: '', password: '' })
+      navigate('/blogs')
       console.log('Logged in successfully')
 
     } catch (error) {

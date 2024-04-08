@@ -25,6 +25,7 @@ const getAllBlogs = async ({ page = 1, limit = 10}) => {
     const response = await axios.get(baseUrl, {
       params: { page, limit }
     })
+    console.log('response', response.data)
     return response.data
   }
   catch (error) {
@@ -44,8 +45,6 @@ const createBlog = async (newBlog, authToken) => {
       Authorization: `Bearer ${authToken}`
     },
   }
-  console.log('newBlog', newBlog)
-  console.log('config', config)
 
   try {
     const response = await axios.post(baseUrl, newBlog, config)
@@ -87,8 +86,6 @@ const updateBlog = async ({ id, newBlog, authToken }) => {
  * @returns {Promise<Object>} The response data from the delete operation.
  */
 const deleteBlog = async ({ id, authToken }) => {
-  console.log('id', id)
-  console.log('authToken', authToken)
   const config = {
     headers: {
       Authorization: `Bearer ${authToken}`

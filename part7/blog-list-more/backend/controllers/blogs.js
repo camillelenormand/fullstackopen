@@ -15,14 +15,23 @@ blogsRouter.get('/', async (request, response) => {
 	const endIndex = page * limit
 
 	const results = {}
+	
 	try {
 		results.totalCount = await Blog.countDocuments({}).exec()
 
 		results.blogs = await Blog.find({})
-			.populate('user', { username: 1, name: 1 })
+			.populate('user', {
+				username: 1, 
+				name: 1, 
+				id: 1,
+			}) 
+			.sort({ createdAt: -1 })
 			.limit(limit)
 			.skip(startIndex)
 			.exec()
+
+
+		console.log('results.blogs', results.blogs)
 
 		// Calculate total pages
 		results.totalPages = Math.ceil(results.totalCount / limit)
@@ -51,19 +60,7 @@ blogsRouter.get('/', async (request, response) => {
 // Create a blog
 blogsRouter.post('/', userExtractor, async (request, response) => {
 	const { title, author, url, likes } = request.body
-	console.log({ title, author, url, likes })
-
-	const blog = new Blog({
-		title,
-		author,
-		url,
-		likes: likes ? likes : 0,
-	})
-
-	console.log('blog', blog)
-
 	const user = request.user
-
 	console.log('user', user)
 
 	if (!user) {
@@ -71,14 +68,22 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 		console.log('unauthorized user', user)
 	}
 
-	blog.user = user._id
+	const blog = new Blog({
+		title,
+		author,
+		url,
+		likes: likes ? likes : 0,
+		user: user.id,
+	})
 
-	console.log('blog.user', blog.user)
+	if (!blog.title || !blog.url) {
+		response.status(400).json({ error: 'title or url missing' })
+	}
 
 	const savedBlog = await blog.save()
 	console.log('savedBlog', savedBlog)
-
 	user.blogs = user.blogs.concat(savedBlog._id)
+	console.log('user.blogs', user.blogs)
 	await user.save()
 
 	response.status(201).json(savedBlog)
@@ -88,29 +93,24 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 
 // Delete a blog
 blogsRouter.delete('/:id', userExtractor, async (request, response) => {
+	const user = request.user
+
+	if (!user) {
+		response.status(401).json({ error: 'unauthorized user' })
+		console.log('unauthorized user', user)
+	}
+
 	const blogToDelete = await Blog.findById(request.params.id)
 	console.log('blogToDelete', blogToDelete)
 
-	if (!blogToDelete) {
-		return response.status(404).json({ error: 'Blog not found' });
+	if (blogToDelete.user.toString() === request.user.id) {
+		await Blog.findByIdAndRemove(request.params.id)
+		response.status(204).end()
+	} else {
+		return response
+			.status(401)
+			.json({ error: 'Unauthorized to delete the blog' })
 	}
-
-	const user = request.user
-	console.log('---- user ----', user)
-
-	if (!user || blogToDelete.user.toString() !== user.id.toString()) {
-		response.status(401).json({ error: 'Unauthorized' })
-	}
-
-	user.blogs = user.blogs.filter(
-		(blog) => blog.toString() !== blogToDelete._id.toString(),
-	)
-
-	await user.save()
-
-	await Blog.deleteOne({ _id: request.params.id })
-
-	response.status(204).end()
 })
 
 ////////////////////////////////////////////////////////////////////

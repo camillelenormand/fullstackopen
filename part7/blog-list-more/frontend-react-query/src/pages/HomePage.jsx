@@ -1,6 +1,5 @@
-import BlogList from './BlogList'
-import BlogForm from './BlogForm'
-import LogoutButton from './LogOutButton'
+import BlogList from '../components/BlogList'
+import BlogForm from '../components/BlogForm'
 
 function HomePage() {
 
@@ -8,7 +7,6 @@ function HomePage() {
       <div>
         <BlogForm />
         <BlogList />
-        <LogoutButton />
       </div>
     )
   }

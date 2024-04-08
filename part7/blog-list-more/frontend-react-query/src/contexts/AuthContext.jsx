@@ -12,16 +12,14 @@ export const AuthProvider = ({ children }) => {
 
   const loginMutation = useMutation(credentials => loginService(credentials), {
     onSuccess: (data) => {
-      setAuthState({ username: data.username, token: data.token });
-      window.localStorage.setItem('loggedBlogUsername', JSON.stringify(data.username));
-      window.localStorage.setItem('loggedBlogToken', JSON.stringify(data.token));
-      console.log('Logged in successfully', data);
-      console.log('User:', data.username);
-      console.log('local username', window.localStorage.getItem('loggedBlogUsername'));
+      console.log('data:', data)
+      setAuthState({ username: data.username, token: data.token })
+      window.localStorage.setItem('loggedBlogUsername', JSON.stringify(data.username))
+      window.localStorage.setItem('loggedBlogToken', JSON.stringify(data.token))
     },
     onError: (error) => {
-      setAuthState({ username: null, token: null });
-      console.error('Failed to login: ', error);
+      setAuthState({ username: null, token: null })
+      console.error('Failed to login: ', error)
     },
   })
 
@@ -30,6 +28,8 @@ export const AuthProvider = ({ children }) => {
     window.localStorage.removeItem('loggedBlogUsername')
     window.localStorage.removeItem('loggedBlogToken')
   }
+
+  console.log('authState:', authState)
 
   return (
     <AuthContext.Provider 

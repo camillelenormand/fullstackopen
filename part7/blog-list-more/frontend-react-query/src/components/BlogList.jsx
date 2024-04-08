@@ -4,12 +4,14 @@ import blogService from '../services/blogs'
 import { BlogCard, BlogTitle, BlogAuthor, GridContainer, BlogUrl } from './BlogListStyles'
 import Button from './Button'
 import { useNotify } from '../contexts/NotificationContext'
+import { useAuth } from '../contexts/AuthContext'
 
 const Blogs = () => {
   // Define state variables for pagination
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(10)
-
+  const user = useAuth()
+  console.log('user:', user)
   // Get the queryClient from the useQueryClient hook
   const queryClient = useQueryClient()
 
@@ -37,13 +39,19 @@ const Blogs = () => {
   const likeMutation = useMutation({
     mutationFn: blogService.updateBlog,
     onMutate: async (updatedBlog) => {
-      await queryClient.cancelQueries(['blogs'])
-      const previousBlogs = queryClient.getQueryData(['blogs'])
-      queryClient.setQueryData(['blogs'], old => query.data.blogs?.map(
-        blog => blog.id === updatedBlog.id
-          ? { ...blog, likes: blog.likes + 1 }
-          : blog
-      ))
+      await queryClient.cancelQueries(['blogs', page, limit])
+
+      const previousBlogs = queryClient.getQueryData(['blogs', page, limit])
+
+      queryClient.setQueryData(['blogs', page, limit], (oldData) => {
+        return {
+          ...oldData,
+          blogs: oldData?.blogs?.map(blog =>
+            blog.id === updatedBlog.id ? { ...blog, likes: blog.likes + 1 } : blog
+          ),
+        }
+      })
+
       return { previousBlogs }
     },
     onSuccess: (data) => {
@@ -64,14 +72,13 @@ const Blogs = () => {
     mutationFn: blogService.deleteBlog,
     onMutate: async (deletedBlog) => {
       queryClient.setQueryData(['blogs'], oldData => {
-        // Ensure oldData and oldData.blogs exist before trying to filter
         if (oldData && oldData.blogs) {
           return {
-            ...oldData, // Preserve other properties in the oldData object
-            blogs: oldData.blogs.filter(blog => blog.id !== deletedBlog.id) // Update only the blogs array
-          };
+            ...oldData, 
+            blogs: oldData.blogs.filter(blog => blog.id !== deletedBlog.id)
+          }
         }
-        return oldData; // In case oldData is not structured as expected, return it unmodified
+        return oldData 
       })
     },
     onSuccess: (data) => {
@@ -87,8 +94,8 @@ const Blogs = () => {
   })
 
   // Implement UI controls to navigate pages
-  const handleNextPage = () => setPage(oldPage => oldPage + 1);
-  const handlePrevPage = () => setPage(oldPage => Math.max(oldPage - 1, 1));
+  const handleNextPage = () => setPage(oldPage => oldPage + 1)
+  const handlePrevPage = () => setPage(oldPage => Math.max(oldPage - 1, 1))
 
   // Handle loading and error states
   if (isLoading) return <div>Loading...</div>
@@ -131,18 +138,21 @@ const Blogs = () => {
               rel="noopener noreferrer">
               {blog.url}
             </BlogUrl>
-            <Button
-              id="like"
-              onClick={() => handleLike(blog)}
-              disabled={likeMutation.isLoading}>
-              {blog.likes} Likes
-            </Button>
-            <Button
-              id="delete"
-              onClick={() => handleDelete(blog)}
-              disabled={deleteMutation.isLoading}>
-              Delete
-            </Button>
+            {user.username !== null ? (
+              <div>
+                <Button
+                  id="like"
+                  onClick={() => handleLike(blog)}
+                  disabled={likeMutation.isLoading}>
+                  {blog.likes} Likes
+                </Button><Button
+                  id="delete"
+                  onClick={() => handleDelete(blog)}
+                  disabled={deleteMutation.isLoading}>
+                  Delete
+                </Button>
+              </div>
+            ) : null}
           </BlogCard>
         ))}
       </GridContainer>
