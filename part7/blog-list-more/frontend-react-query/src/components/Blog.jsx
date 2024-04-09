@@ -1,10 +1,16 @@
 import BlogService from '../services/blogs'
 import { useQuery } from 'react-query'
 import { useMatch } from 'react-router-dom'
+import useLikeMutation from '../hooks/useLikeMutation'
+import Loading from './Loading'
+import Error from './Error'
 
 const Blog = () => {
   console.log('Blog component')
+  // Fetch all blogs
   const { isLoading, isError, error, data } = useQuery('blogs', BlogService.getAllBlogs)
+  // Get the like mutation hook
+  const likeMutation = useLikeMutation()
 
   const blogs = data?.blogs
 
@@ -13,9 +19,20 @@ const Blog = () => {
   // Find the blog if a specific ID is matched in the route
   const blog = match ? blogs?.find(blog => blog.id === match.params.id) : null
 
+  // Handle the like button click
+  const handleLike = () => {
+    const token = window.localStorage.getItem('loggedBlogToken')
+    const updatedBlog = { ...blog, likes: blog.likes + 1 };
+    likeMutation.mutate({
+      id: blog.id,
+      newBlog: updatedBlog,
+      authToken: token
+    })
+  }
+
   // Handle loading and error states
-  if (isLoading) return <div>Loading...</div>
-  if (isError) return <div>Error: {error.message}</div>
+  if (isLoading) return <Loading />
+  if (isError) return <Error error={error.message} />
 
   // Conditionally render the single blog view or the blog list
   if (blog) {
@@ -27,6 +44,7 @@ const Blog = () => {
         <p>URL: <a href={blog.url}>{blog.url}</a></p>
         <p>Likes: {blog.likes}</p>
         <p>Added by {blog.user.name}</p>
+        <button onClick={() => handleLike(blog.id)}>Like</button>
       </>
     )
   } else {
@@ -40,6 +58,7 @@ const Blog = () => {
             <div>URL: {blog.url}</div>
             <div>Likes: {blog.likes}</div>
             <div>Added by {blog.user.name}</div>
+            <button onClick={handleLike} disabled={likeMutation.isLoading}>Like</button>
           </li>
         ))}
       </ul>
