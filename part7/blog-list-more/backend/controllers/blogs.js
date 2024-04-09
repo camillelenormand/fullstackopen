@@ -104,6 +104,7 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 // Delete a blog
 blogsRouter.delete('/:id', userExtractor, async (request, response) => {
 	const user = request.user
+	console.log('user', user)
 
 	if (!user) {
 		response.status(401).json({ error: 'unauthorized user' })
@@ -114,13 +115,15 @@ blogsRouter.delete('/:id', userExtractor, async (request, response) => {
 	console.log('blogToDelete', blogToDelete)
 
 	if (blogToDelete.user.toString() === request.user.id) {
-		await Blog.findByIdAndRemove(request.params.id)
+		console.log('blogToDelete.user', blogToDelete.user)
+		console.log('request.params.id', request.params.id)
+		await Blog.findByIdAndDelete(request.params.id) 
 		response.status(204).end()
 	} else {
 		return response
 			.status(401)
 			.json({ error: 'Unauthorized to delete the blog' })
-	}
+	} 
 })
 
 ////////////////////////////////////////////////////////////////////
