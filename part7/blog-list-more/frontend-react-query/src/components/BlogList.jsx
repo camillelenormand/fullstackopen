@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from 'react-query'
+import { useMutation, useQueryClient } from 'react-query'
 import { useState } from 'react'
 import blogService from '../services/blogs'
 import { BlogCard, BlogTitle, BlogAuthor, GridContainer, BlogUrl } from './BlogListStyles'
@@ -7,45 +7,33 @@ import { useNotify } from '../contexts/NotificationContext'
 import { useAuth } from '../contexts/AuthContext'
 import { Link } from 'react-router-dom'
 import Blog from './Blog'
+import { useBlogs } from '../hooks/useBlogs'
+import NoBlogs from './NoBlogs'
+import Loading from './Loading'
+import Error from './Error'
+import Pagination from './Pagination'
+import { usePagination } from '../hooks/usePagination'
 
 const Blogs = () => {
   // Define state variables for pagination
-  const [page, setPage] = useState(1)
-  const [limit, setLimit] = useState(10)
-  const user = useAuth()
-  console.log('user:', user)
-  // Get the queryClient from the useQueryClient hook
+  const { limit } = useState(10)
+
+  // Custom hooks
   const queryClient = useQueryClient()
-
-  // Fetch all blogs
-  const query = useQuery(
-    [
-      'blogs',
-      page,
-      limit
-    ],
-    () => blogService.getAllBlogs({ page, limit }),
-    {
-      keepPreviousData: true, // This will keep showing the previous page's data while loading the next page's data
-    }
-  )
-  console.log('query:', query)
-
-  // Destructure the query object to get the isLoading, isError, and error properties
-  const { isLoading, isError, error } = query
-
-  // Use the notify function from the NotificationContext
+  const user = useAuth()
   const notifyWith = useNotify()
+  const { page, nextPage, prevPage } = usePagination()
+  const { data, isLoading, isError, error } = useBlogs({ page, limit })
+
+  console.log('user:', user)
 
   // Define a mutation to like a blog post
   const likeMutation = useMutation({
     mutationFn: blogService.updateBlog,
     onMutate: async (updatedBlog) => {
-      await queryClient.cancelQueries(['blogs', page, limit])
-
-      const previousBlogs = queryClient.getQueryData(['blogs', page, limit])
-
-      queryClient.setQueryData(['blogs', page, limit], (oldData) => {
+      await queryClient.cancelQueries(queryKey)
+      const previousBlogs = queryClient.getQueryData(queryKey)
+      queryClient.setQueryData(queryKey, (oldData) => {
         return {
           ...oldData,
           blogs: oldData?.blogs?.map(blog =>
@@ -66,8 +54,7 @@ const Blogs = () => {
       notifyWith(error)
       console.error('Failed to like blog: ', error)
     }
-  }
-  )
+  })
 
   // Define a mutation to delete a blog post
   const deleteMutation = useMutation({
@@ -76,11 +63,11 @@ const Blogs = () => {
       queryClient.setQueryData(['blogs'], oldData => {
         if (oldData && oldData.blogs) {
           return {
-            ...oldData, 
+            ...oldData,
             blogs: oldData.blogs.filter(blog => blog.id !== deletedBlog.id)
           }
         }
-        return oldData 
+        return oldData
       })
     },
     onSuccess: (data) => {
@@ -95,13 +82,9 @@ const Blogs = () => {
     }
   })
 
-  // Implement UI controls to navigate pages
-  const handleNextPage = () => setPage(oldPage => oldPage + 1)
-  const handlePrevPage = () => setPage(oldPage => Math.max(oldPage - 1, 1))
-
   // Handle loading and error states
-  if (isLoading) return <div>Loading...</div>
-  if (isError) return <div>Error: {error.message}</div>
+  if (isLoading) return <Loading />
+  if (isError) return <Error error={error.message} />
 
 
   // Define event handlers for liking and deleting blog posts
@@ -124,14 +107,19 @@ const Blogs = () => {
   }
 
   // Display a message if there are no blogs to display
-  if (!query.isLoading && query.data.blogs?.length === 0) return <div>No blogs to display.</div>
+  if (!isLoading && data.blogs?.length === 0) return <NoBlogs />
 
   return (
     <>
       <GridContainer>
-        {query.data.blogs?.map(blog => (
+        {data?.blogs?.map(blog => (
           <BlogCard key={blog.id}>
-            <BlogTitle><Link to={`/blogs/${blog.id}`} element={<Blog />}>{blog.title}</Link></BlogTitle>
+            <BlogTitle>
+              <Link
+                to={`/blogs/${blog.id}`}
+                element={<Blog />}>{blog.title}
+              </Link>
+            </BlogTitle>
             <BlogAuthor>{blog.author}</BlogAuthor>
             <BlogUrl
               as="a"
@@ -158,8 +146,12 @@ const Blogs = () => {
           </BlogCard>
         ))}
       </GridContainer>
-      <Button onClick={handlePrevPage} disabled={page === 1}>Previous</Button>
-      <Button onClick={handleNextPage} disabled={!query.data?.next}>Next</Button>
+      <Pagination
+        page={page}
+        hasNextPage={!!data?.next}
+        onPrevious={prevPage}
+        onNext={nextPage}
+      />
     </>
   )
 }
