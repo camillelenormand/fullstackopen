@@ -1,15 +1,21 @@
+// src/components/BlogList.jsx
+
+// Import hooks
 import { useState } from 'react'
-import { GridContainer } from './BlogListStyles'
+// Import contexts and custom hooks 
 import { useAuth } from '../contexts/AuthContext'
 import { useBlogs } from '../hooks/useBlogs'
+import { usePagination } from '../hooks/usePagination'
+import useLikeMutation from '../hooks/useLikeMutation'
+import useDeleteMutation from '../hooks/useDeleteMutation'
+// Import components
 import NoBlogs from './NoBlogs'
 import Loading from './Loading'
 import Error from './Error'
 import Pagination from './Pagination'
-import { usePagination } from '../hooks/usePagination'
-import useLikeMutation from '../hooks/useLikeMutation'
-import useDeleteMutation from '../hooks/useDeleteMutation'
 import BlogCard from './BlogCard'
+// Import styled components
+import { GridContainer } from './BlogListStyles'
 
 const Blogs = () => {
   // Define state variables for pagination
