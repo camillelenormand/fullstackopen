@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from 'react-query'
 import { useNotify } from '../contexts/NotificationContext'
 import blogService from '../services/blogs'
 
-
 const useLikeMutation = () => {
   const queryClient = useQueryClient()
   const queryKey = ['blogs']
