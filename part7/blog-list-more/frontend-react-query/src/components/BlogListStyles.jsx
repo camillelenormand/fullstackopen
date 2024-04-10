@@ -7,7 +7,7 @@ const GridContainer = styled.div`
   margin: 20px;
 `
 
-const BlogCard = styled.div`
+const BlogCardDiv = styled.div`
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -32,4 +32,4 @@ const BlogUrl = styled.a`
   text-decoration: none;
 `
 
-export { GridContainer, BlogCard, BlogTitle, BlogAuthor, BlogUrl }
+export { GridContainer, BlogCardDiv, BlogTitle, BlogAuthor, BlogUrl }

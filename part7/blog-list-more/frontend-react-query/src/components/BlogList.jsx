@@ -1,86 +1,32 @@
-import { useMutation, useQueryClient } from 'react-query'
 import { useState } from 'react'
-import blogService from '../services/blogs'
-import { BlogCard, BlogTitle, BlogAuthor, GridContainer, BlogUrl } from './BlogListStyles'
-import Button from './Button'
-import { useNotify } from '../contexts/NotificationContext'
+import { GridContainer } from './BlogListStyles'
+// import Button from './Button'
 import { useAuth } from '../contexts/AuthContext'
-import { Link } from 'react-router-dom'
-import Blog from './Blog'
+// import { Link } from 'react-router-dom'
+// import Blog from './Blog'
 import { useBlogs } from '../hooks/useBlogs'
 import NoBlogs from './NoBlogs'
 import Loading from './Loading'
 import Error from './Error'
 import Pagination from './Pagination'
 import { usePagination } from '../hooks/usePagination'
+import useLikeMutation from '../hooks/useLikeMutation'
+import useDeleteMutation from '../hooks/useDeleteMutation'
+import BlogCard from './BlogCard'
 
 const Blogs = () => {
   // Define state variables for pagination
   const { limit } = useState(10)
 
   // Custom hooks
-  const queryClient = useQueryClient()
   const user = useAuth()
-  const notifyWith = useNotify()
   const { page, nextPage, prevPage } = usePagination()
   const { data, isLoading, isError, error } = useBlogs({ page, limit })
+  const likeMutation = useLikeMutation()
+  const deleteMutation = useDeleteMutation()
 
   console.log('user:', user)
 
-  // Define a mutation to like a blog post
-  const likeMutation = useMutation({
-    mutationFn: blogService.updateBlog,
-    onMutate: async (updatedBlog) => {
-      await queryClient.cancelQueries(queryKey)
-      const previousBlogs = queryClient.getQueryData(queryKey)
-      queryClient.setQueryData(queryKey, (oldData) => {
-        return {
-          ...oldData,
-          blogs: oldData?.blogs?.map(blog =>
-            blog.id === updatedBlog.id ? { ...blog, likes: blog.likes + 1 } : blog
-          ),
-        }
-      })
-
-      return { previousBlogs }
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['blogs'] })
-      notifyWith('Blog liked successfully')
-      console.log('Mutation successful with data:', data)
-    },
-    onError: (error, updatedBlog, context) => {
-      queryClient.setQueryData(['blogs'], context.previousBlogs)
-      notifyWith(error)
-      console.error('Failed to like blog: ', error)
-    }
-  })
-
-  // Define a mutation to delete a blog post
-  const deleteMutation = useMutation({
-    mutationFn: blogService.deleteBlog,
-    onMutate: async (deletedBlog) => {
-      queryClient.setQueryData(['blogs'], oldData => {
-        if (oldData && oldData.blogs) {
-          return {
-            ...oldData,
-            blogs: oldData.blogs.filter(blog => blog.id !== deletedBlog.id)
-          }
-        }
-        return oldData
-      })
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['blogs'] })
-      notifyWith('Blog deleted successfully')
-      console.log('Mutation successful with data:', data)
-    },
-    onError: (error, deletedBlog, context) => {
-      queryClient.setQueryData(['blogs'], context.previousBlogs)
-      notifyWith(error)
-      console.error('Failed to delete blog: ', error)
-    }
-  })
 
   // Handle loading and error states
   if (isLoading) return <Loading />
@@ -90,10 +36,10 @@ const Blogs = () => {
   // Define event handlers for liking and deleting blog posts
   const handleLike = (blog) => {
     const token = JSON.parse(window.localStorage.getItem('loggedBlogToken'))
-    const likedBlog = { ...blog, likes: blog.likes + 1 }
+    const updatedBlog = { ...blog, likes: blog.likes + 1 }
     likeMutation.mutate({
-      id: likedBlog.id,
-      newBlog: likedBlog,
+      id: updatedBlog.id,
+      newBlog: updatedBlog,
       authToken: token,
     })
   }
@@ -113,37 +59,18 @@ const Blogs = () => {
     <>
       <GridContainer>
         {data?.blogs?.map(blog => (
-          <BlogCard key={blog.id}>
-            <BlogTitle>
-              <Link
-                to={`/blogs/${blog.id}`}
-                element={<Blog />}>{blog.title}
-              </Link>
-            </BlogTitle>
-            <BlogAuthor>{blog.author}</BlogAuthor>
-            <BlogUrl
-              as="a"
-              href={blog.url}
-              target="_blank"
-              rel="noopener noreferrer">
-              {blog.url}
-            </BlogUrl>
-            {user.username !== null ? (
-              <div>
-                <Button
-                  id="like"
-                  onClick={() => handleLike(blog)}
-                  disabled={likeMutation.isLoading}>
-                  {blog.likes} Likes
-                </Button><Button
-                  id="delete"
-                  onClick={() => handleDelete(blog)}
-                  disabled={deleteMutation.isLoading}>
-                  Delete
-                </Button>
-              </div>
-            ) : null}
-          </BlogCard>
+          <BlogCard
+            key={blog.id}
+            blog={blog}
+            onDelete={(blog) => {
+              if (window.confirm(`Are you sure you want to delete ${blog.title}?`)) {
+                handleDelete(blog)
+              }
+            }}
+            onLike={handleLike}
+            isLikeLoading={likeMutation.isLoading}
+            isDeleteLoading={deleteMutation.isLoading}
+          />
         ))}
       </GridContainer>
       <Pagination
