@@ -13,10 +13,15 @@ import { useAuth } from './contexts/AuthContext'
 import LogoutButton from './components/LogOutButton'
 import User from './components/User'
 import Blog from './components/Blog'
+import { useNotify } from './contexts/NotificationContext'
 
 function App() {
   const user = useAuth()
-  console.log('user:', user)
+  const token = window.localStorage.getItem('loggedBlogToken')
+  const notify = useNotify()
+
+  user ? console.log('user:', user) :
+  notify('Please log in to view blogs', 'info')
 
   return (
     <div className="App">
@@ -26,17 +31,14 @@ function App() {
           <Link to="/blogs">Blogs</Link>
           <Link to="/users">Users</Link>
           {
-          user.username === null 
-            ? <Link to="/login">Login</Link> 
-            : `${user.username} logged in` &&
-            <LogoutButton />
+          !token ? <Link to="/login">Login</Link>  : <LogoutButton /> 
           }
         </div>
       </header>
       <Routes>
         <Route path="/blogs" element={<HomePage />} />
         <Route path="/login" element={<LoginForm />} />
-        <Route path="/users" element={user.username === null ? <Navigate replace to="/login" /> : <UserList/>} />
+        <Route path="/users" element={user === null ? <Navigate replace to="/login" /> : <UserList/>} />
         <Route path="/" element={<HomePage />} />
         <Route path="/users/:id" element={<User/>} />
         <Route path="/blogs/:id" element={<Blog/>} />
