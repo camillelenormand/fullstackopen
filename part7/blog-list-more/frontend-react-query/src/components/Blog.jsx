@@ -2,8 +2,10 @@ import BlogService from '../services/blogs'
 import { useQuery } from 'react-query'
 import { useMatch } from 'react-router-dom'
 import useLikeMutation from '../hooks/useLikeMutation'
+import useCreateMutation from '../hooks/useCreateMutation'
 import Loading from './Loading'
 import Error from './Error'
+import Button from './Button'
 
 const Blog = () => {
   console.log('Blog component')
@@ -18,6 +20,7 @@ const Blog = () => {
 
   // Find the blog if a specific ID is matched in the route
   const blog = match ? blogs?.find(blog => blog.id === match.params.id) : null
+
 
   // Handle the like button click
   const handleLike = () => {
@@ -39,6 +42,8 @@ const Blog = () => {
     // Display details of a single blog
     return (
       <>
+        <h1>Blog</h1>
+        <Button onClick={() => handleCreate()}>New</Button>
         <h1>{blog.title}</h1>
         <p>Author: {blog.author}</p>
         <p>URL: <a href={blog.url}>{blog.url}</a></p>
