@@ -1,17 +1,13 @@
-import { useMutation, useQueryClient } from 'react-query'
-import blogService from '../services/blogs'
 import { 
   BlogFormContainer, 
   BlogFormInput, 
   BlogFormButton, 
   BlogFormLabel 
 } from './BlogFormStyles'
-
-import { useNotify } from '../contexts/NotificationContext'
+import useCreateMutation from '../hooks/useCreateMutation'
 
 const BlogForm = () => {
-  const queryClient = useQueryClient()
-  const notifyWith = useNotify()
+  const createBlogMutation = useCreateMutation()
   const token = JSON.parse(window.localStorage.getItem('loggedBlogToken'))
 
   if (!token) {
@@ -20,25 +16,12 @@ const BlogForm = () => {
     return null // or other handling
   }
 
-  const blogMutation = useMutation(
-    newBlog => blogService.createBlog(newBlog, token), {
-    onSuccess: ({ title, author, url }) => {
-      queryClient.invalidateQueries('blogs')
-      notifyWith(`'Blog entitled ', ${title}, ' by ', ${author}, 'was created successfully. More info: at', ${url}`)
-    },
-    onError: (error) => {
-      const errorMessage = error?.response?.data?.error || 'An unexpected error occurred'
-      notifyWith(errorMessage)
-      console.error('Failed to create blog: ', error)
-    }
-  }) 
-
   const onCreate = async (event) => {
     event.preventDefault()
     const { title, author, url } = event.target.elements
     console.log('title:', title.value, 'author:', author.value, 'url:', url.value)
 
-    blogMutation.mutate({ 
+    createBlogMutation.mutate({ 
       title: title.value, 
       author: author.value,
       url: url.value
