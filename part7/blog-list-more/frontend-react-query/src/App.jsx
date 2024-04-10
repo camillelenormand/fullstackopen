@@ -1,4 +1,3 @@
-import './App.css'
 import HomePage from './pages/HomePage'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
