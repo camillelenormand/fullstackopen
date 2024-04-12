@@ -1,5 +1,7 @@
+// controllers/blogs.js
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const Comment = require('../models/comment')
 
 const { userExtractor } = require('../utils/middleware')
 
@@ -7,7 +9,7 @@ const { userExtractor } = require('../utils/middleware')
 
 // Get a single blog
 blogsRouter.get('/:id', async (request, response) => {
-	const blog = await Blog.findById(request.params.id)
+	const blog = await Blog.findById(request.params.id).populate('comment')
 	if (blog) {
 		response.json(blog)
 	} else {
@@ -30,11 +32,12 @@ blogsRouter.get('/', async (request, response) => {
 		results.totalCount = await Blog.countDocuments({}).exec()
 
 		results.blogs = await Blog.find({})
+			.populate('comments')
 			.populate('user', {
 				username: 1, 
 				name: 1, 
 				id: 1,
-			}) 
+			})
 			.sort({ createdAt: -1 })
 			.limit(limit)
 			.skip(startIndex)
@@ -69,15 +72,23 @@ blogsRouter.get('/', async (request, response) => {
 
 // Create a blog
 blogsRouter.post('/', userExtractor, async (request, response) => {
-	const { title, author, url, likes } = request.body
+	// Get the title, author, url, likes, and commentId from the request
+	const { title, author, url, likes, commentId } = request.body
+	// Get the user from the request
 	const user = request.user
 	console.log('user', user)
+	
+	// Find the comments by the commentId
+	const comment = await Comment.findById(commentId)
+	console.log('comment', comment)
 
+	// If the user is not found, return an error
 	if (!user) {
 		response.status(401).json({ error: 'unauthorized user' })
 		console.log('unauthorized user', user)
 	}
 
+	// Create a new blog
 	const blog = new Blog({
 		title,
 		author,
@@ -86,15 +97,23 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 		user: user.id,
 	})
 
+	// If the title or url is missing, return an error
 	if (!blog.title || !blog.url) {
 		response.status(400).json({ error: 'title or url missing' })
 	}
 
+	// Save the blog in the database
 	const savedBlog = await blog.save()
 	console.log('savedBlog', savedBlog)
+
+	// Add the blog to the user
 	user.blogs = user.blogs.concat(savedBlog._id)
 	console.log('user.blogs', user.blogs)
 	await user.save()
+
+	// Add the blog to the comment
+	comment.blogs = comment.blogs.concat(savedBlog._id)
+	await comment.save()
 
 	response.status(201).json(savedBlog)
 })
