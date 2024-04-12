@@ -4,6 +4,8 @@ const baseUrl = '/api/blogs'
 /**
  * Sets the authorization token.
  * @param {string} token The new token to be used for authorization.
+ * @returns {void}
+ * @throws {Error} If the token is not a string.
  */
 const setToken = () => {
   let token = localStorage.getItem('loggedBlogUser')
@@ -19,6 +21,7 @@ const setToken = () => {
 /**
  * Fetches all blogs.
  * @returns {Promise<Array>} A promise that resolves to the array of blogs.
+ * @throws {Error} If the fetch operation fails.
  */
 const getAllBlogs = async ({ page = 1, limit = 10}) => {
   try {
@@ -38,6 +41,7 @@ const getAllBlogs = async ({ page = 1, limit = 10}) => {
  * Fetch a blog
  * @param {Object} blog
  * @returns {Promise<Object>} The blog post data.
+ * @throws {Error} If the fetch operation fails.
  */
 
 const getBlog = async (id) => {
@@ -55,6 +59,7 @@ const getBlog = async (id) => {
  * Creates a new blog post.
  * @param {Object} newBlog The blog post to create.
  * @returns {Promise<Object|null>} The created blog post data on success, or null on failure.
+ * @throws {Error} If the create operation fails.
  */
 const createBlog = async (newBlog, authToken) => {
   const config = {
@@ -78,6 +83,7 @@ const createBlog = async (newBlog, authToken) => {
  * @param {string} id The ID of the blog to update.
  * @param {Object} newBlog The updated blog data.
  * @returns {Promise<Object>} The updated blog post data.
+ * @throws {Error} If the update operation fails.
  */
 const updateBlog = async ({ id, newBlog, authToken }) => {
   console.log('newBlog', newBlog)
@@ -101,6 +107,7 @@ const updateBlog = async ({ id, newBlog, authToken }) => {
  * Deletes a blog post.
  * @param {string} id The ID of the blog to delete.
  * @returns {Promise<Object>} The response data from the delete operation.
+ * @throws {Error} If the delete operation fails.
  */
 const deleteBlog = async ({ id, authToken }) => {
   const config = {
@@ -120,4 +127,51 @@ const deleteBlog = async ({ id, authToken }) => {
   }
 }
 
-export default { getAllBlogs, getBlog, createBlog, setToken, updateBlog, deleteBlog }
+/**
+ * Gets all comments for a blog post.
+ * @param {string} id The ID of the blog post to get comments for.
+ * @returns {Promise<Array>} An array of comments for the blog post.
+ * @throws {Error} If the comments fetching fails.
+*/
+
+const getComments = async (id) => {
+  try {
+    const response = await axios.get(`${baseUrl}/${id}/comments`)
+    console.log('response', response.data)
+    return response.data
+  } catch (error) {
+    console.error('Error fetching comments', error)
+    throw error
+  }
+}
+
+/**
+ * Creates a new comment for a blog post.
+ * @param {string} id The ID of the blog post to create a comment for.
+ * @param {Object} newComment The comment to create.
+ * @returns {Promise<Object>} The created comment data.
+ * @throws {Error} If the comment creation fails.
+*/
+
+const createComment = async (id, newComment) => {
+  try {
+    const response = await axios.post(`${baseUrl}/${id}/comments`, newComment)
+    console.log('response', response.data)
+    return response.data
+  } catch (error) {
+    console.error('Error creating comment', error)
+    throw error
+  }
+}
+
+
+export default { 
+  setToken,
+  getAllBlogs, 
+  getBlog, 
+  createBlog, 
+  updateBlog, 
+  deleteBlog, 
+  getComments,
+  createComment
+}
