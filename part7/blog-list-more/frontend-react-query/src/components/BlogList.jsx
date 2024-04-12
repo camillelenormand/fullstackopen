@@ -1,5 +1,4 @@
 // src/components/BlogList.jsx
-
 // Import hooks
 import { useState } from 'react'
 // Import contexts and custom hooks 
@@ -30,10 +29,11 @@ const Blogs = () => {
 
   console.log('user:', user)
 
-
   // Handle loading and error states
-  if (isLoading) return <Loading />
-  if (isError) return <Error error={error.message} />
+  if (isLoading) 
+    return <Loading />
+  if (isError) 
+    return <Error error={error.message} />
 
 
   // Define event handlers for liking and deleting blog posts
