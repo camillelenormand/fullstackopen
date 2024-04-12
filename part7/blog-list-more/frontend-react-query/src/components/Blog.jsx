@@ -2,10 +2,10 @@ import BlogService from '../services/blogs'
 import { useQuery } from 'react-query'
 import { useMatch } from 'react-router-dom'
 import useLikeMutation from '../hooks/useLikeMutation'
-import useCreateMutation from '../hooks/useCreateMutation'
 import Loading from './Loading'
 import Error from './Error'
-import Button from './Button'
+import BlogForm from './BlogForm'
+import { Link } from 'react-router-dom'
 
 const Blog = () => {
   console.log('Blog component')
@@ -43,7 +43,11 @@ const Blog = () => {
     return (
       <>
         <h1>Blog</h1>
-        <Button onClick={() => handleCreate()}>New</Button>
+        <Link
+          to={`/blogs`}
+          element={<BlogForm />}>
+          New
+      </Link>
         <h1>{blog.title}</h1>
         <p>Author: {blog.author}</p>
         <p>URL: <a href={blog.url}>{blog.url}</a></p>
