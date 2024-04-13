@@ -8,13 +8,17 @@ const Blog = require('../models/blog')
 // Get comments
 
 commentsRouter.get('/:id/comments', async (request, response) => {
-	const comments = await Comment.find({})
+	console.log('Get comments')
+	const comments = await Comment.find({ 
+		blog: request.params.id 
+	})
 	response.json(comments)
 })
 
 // Create a comment
 
 commentsRouter.post('/:id/comments', async (request, response) => {
+	console.log('Attempting to post a comment')
 	// Get the body of the request
 	const body = request.body
 
@@ -29,7 +33,7 @@ commentsRouter.post('/:id/comments', async (request, response) => {
 	// Create a new comment
 	const newComment = new Comment({
 		content: content,
-		blogs: blog._id,
+		blog: blog._id,
 	})
 
 	// If the content is missing, return an error
@@ -38,7 +42,7 @@ commentsRouter.post('/:id/comments', async (request, response) => {
 	}
 
 	// If the blog is missing, return an error
-	if (!newComment.blogId) {
+	if (!newComment.blog) {
 		return response.status(400).json({ error: 'blog linked to the comment is missing' })
 	}
 
@@ -47,3 +51,5 @@ commentsRouter.post('/:id/comments', async (request, response) => {
 	console.log('savedComment', savedComment)
 	response.status(201).json(savedComment)
 })
+
+module.exports = commentsRouter
