@@ -158,11 +158,11 @@ blogsRouter.delete('/:id', userExtractor, async (request, response) => {
 // Update a blog
 blogsRouter.put('/:id', async (request, response) => {
 	console.log(' Updating a blog')
-	const { title, author, url, likes, user, comments } = request.body
+	const { title, author, url, likes} = request.body
 
 	const updatedBlog = await Blog.findByIdAndUpdate(
 		request.params.id,
-		{ title, author, url, likes, user, comments },
+		{ title, author, url, likes },
 		{ new: true },
 	)
 
