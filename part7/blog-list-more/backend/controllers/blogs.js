@@ -9,7 +9,12 @@ const { userExtractor } = require('../utils/middleware')
 
 // Get a single blog
 blogsRouter.get('/:id', async (request, response) => {
-	const blog = await Blog.findById(request.params.id).populate('comment')
+	console.log(' Get a single blog')
+	const blog = await Blog.findById(request.params.id)
+		.populate({
+			path: 'comments'
+		})
+		
 	if (blog) {
 		response.json(blog)
 	} else {
@@ -19,6 +24,7 @@ blogsRouter.get('/:id', async (request, response) => {
 
 // Get blogs
 blogsRouter.get('/', async (request, response) => {
+	console.log(' Get blogs')
 	// Default values for pagination
 	const page = request.query.page || 1
 	const limit = request.query.limit || 10
@@ -27,15 +33,15 @@ blogsRouter.get('/', async (request, response) => {
 	const endIndex = page * limit
 
 	const results = {}
-	
+
 	try {
 		results.totalCount = await Blog.countDocuments({}).exec()
 
 		results.blogs = await Blog.find({})
 			.populate('comments')
 			.populate('user', {
-				username: 1, 
-				name: 1, 
+				username: 1,
+				name: 1,
 				id: 1,
 			})
 			.sort({ createdAt: -1 })
@@ -72,12 +78,13 @@ blogsRouter.get('/', async (request, response) => {
 
 // Create a blog
 blogsRouter.post('/', userExtractor, async (request, response) => {
+	console.log(' Create a blog')
 	// Get the title, author, url, likes, and commentId from the request
 	const { title, author, url, likes, commentId } = request.body
 	// Get the user from the request
 	const user = request.user
 	console.log('user', user)
-	
+
 	// Find the comments by the commentId
 	const comment = await Comment.findById(commentId)
 	console.log('comment', comment)
@@ -106,12 +113,12 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 	const savedBlog = await blog.save()
 	console.log('savedBlog', savedBlog)
 
-	// Add the blog to the user
+	// Add the author to the blog
 	user.blogs = user.blogs.concat(savedBlog._id)
 	console.log('user.blogs', user.blogs)
 	await user.save()
 
-	// Add the blog to the comment
+	// Add the comments to the blogs
 	comment.blogs = comment.blogs.concat(savedBlog._id)
 	await comment.save()
 
@@ -122,6 +129,7 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 
 // Delete a blog
 blogsRouter.delete('/:id', userExtractor, async (request, response) => {
+	console.log(' Deleting a blog')
 	const user = request.user
 	console.log('user', user)
 
@@ -136,24 +144,25 @@ blogsRouter.delete('/:id', userExtractor, async (request, response) => {
 	if (blogToDelete.user.toString() === request.user.id) {
 		console.log('blogToDelete.user', blogToDelete.user)
 		console.log('request.params.id', request.params.id)
-		await Blog.findByIdAndDelete(request.params.id) 
+		await Blog.findByIdAndDelete(request.params.id)
 		response.status(204).end()
 	} else {
 		return response
 			.status(401)
 			.json({ error: 'Unauthorized to delete the blog' })
-	} 
+	}
 })
 
 ////////////////////////////////////////////////////////////////////
 
 // Update a blog
 blogsRouter.put('/:id', async (request, response) => {
-	const { title, author, url, likes } = request.body
+	console.log(' Updating a blog')
+	const { title, author, url, likes, user, comments } = request.body
 
 	const updatedBlog = await Blog.findByIdAndUpdate(
 		request.params.id,
-		{ title, author, url, likes },
+		{ title, author, url, likes, user, comments },
 		{ new: true },
 	)
 
@@ -162,5 +171,8 @@ blogsRouter.put('/:id', async (request, response) => {
 	response.status(200).json({ message: 'Blog updated', updatedBlog }) ??
 		response.status(404).json({ error: 'Blog not found or invalid' })
 })
+
+////////////////////////////////////////////////////////////////////
+
 
 module.exports = blogsRouter

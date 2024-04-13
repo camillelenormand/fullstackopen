@@ -7,6 +7,7 @@ const baseUrl = '/api/blogs'
  * @returns {void}
  * @throws {Error} If the token is not a string.
  */
+
 const setToken = () => {
   let token = localStorage.getItem('loggedBlogUser')
   console.log('token', token)
@@ -23,6 +24,7 @@ const setToken = () => {
  * @returns {Promise<Array>} A promise that resolves to the array of blogs.
  * @throws {Error} If the fetch operation fails.
  */
+
 const getAllBlogs = async ({ page = 1, limit = 10}) => {
   try {
     const response = await axios.get(baseUrl, {
@@ -61,6 +63,7 @@ const getBlog = async (id) => {
  * @returns {Promise<Object|null>} The created blog post data on success, or null on failure.
  * @throws {Error} If the create operation fails.
  */
+
 const createBlog = async (newBlog, authToken) => {
   const config = {
     headers: {
@@ -85,6 +88,7 @@ const createBlog = async (newBlog, authToken) => {
  * @returns {Promise<Object>} The updated blog post data.
  * @throws {Error} If the update operation fails.
  */
+
 const updateBlog = async ({ id, newBlog, authToken }) => {
   console.log('newBlog', newBlog)
   const config = {
@@ -109,6 +113,7 @@ const updateBlog = async ({ id, newBlog, authToken }) => {
  * @returns {Promise<Object>} The response data from the delete operation.
  * @throws {Error} If the delete operation fails.
  */
+
 const deleteBlog = async ({ id, authToken }) => {
   const config = {
     headers: {
