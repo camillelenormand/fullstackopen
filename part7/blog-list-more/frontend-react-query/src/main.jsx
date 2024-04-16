@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { NotificationContextProvider } from './contexts/NotificationContext.jsx'
 import { ReactQueryDevtools } from "react-query/devtools"
 import { BrowserRouter as Router } from 'react-router-dom'
+import { ThemeProvider } from './contexts/ThemeContext.jsx'
+import GlobalStyle  from './components/GlobalStyle'
 
 const queryClient = new QueryClient()
 
@@ -14,9 +16,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <QueryClientProvider client={queryClient}>
       <NotificationContextProvider>
         <AuthProvider>
-          <Router>
-            <App />
-          </Router>
+          <ThemeProvider>
+            <GlobalStyle />
+            <Router>
+              <App />
+            </Router>
+          </ThemeProvider>
         </AuthProvider>
       </NotificationContextProvider>
       <ReactQueryDevtools />
