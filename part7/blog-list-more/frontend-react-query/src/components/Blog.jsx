@@ -6,6 +6,7 @@ import Loading from './Loading'
 import Error from './Error'
 import BlogForm from './BlogForm'
 import { Link } from 'react-router-dom'
+import Comments from './Comments'
 
 const Blog = () => {
   console.log('Blog component')
@@ -25,7 +26,9 @@ const Blog = () => {
   // Handle the like button click
   const handleLike = () => {
     const token = window.localStorage.getItem('loggedBlogToken')
-    const updatedBlog = { ...blog, likes: blog.likes + 1 };
+    const updatedBlog = { ...blog, likes: blog.likes + 1 }
+    console.log('updatedBlog', updatedBlog)
+    console.log('blog.id', blog.id)
     likeMutation.mutate({
       id: blog.id,
       newBlog: updatedBlog,
@@ -54,6 +57,7 @@ const Blog = () => {
         <p>Likes: {blog.likes}</p>
         <p>Added by {blog.user.name}</p>
         <button onClick={() => handleLike(blog.id)}>Like</button>
+        <Comments comments={blog.comments} />
       </>
     )
   } else {
