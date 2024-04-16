@@ -1,18 +1,21 @@
 // AuthContext.js
 import { createContext, useContext, useState } from 'react'
 import { useMutation } from 'react-query'
-import loginService  from '../services/login'
+import loginService from '../services/login'
 
 const AuthContext = createContext()
 
 export const useAuth = () => useContext(AuthContext)
 
 export const AuthProvider = ({ children }) => {
-  const [authState, setAuthState] = useState({ username: null, token: null })
+  const [authState, setAuthState] = useState(() => {
+    const token = JSON.parse(window.localStorage.getItem('loggedBlogToken'))
+    const username = JSON.parse(window.localStorage.getItem('loggedBlogUsername'))
+    return { username, token }
+  })
 
   const loginMutation = useMutation(credentials => loginService(credentials), {
     onSuccess: (data) => {
-      console.log('data:', data)
       setAuthState({ username: data.username, token: data.token })
       window.localStorage.setItem('loggedBlogUsername', JSON.stringify(data.username))
       window.localStorage.setItem('loggedBlogToken', JSON.stringify(data.token))
@@ -29,15 +32,13 @@ export const AuthProvider = ({ children }) => {
     window.localStorage.removeItem('loggedBlogToken')
   }
 
-  console.log('authState:', authState)
-
   return (
-    <AuthContext.Provider 
+    <AuthContext.Provider
       value={{
-        ...authState, 
+        ...authState,
         login: loginMutation.mutate,
-        logout, 
-        isError: loginMutation.isError, 
+        logout,
+        isError: loginMutation.isError,
         isLoading: loginMutation.isLoading
       }}
     >
