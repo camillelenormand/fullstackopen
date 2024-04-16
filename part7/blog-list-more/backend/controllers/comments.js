@@ -3,53 +3,44 @@ const commentsRouter = require('express').Router()
 const Comment = require('../models/comment')
 const Blog = require('../models/blog')
 
-/////////////////////////////////////////////////////////////////
-
 // Get comments
-
 commentsRouter.get('/:id/comments', async (request, response) => {
-	console.log('Get comments')
-	const comments = await Comment.find({ 
-		blog: request.params.id 
-	})
-	response.json(comments)
+	try {
+		const comments = await Comment.find({ blog: request.params.id })
+		response.json(comments)
+	} catch (error) {
+		response.status(500).json({ error: 'Something went wrong' })
+	}
 })
 
 // Create a comment
-
 commentsRouter.post('/:id/comments', async (request, response) => {
-	console.log('Attempting to post a comment')
-	// Get the body of the request
-	const body = request.body
+	try {
+		const { content } = request.body
+		const blog = await Blog.findById(request.params.id)
 
-	// Find the blog related to this comment
-	const blog = await Blog.findById(request.params.id)
+		if (!content) {
+			return response.status(400).json({ error: 'content missing for this blog' })
+		}
 
-	console.log('blog found related to this comment', blog)
+		if (!blog) {
+			return response.status(400).json({ error: 'blog linked to the comment is missing' })
+		}
 
-	// Get the content of the comment
-	const content = body.content
+		const newComment = new Comment({
+			content,
+			blog: blog._id,
+		})
 
-	// Create a new comment
-	const newComment = new Comment({
-		content: content,
-		blog: blog._id,
-	})
+		const savedComment = await newComment.save()
 
-	// If the content is missing, return an error
-	if (!newComment.content) {
-		return response.status(400).json({ error: 'content missing for this blog' })
+		blog.comments.push(savedComment._id)
+		await blog.save()
+
+		response.status(201).json(savedComment)
+	} catch (error) {
+		response.status(500).json({ error: 'Something went wrong' })
 	}
-
-	// If the blog is missing, return an error
-	if (!newComment.blog) {
-		return response.status(400).json({ error: 'blog linked to the comment is missing' })
-	}
-
-	// Save the comment in the database
-	const savedComment = await newComment.save()
-	console.log('savedComment', savedComment)
-	response.status(201).json(savedComment)
 })
 
 module.exports = commentsRouter
