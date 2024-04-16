@@ -3,8 +3,8 @@
 import { useState } from 'react'
 // Import contexts and custom hooks 
 import { useAuth } from '../contexts/AuthContext'
-import { useBlogs } from '../hooks/useBlogs'
-import { usePagination } from '../hooks/usePagination'
+import useBlogs from '../hooks/useBlogs'
+import usePagination from '../hooks/usePagination'
 import useLikeMutation from '../hooks/useLikeMutation'
 import useDeleteMutation from '../hooks/useDeleteMutation'
 // Import components

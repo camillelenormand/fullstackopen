@@ -10,11 +10,8 @@ const { userExtractor } = require('../utils/middleware')
 // Get a single blog
 blogsRouter.get('/:id', async (request, response) => {
 	console.log(' Get a single blog')
-	const blog = await Blog.findById(request.params.id)
-		.populate({
-			path: 'comments'
-		})
-		
+	const blog = await Blog.findById(request.params.id).populate('comments')
+	console.log('blog details:', blog)
 	if (blog) {
 		response.json(blog)
 	} else {
@@ -24,7 +21,7 @@ blogsRouter.get('/:id', async (request, response) => {
 
 // Get blogs
 blogsRouter.get('/', async (request, response) => {
-	console.log(' Get blogs')
+	console.log('Get blogs')
 	// Default values for pagination
 	const page = request.query.page || 1
 	const limit = request.query.limit || 10
@@ -38,17 +35,22 @@ blogsRouter.get('/', async (request, response) => {
 		results.totalCount = await Blog.countDocuments({}).exec()
 
 		results.blogs = await Blog.find({})
-			.populate('comments')
 			.populate('user', {
 				username: 1,
 				name: 1,
 				id: 1,
 			})
-			.sort({ createdAt: -1 })
+			.populate('comments', {
+				content: 1,
+				id: 1,
+				blog: 1,
+			})
+			.sort({ 
+				createdAt: -1 
+			})
 			.limit(limit)
 			.skip(startIndex)
 			.exec()
-
 
 		console.log('results.blogs', results.blogs)
 
@@ -79,7 +81,7 @@ blogsRouter.get('/', async (request, response) => {
 // Create a blog
 blogsRouter.post('/', userExtractor, async (request, response) => {
 	console.log(' Create a blog')
-	// Get the title, author, url, likes, and commentId from the request
+	// Get the title, author, url, likes, and comments from the request
 	const { title, author, url, likes, commentId } = request.body
 	// Get the user from the request
 	const user = request.user
@@ -101,8 +103,10 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 		author,
 		url,
 		likes: likes ? likes : 0,
-		user: user.id,
+		user: user.id
 	})
+
+	console.log('blog', blog)
 
 	// If the title or url is missing, return an error
 	if (!blog.title || !blog.url) {
@@ -114,12 +118,13 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 	console.log('savedBlog', savedBlog)
 
 	// Add the author to the blog
-	user.blogs = user.blogs.concat(savedBlog._id)
+	user.blogs = user?.blogs.concat(savedBlog._id)
 	console.log('user.blogs', user.blogs)
 	await user.save()
 
 	// Add the comments to the blogs
-	comment.blogs = comment.blogs.concat(savedBlog._id)
+	comment.blogs = comment?.blogs.concat(savedBlog._id)
+	console.log('comment.blogs', comment.blogs)
 	await comment.save()
 
 	response.status(201).json(savedBlog)

@@ -7,6 +7,7 @@ import Error from './Error'
 import BlogForm from './BlogForm'
 import { Link } from 'react-router-dom'
 import Comments from './Comments'
+import CommentForm from './CommentForm'
 
 const Blog = () => {
   console.log('Blog component')
@@ -16,6 +17,8 @@ const Blog = () => {
   const likeMutation = useLikeMutation()
 
   const blogs = data?.blogs
+
+  console.log('blogs', blogs)
 
   const match = useMatch('/blogs/:id')
 
@@ -57,6 +60,7 @@ const Blog = () => {
         <p>Likes: {blog.likes}</p>
         <p>Added by {blog.user.name}</p>
         <button onClick={() => handleLike(blog.id)}>Like</button>
+        <CommentForm blogId={blog.id} />
         <Comments comments={blog.comments} />
       </>
     )
