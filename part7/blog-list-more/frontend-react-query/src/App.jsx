@@ -5,20 +5,13 @@ import {
   BrowserRouter as Router,
   Routes, 
   Route, 
-  Navigate, 
 } from 'react-router-dom'
-import { useAuth } from './contexts/AuthContext'
 import User from './components/User'
 import Blog from './components/Blog'
 import Header from './components/Header'
-import { useNotify } from './contexts/NotificationContext'
+import BlogForm from './components/BlogForm'
 
 function App() {
-  const user = useAuth()
-  const notify = useNotify()
-
-  user ? console.log('user:', user) :
-  notify('Please log in to view blogs', 'info')
 
   return (
     <div className="App">
@@ -26,7 +19,8 @@ function App() {
       <Routes>
         <Route path="/blogs" element={<HomePage />} />
         <Route path="/login" element={<LoginForm />} />
-        <Route path="/users" element={user === null ? <Navigate replace to="/login" /> : <UserList/>} />
+        <Route path="/users" element={<UserList/>} />
+        <Route path="blogs/new" element={<BlogForm />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/users/:id" element={<User/>} />
         <Route path="/blogs/:id" element={<Blog/>} />
