@@ -7,7 +7,7 @@ import { NotificationContextProvider } from './contexts/NotificationContext.jsx'
 import { ReactQueryDevtools } from "react-query/devtools"
 import { BrowserRouter as Router } from 'react-router-dom'
 import { ThemeProvider } from './contexts/ThemeContext.jsx'
-import GlobalStyle  from './components/GlobalStyle'
+import GlobalStyle from './components/GlobalStyle'
 
 const queryClient = new QueryClient()
 
@@ -15,14 +15,14 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <NotificationContextProvider>
-        <AuthProvider>
-          <ThemeProvider>
-            <GlobalStyle />
-            <Router>
-              <App />
-            </Router>
-          </ThemeProvider>
-        </AuthProvider>
+          <AuthProvider>
+            <ThemeProvider>
+              <GlobalStyle />
+              <Router>
+                <App />
+              </Router>
+            </ThemeProvider>
+          </AuthProvider>
       </NotificationContextProvider>
       <ReactQueryDevtools />
     </QueryClientProvider>
