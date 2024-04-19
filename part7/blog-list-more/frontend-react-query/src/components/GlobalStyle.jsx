@@ -1,6 +1,7 @@
 import { createGlobalStyle } from 'styled-components'
 
 const GlobalStyle = createGlobalStyle`
+
   html {
     box-sizing: border-box;
   }
@@ -31,6 +32,7 @@ const GlobalStyle = createGlobalStyle`
     background: ${props => props.theme.body};
     color: ${props => props.theme.text};
   }
+  
   textarea,
   input,
   button {
@@ -45,9 +47,29 @@ const GlobalStyle = createGlobalStyle`
     margin: 5px;
     
   }
-  p {
+  
+  h1 {
+    font-size: 2rem;
     margin: 0;
   },
+
+  h2 {
+    font-size: 1.5rem;
+    margin: 0;
+  }
+
+  a {
+    color: ${props => props.theme.link};
+    text-decoration: none;
+    &:hover {
+      color: ${props => props.theme.linkHover};
+    }
+  }
+
+
+  p {
+    margin: 0;
+  }
 
   textarea:hover,
   input:hover,
