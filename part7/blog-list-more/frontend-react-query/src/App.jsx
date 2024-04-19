@@ -11,6 +11,7 @@ import Header from './components/Header'
 import BlogForm from './components/BlogForm'
 import Error from './components/Error'
 import Notification from './components/Notification'
+import Footer from './components/Footer'
 
 function App() {
 
@@ -27,9 +28,7 @@ function App() {
         <Route path="/users/:id" element={<User/>} errorElement={<Error />} />
         <Route path="/blogs/:id" element={<Blog/>} errorElement={<Error />} />
       </Routes>
-      <footer>
-        <p>Blog app April 2024</p>
-      </footer>
+      <Footer />
     </div>
   )
 }
