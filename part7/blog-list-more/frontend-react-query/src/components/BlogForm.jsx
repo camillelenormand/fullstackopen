@@ -1,19 +1,22 @@
 import { 
   BlogFormContainer, 
   BlogFormInput, 
-  BlogFormButton, 
-  BlogFormLabel 
+  BlogFormLabel,
+  BlogButton
 } from './BlogFormStyles'
 import useCreateMutation from '../hooks/useCreateMutation'
+import { useAuth } from '../contexts/AuthContext'
+import { useNotify } from '../contexts/NotificationContext'
 
 const BlogForm = () => {
   const createBlogMutation = useCreateMutation()
-  const token = JSON.parse(window.localStorage.getItem('loggedBlogToken'))
+  const user = useAuth()
+  const notify = useNotify()
 
-  if (!token) {
+  if (!user) {
     // Optionally handle the absence of a token, e.g., redirect to login or show a message.
-    console.error('No authentication token found. Please log in.')
-    return null // or other handling
+    console.error('Please log in.')
+    notify('Please log in.')
   }
 
   const onCreate = async (event) => {
@@ -27,8 +30,7 @@ const BlogForm = () => {
       url: url.value
     })
 
-    event.target.reset();
-
+    event.target.reset()
   }
 
   return (
@@ -39,7 +41,7 @@ const BlogForm = () => {
       <BlogFormInput id='author' name='author' required/>
       <BlogFormLabel htmlFor='url'>URL</BlogFormLabel>
       <BlogFormInput id='url' name='url' required/>
-      <BlogFormButton type='submit'>Create</BlogFormButton>
+      <BlogButton type='submit'>Create</BlogButton>
     </BlogFormContainer>
   )
 }

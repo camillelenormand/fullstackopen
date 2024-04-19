@@ -1,7 +1,15 @@
 import styled from 'styled-components'
 
 const BlogFormContainer = styled.form`
-  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 10px;
+  width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
 `
 
 const BlogFormTitle = styled.h2`
@@ -12,7 +20,7 @@ const BlogFormTitle = styled.h2`
 const BlogFormInput = styled.input`
   margin: 0 0 10px 0;
   padding: 5px;
-  width: 100%;
+  width: 50%;
 `
 
 const BlogFormLabel = styled.label`
@@ -24,16 +32,15 @@ const BlogFormLabel = styled.label`
   font-size: 1rem;
 `
 
-const BlogFormButton = styled.button`
-  margin: 10px 0 0 0;
-  padding: 5px;
-  width: 100%;
-`
-
 const BlogLikes = styled.span`
   margin: 0 0 10px 0;
   padding: 5px;
   width: 100%;
 `
 
-export { BlogFormContainer, BlogFormTitle, BlogFormInput, BlogFormButton, BlogFormLabel, BlogLikes }
+const BlogButton = styled.button`
+ ${props => props.theme.button}
+ width: 10%;
+`
+
+export { BlogFormContainer, BlogFormTitle, BlogFormInput, BlogButton, BlogFormLabel, BlogLikes }
