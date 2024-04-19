@@ -4,7 +4,6 @@ import Button from './Button'
 import Blog from './Blog'
 import { BlogTitle, BlogAuthor, BlogUrl, BlogCardDiv } from './BlogListStyles'
 
-
 const BlogCard = React.memo(({ blog, onDelete, onLike, isLikeLoading, isDeleteLoading }) => (
   <BlogCardDiv>
     <BlogTitle>
