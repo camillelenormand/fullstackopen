@@ -42,12 +42,12 @@ const GlobalStyle = createGlobalStyle`
     box-shadow: 0 0px 1px hsla(0, 0%, 0%, 0.2), 0 1px 2px hsla(0, 0%, 0%, 0.2);
     background-color: white;
     line-height: 1.5;
+    margin: 5px;
+    
+  }
+  p {
     margin: 0;
-  }
-  button {
-    color: #3992ff;
-    font-weight: 500;
-  }
+  },
 
   textarea:hover,
   input:hover,
