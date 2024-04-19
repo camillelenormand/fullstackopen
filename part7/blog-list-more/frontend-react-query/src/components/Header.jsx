@@ -1,9 +1,6 @@
-import {
-  Link,
-} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import LogoutButton from './LogOutButton'
-import Notification from './Notification'
 import { useAuth } from '../contexts/AuthContext'
 import BlogForm from './BlogForm'
 
@@ -39,7 +36,6 @@ const Header = () => {
   return (
     <>
       <HeaderContainer>
-        <Notification />
         <Nav>
           <NavLink to="/blogs">Blogs</NavLink>
           <NavLink to="/users">Users</NavLink>
