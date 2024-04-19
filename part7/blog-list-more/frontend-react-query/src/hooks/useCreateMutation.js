@@ -13,11 +13,12 @@ const useCreateMutation = () => {
     {
       onSuccess: (data) => {
         queryClient.invalidateQueries(queryKey)
-        notify(`Blog created successfully: ${data.title} by ${data.author}`)
+        notify(`Blog created successfully: ${data.title} by ${data.author}`, 'success')
         console.log('Mutation successful with data:', data)
       },
       onError: (error) => {
-        notify(error.response.data.error)
+        const errorMessage = error.response?.data?.error
+        notify(errorMessage, 'error')
         console.error('Failed to create blog: ', error)
       }
     }
