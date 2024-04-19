@@ -14,16 +14,16 @@ const queryClient = new QueryClient()
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <NotificationContextProvider>
           <AuthProvider>
             <ThemeProvider>
               <GlobalStyle />
+              <NotificationContextProvider>
               <Router>
                 <App />
               </Router>
+              </NotificationContextProvider>
             </ThemeProvider>
           </AuthProvider>
-      </NotificationContextProvider>
       <ReactQueryDevtools />
     </QueryClientProvider>
   </React.StrictMode>,
