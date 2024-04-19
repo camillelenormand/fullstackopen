@@ -2,6 +2,30 @@ import { useAuth } from '../contexts/AuthContext'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useNotify } from '../contexts/NotificationContext'
+import Button from './Button'
+import styled from 'styled-components'
+
+const LoginFormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 10px;
+  width: 300px;
+  margin: 0 auto;
+`
+const LoginTitle = styled.h2`
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+  text-align: center;
+`
+
+const InputContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 20px;
+`
 
 const LoginForm = () => {
   const navigate = useNavigate()
@@ -39,10 +63,10 @@ const LoginForm = () => {
   }
 
   return (
-    <div>
-      <h2>Log in </h2>
+    <LoginFormContainer>
+      <LoginTitle>Log in </LoginTitle>
       <form onSubmit={handleSubmit} disabled={isLoading}>
-        <div>
+        <InputContainer>
           <input
             type="text"
             id="username"
@@ -53,8 +77,8 @@ const LoginForm = () => {
             value={credentials.username}
             onChange={handleChange}
           />
-        </div>
-        <div>
+        </InputContainer>
+        <InputContainer>
           <input
             type="password"
             id="password"
@@ -65,12 +89,12 @@ const LoginForm = () => {
             value={credentials.password}
             onChange={handleChange}
           />
-        </div>
-        <button type="submit" disabled={isLoading}>
+        </InputContainer>
+        <Button type="submit" disabled={isLoading}>
           Login
-        </button>
+        </Button>
       </form>
-    </div>
+    </LoginFormContainer>
   )
 }
 
