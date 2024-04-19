@@ -1,21 +1,10 @@
 // Button.jsx
-import styled from 'styled-components'
 
-const StyledButton = styled.button`
-  background-color: ${props => props.theme.secondaryColor};
-  color: ${props => props.theme.text};
-  border: 2px solid ${props => props.theme.toggleBorder};
-
-  &:hover {
-      background-color: ${props => props.theme.secondaryColor};
-  }
-`
-
-const Button = ({ onClick, children, className = '', ...props }) => {
+const Button = ({ onClick, children, ...props }) => {
   return (
-    <StyledButton onClick={onClick} className={`btn ${className}`} {...props}>
+    <button onClick={onClick} {...props}>
       {children}
-    </StyledButton>
+    </button>
   )
 }
 
