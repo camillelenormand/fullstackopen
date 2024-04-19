@@ -10,12 +10,14 @@ import Blog from './components/Blog'
 import Header from './components/Header'
 import BlogForm from './components/BlogForm'
 import Error from './components/Error'
+import Notification from './components/Notification'
 
 function App() {
 
   return (
     <div className="App">
       <Header />
+      <Notification />
       <Routes>
         <Route path="/blogs" element={<HomePage />} errorElement={<Error />} />
         <Route path="/login" element={<LoginForm />} errorElement={<Error />} />
