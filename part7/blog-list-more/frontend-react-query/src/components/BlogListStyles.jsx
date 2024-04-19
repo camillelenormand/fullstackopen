@@ -11,17 +11,16 @@ const BlogCardDiv = styled.div`
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  background-color: #f9f9f9;
+  background-color: #FFFFFF;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-`
 
+`
 const BlogTitle = styled.h2`
-  margin: 0 0 10px 0;
-  font-size: 1.25rem;
+  ${props => props.theme.h2}
 `
 
 const BlogAuthor = styled.p`
-  margin: 0;
+  ${props => props.theme.p}
   font-style: italic;
 `
 const BlogUrl = styled.a`
