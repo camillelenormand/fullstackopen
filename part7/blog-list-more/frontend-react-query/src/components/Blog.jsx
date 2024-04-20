@@ -6,6 +6,19 @@ import Loading from './Loading'
 import Error from './Error'
 import Comments from './Comments'
 import CommentForm from './CommentForm'
+import Button from './Button'
+import { BlogTitle, BlogAuthor, BlogUrl } from './BlogListStyles'
+import styled from 'styled-components'
+
+const BlogContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+`
 
 const Blog = () => {
   console.log('Blog component')
@@ -46,32 +59,21 @@ const Blog = () => {
     // Display details of a single blog
     return (
       <>
-        <h1>Blog</h1>
-        <h1>{blog.title}</h1>
-        <p>Author: {blog.author}</p>
-        <p>URL: <a href={blog.url}>{blog.url}</a></p>
-        <p>Likes: {blog.likes}</p>
-        <p>Added by {blog.user.name}</p>
-        <button onClick={() => handleLike(blog.id)}>Like</button>
-        <CommentForm blogId={blog.id} />
-        <Comments comments={blog.comments} />
+        <BlogContainer>
+          <BlogTitle>{blog.title}</BlogTitle>
+          <BlogAuthor>Author: {blog.author}</BlogAuthor>
+          <p>More details:</p><BlogUrl as="a" href={blog.url} target="_blank" rel="noopener noreferrer">{blog.url}</BlogUrl>
+          <p>Number of Likes: {blog.likes}</p>
+          <p>Added by {blog.user.name}</p>
+        </BlogContainer>
+          <Button onClick={() => handleLike(blog.id)}>Like this article!</Button>
+          <CommentForm blogId={blog.id} />
+          <Comments comments={blog.comments} />
       </>
     )
   } else {
-    // Display a list of all blogs
     return (
-      <ul>
-        {blogs?.map(blog => (
-          <li key={blog.id}>
-            <div>Title: {blog.title}</div>
-            <div>Author: {blog.author}</div>
-            <div>URL: {blog.url}</div>
-            <div>Likes: {blog.likes}</div>
-            <div>Added by {blog.user.name}</div>
-            <button onClick={handleLike} disabled={likeMutation.isLoading}>Like</button>
-          </li>
-        ))}
-      </ul>
+      <Error error="No blog found" />
     )
   }
 }
