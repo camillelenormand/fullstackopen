@@ -10,7 +10,8 @@ export const lightTheme = {
   linkHover: 'blue',
   paragraph: 'black',
   footer: 'black',
-  textFooter: 'white'
+  textFooter: 'white',
+  title: 'black'
 }
 
 export const darkTheme = {
@@ -24,5 +25,6 @@ export const darkTheme = {
   linkHover: 'yellow',
   paragraph: 'white',
   footer: 'white',
-  textFooter: 'black'
+  textFooter: 'black',
+  title: 'white'
 }
