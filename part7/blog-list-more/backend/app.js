@@ -3,29 +3,25 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 require('express-async-errors')
-const logger = require('./utils/logger')
-const mongoose = require('mongoose')
+const { connectDB } = require('./utils/db') 
 
 // Router
 const blogsRouter = require('./controllers/blogs')
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
 const commentsRouter = require('./controllers/comments')
-
 const middleware = require('./utils/middleware')
 
-mongoose.set('strictQuery', false)
-
-logger.info('connecting to', config.MONGODB_URI)
-
-mongoose
-	.connect(config.MONGODB_URI)
-	.then(() => {
-		logger.info('connected to MongoDB')
-	})
-	.catch((error) => {
-		logger.error('error connecting to MongoDB:', error.message)
-	})
+// Environment check for the database connection
+if (process.env.NODE_ENV !== 'test') {
+	connectDB(config.MONGODB_URI)
+	console.log('Connected to MongoDB')
+} else {
+	// Use in-memory DB for tests
+	const mongoInMemory = require('./utils/mongoTestUtils')
+	mongoInMemory.connect()
+	console.log('Connected to in-memory MongoDB')
+}
 
 app.use(cors())
 app.use(express.static('build'))
@@ -40,9 +36,5 @@ app.use('/api/blogs', commentsRouter)
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
 
-if (process.env.NODE_ENV === 'test') {
-	const testingRouter = require('./controllers/testing')
-	app.use('/api/testing', testingRouter)
-}
 
 module.exports = app
