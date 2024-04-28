@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
     },
     onError: (error) => {
       setAuthState({ username: null, token: null })
-      console.error('Failed to login: ', error)
+      window.localStorage.removeItem('loggedBlogUsername')
     },
   })
 
@@ -39,6 +39,7 @@ export const AuthProvider = ({ children }) => {
         login: loginMutation.mutate,
         logout,
         isError: loginMutation.isError,
+        isSuccess: loginMutation.isSuccess,
         isLoading: loginMutation.isLoading
       }}
     >
