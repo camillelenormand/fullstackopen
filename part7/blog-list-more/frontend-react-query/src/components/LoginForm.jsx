@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useNotify } from '../contexts/NotificationContext'
 import Button from './Button'
 import styled from 'styled-components'
+import Loading from './Loading'
 
 const LoginFormContainer = styled.div`
   display: flex;
@@ -29,7 +30,7 @@ const InputContainer = styled.div`
 
 const LoginForm = () => {
   const navigate = useNavigate()
-  const { login, isLoading } = useAuth()
+  const { login, isLoading, isSuccess, isError } = useAuth()
   const notifyWith = useNotify()
   const [credentials, setCredentials] = useState({ username: '', password: '' })
 
@@ -40,25 +41,28 @@ const LoginForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    if (isLoading) {
-      console.log('Loading...')
-      return
+
+    const trimmedCredentials = {
+      username: credentials.username.trim(),
+      password: credentials.password.trim(),
     }
-    try {
-      const trimmedCredentials = {
-        username: credentials.username.trim(),
-        password: credentials.password.trim(),
-      }
-      await login(trimmedCredentials)
-      notifyWith('Logged in successfully')
+
+    await login(trimmedCredentials)
+
+    if (isLoading) {
+      <Loading />
+    }
+
+    if (isError) {
+      console.log(isError)
+      notifyWith(`Failed to login ${isError.response?.data}`, 'error')
+      setCredentials({ username: '', password: '' })
+    }
+
+    if (isSuccess) {
+      notifyWith('Logged in successfully', 'success')
       setCredentials({ username: '', password: '' })
       navigate('/blogs')
-      console.log('Logged in successfully')
-
-    } catch (error) {
-      console.error('Failed to login: ', error)
-      notify('Failed to login', error.response?.data?.message || 'Please try again.')
-      console.log('Failed to login: ', error)
     }
   }
 
