@@ -1,7 +1,6 @@
 // controllers/blogs.js
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
-const Comment = require('../models/comment')
 
 const { userExtractor } = require('../utils/middleware')
 
@@ -9,9 +8,7 @@ const { userExtractor } = require('../utils/middleware')
 
 // Get a single blog
 blogsRouter.get('/:id', async (request, response) => {
-	console.log(' Get a single blog')
 	const blog = await Blog.findById(request.params.id).populate('comments')
-	console.log('blog details:', blog)
 	if (blog) {
 		response.json(blog)
 	} else {
@@ -21,7 +18,6 @@ blogsRouter.get('/:id', async (request, response) => {
 
 // Get blogs
 blogsRouter.get('/', async (request, response) => {
-	console.log('Get blogs')
 	// Default values for pagination
 	const page = request.query.page || 1
 	const limit = request.query.limit || 10
@@ -52,8 +48,6 @@ blogsRouter.get('/', async (request, response) => {
 			.skip(startIndex)
 			.exec()
 
-		console.log('results.blogs', results.blogs)
-
 		// Calculate total pages
 		results.totalPages = Math.ceil(results.totalCount / limit)
 
@@ -82,19 +76,13 @@ blogsRouter.get('/', async (request, response) => {
 blogsRouter.post('/', userExtractor, async (request, response) => {
 	console.log(' Create a blog')
 	// Get the title, author, url, likes, and comments from the request
-	const { title, author, url, likes, commentId } = request.body
+	const { title, author, url, likes } = request.body
 	// Get the user from the request
 	const user = request.user
-	console.log('user', user)
-
-	// Find the comments by the commentId
-	const comment = await Comment.findById(commentId)
-	console.log('comment', comment)
 
 	// If the user is not found, return an error
 	if (!user) {
 		response.status(401).json({ error: 'unauthorized user' })
-		console.log('unauthorized user', user)
 	}
 
 	// Create a new blog
@@ -106,26 +94,25 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 		user: user.id
 	})
 
-	console.log('blog', blog)
+	// Validations
+	if (!blog.title) {
+		response.status(400).json({ error: 'Title is required' })
+	}
 
-	// If the title or url is missing, return an error
-	if (!blog.title || !blog.url) {
-		response.status(400).json({ error: 'title or url missing' })
+	if (!blog.author) {
+		response.status(400).json({ error: 'Author is required' })
+	}
+
+	if (!blog.url) {
+		response.status(400).json({ error: 'URL is required' })
 	}
 
 	// Save the blog in the database
 	const savedBlog = await blog.save()
-	console.log('savedBlog', savedBlog)
 
 	// Add the author to the blog
 	user.blogs = user.blogs.concat(savedBlog._id)
-	console.log('user.blogs', user.blogs)
 	await user.save()
-
-	// Add the comments to the blogs
-	// comment.blogs = comment?.blogs.concat(savedBlog._id)
-	// console.log('comment.blogs', comment.blogs)
-	// await comment.save()
 
 	response.status(201).json(savedBlog)
 })
@@ -136,19 +123,14 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 blogsRouter.delete('/:id', userExtractor, async (request, response) => {
 	console.log(' Deleting a blog')
 	const user = request.user
-	console.log('user', user)
 
 	if (!user) {
 		response.status(401).json({ error: 'unauthorized user' })
-		console.log('unauthorized user', user)
 	}
 
 	const blogToDelete = await Blog.findById(request.params.id)
-	console.log('blogToDelete', blogToDelete)
 
 	if (blogToDelete.user.toString() === request.user.id) {
-		console.log('blogToDelete.user', blogToDelete.user)
-		console.log('request.params.id', request.params.id)
 		await Blog.findByIdAndDelete(request.params.id)
 		response.status(204).end()
 	} else {
@@ -170,8 +152,6 @@ blogsRouter.put('/:id', async (request, response) => {
 		{ title, author, url, likes },
 		{ new: true },
 	)
-
-	console.log('updatedBlog', updatedBlog)
 
 	response.status(200).json({ message: 'Blog updated', updatedBlog }) ??
 		response.status(404).json({ error: 'Blog not found or invalid' })
