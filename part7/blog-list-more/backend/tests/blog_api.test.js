@@ -1,285 +1,274 @@
-const mongoose = require("mongoose");
-const supertest = require("supertest");
-const helper = require("./test_helper.test");
-const app = require("../app");
-
-const api = supertest(app);
-const Blog = require("../models/blog");
-
-beforeEach(async () => {
-  await Blog.deleteMany({});
-  console.log("cleared");
-
-  for (let blog of helper.initialBlogs) {
-    let blogObject = new Blog(blog);
-    await blogObject.save();
-    console.log("blogs saved");
-  }
-});
-
-///////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////
-
-describe("getting blogs", () => {
-  test("blogs are returned as json", async () => {
-    await api
-      .get("/api/blogs")
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-  });
-
-  ///////////////////////////////////////////////////////////////////////////////////////
-
-  test("return all blogs", async () => {
-    const response = await api.get("/api/blogs");
-    console.log("fetching response");
-    console.log("response length: ", response.body.length);
-
-    expect(response.body).toHaveLength(helper.initialBlogs.length);
-  });
-
-  ///////////////////////////////////////////////////////////////////////////////////////
-
-  test('One of the title of the blogs must be "TDD harms architecture"', async () => {
-    const response = await api.get("/api/blogs");
-
-    const titles = response.body.map((r) => r.title);
-    expect(titles).toContainEqual("TDD harms architecture");
-  });
-
-  ///////////////////////////////////////////////////////////////////////////////////////
-
-  test('unique identifier property of the blog posts is named "id"', async () => {
-    const response = await api.get("/api/blogs");
-
-    const ids = response.body.map((r) => r.id);
-
-    expect(ids).toBeDefined();
-  });
-});
-
-///////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////
-
-describe("creating a new blog", () => {
-  let headers;
-
-  beforeEach(async () => {
-    const response = await api
-      .post("/api/login")
-      .send({
-        username: "camillelenormand@fake.com",
-        password: process.env.PASSWORD,
-      });
-
-    console.log(response.body);
-
-    headers = {
-      Authorization: `Bearer ${response.body.token}`,
-    };
-    console.log(response.body);
-  });
-
-  test("a valid blog can be added by an authenticated user", async () => {
-    const newBlog = {
-      title: "Responsive Web Design",
-      author: "Ethan Marcotte",
-      url: "https://alistapart.com/article/responsive-web-design/",
-      likes: 10,
-      user: "64da010dd906ae93ddc49d43",
-    };
-
-    console.log("newBlog: ", newBlog);
-
-    await api
-      .post("/api/blogs")
-      .set(headers)
-      .send(newBlog)
-      .expect(201)
-      .expect("Content-Type", /application\/json/);
-
-    const blogsAtEnd = await helper.blogsInDb();
-    console.log("blogsAtEnd: ", blogsAtEnd);
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
-
-    const titles = blogsAtEnd.map((r) => r.title);
-    console.log("titles: ", titles);
-    expect(titles).toContainEqual("Responsive Web Design");
-  });
-
-  ///////////////////////////////////////////////////////////////////////////////////////
-
-  test("blog created by an auth user without a title is not added", async () => {
-    const newBlog = {
-      author: "Ethan Marcotte",
-      url: "https://alistapart.com/article/responsive-web-design/",
-    };
-
-    await api
-      .post("/api/blogs")
-      .set(headers)
-      .send(newBlog)
-      .expect(400)
-      .expect("Content-Type", /application\/json/);
-
-    const response = await api.get("/api/blogs");
-
-    expect(response.body).toHaveLength(helper.initialBlogs.length);
-    expect(response.body).not.toContainEqual(newBlog);
-  });
-
-  ///////////////////////////////////////////////////////////////////////////////////////
-
-  test("blog without an URL is not added", async () => {
-    const newBlog = {
-      title: "Responsive Web Design",
-      author: "Ethan Marcotte",
-      likes: 10,
-    };
-
-    await api
-      .post("/api/blogs")
-      .set(headers)
-      .send(newBlog)
-      .expect(400)
-      .expect("Content-Type", /application\/json/);
-
-    const response = await api.get("/api/blogs");
-
-    expect(response.body).toHaveLength(helper.initialBlogs.length);
-    expect(response.body).not.toContainEqual(newBlog);
-  });
-
-  ///////////////////////////////////////////////////////////////////////////////////////
-
-  test("blog without any likes will have a 0 default value", async () => {
-    const newBlog = {
-      title: "Responsive Web Design",
-      author: "Ethan Marcotte",
-      url: "https://alistapart.com/article/responsive-web-design/",
-    };
-
-    await api
-      .post("/api/blogs")
-      .set(headers)
-      .send(newBlog)
-      .expect(201)
-      .expect("Content-Type", /application\/json/);
-
-    const response = await api.get("/api/blogs");
-
-    console.log(response.body);
-
-    const likes = response.body.map((r) => r.likes).slice(-1);
-
-    console.log(likes);
-
-    expect(response.body).toHaveLength(helper.initialBlogs.length + 1);
-    expect(likes).toEqual([0]);
-  });
-
-  /////////////////////////////////////////////////////////////////////////////////////
-
-  test("deletion succeeds with status code 204 if id is valid", async () => {
-    const newBlog = {
-      title: "Responsive Web Design",
-      author: "Ethan Marcotte",
-      url: "https://alistapart.com/article/responsive-web-design/",
-    };
-
-    const response = await api
-      .post("/api/blogs")
-      .set(headers)
-      .send(newBlog)
-      .expect(201)
-      .expect("Content-Type", /application\/json/);
-
-    console.log("response: ", response.body);
-
-    const res = await api
-      .delete(`/api/blogs/${response.body.id}`)
-      .set(headers)
-      .expect(204);
-
-    console.log("res: ", res);
-
-    const blogsAtEnd = await helper.blogsInDb();
-    console.log("blogsAtEnd: ", blogsAtEnd);
-
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
-
-    const titles = blogsAtEnd.map((r) => r.title);
-
-    expect(titles).not.toContain(newBlog.title);
-  });
-});
-
-///////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////
-
-describe("getting a single blog", () => {
-  test("succeed in finding a blog", async () => {
-    const blogsAtStart = await helper.blogsInDb();
-    console.log("blogsAtStart: ", blogsAtStart);
-
-    const blogToView = blogsAtStart[0];
-    console.log("blogToView: ", blogToView);
-
-    const resultBlog = await api
-      .get(`/api/blogs/${blogToView.id}`)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-
-    expect(resultBlog.body).toEqual(blogToView);
-  });
-
-  ///////////////////////////////////////////////////////////////////////////////////////
-
-  test("fails with statuscode 404 if blog does not exist", async () => {
-    const validNonExistingId = helper.nonExistingId;
-    console.log("validNonExistingId: ", validNonExistingId);
-
-    await api.get(`/api/blogs/${validNonExistingId}`).expect(404);
-  });
-
-  ///////////////////////////////////////////////////////////////////////////////////////
-
-  test("fails with statuscode 400 if id is invalid", async () => {
-    const invalidId = "5a3d5da59070081a82a3445";
-
-    await api.get(`/api/blogs/${invalidId}`).expect(400);
-  });
-});
-
-///////////////////////////////////////////////////////////////////////////////////////
-//// PUT /api/blogs
-///////////////////////////////////////////////////////////////////////////////////////
-
-describe("updating a blog", () => {
-  test("updating a blog", async () => {
-    const blogsAtStart = await helper.blogsInDb();
-    const blogToUpdate = blogsAtStart.find(
-      (blog) => blog.title === "TDD harms architecture",
-    );
-    console.log("blogToUpdate: ", blogToUpdate);
-
-    const newBlog = {
-      title: blogToUpdate.title,
-      author: blogToUpdate.author,
-      url: blogToUpdate.url,
-      likes: 9,
-    };
-
-    await api
-      .put(`/api/blogs/${blogToUpdate.id}`)
-      .send(newBlog)
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
-  });
-});
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-afterAll(async () => {
-  await mongoose.connection.close();
-}, 100000);
+// blog-list-more/backend/tests/blog_api.test.js
+const supertest = require('supertest')
+const { closeDatabase, clearDatabase } = require('../utils/mongoTestUtils')
+const app = require('../app')
+const { beforeEach, before, test, after, describe, it } = require('node:test')
+const assert = require('node:assert')
+
+const api = supertest(app)
+const Blog = require('../models/blog')
+const User = require('../models/user')
+
+const { initialUser, initialBlogs, blogsInDb, usersInDb } = require('./test_helper')
+
+let authHeader
+
+describe('Initialisation of the testings: creation of a user and log in as this user', () => {
+	beforeEach(async () => {
+		await User.deleteMany({})
+		// Create a user
+		const user = initialUser[0]
+		await api
+			.post('/api/users')
+			.send(user)
+			.expect(201)
+			.expect('Content-Type', /application\/json/)
+
+		// Login
+		const loginResponse = await api
+			.post('/api/login')
+			.send(user)
+			.expect(200)
+			.expect('Content-Type', /application\/json/)
+
+		authHeader = `Bearer ${loginResponse.body.token}`
+	})
+
+	describe('When there are some blogs already in MongoDB', () => {
+		beforeEach(async () => {
+			await Blog.deleteMany({})
+			await Blog.insertMany(initialBlogs)
+			console.log('Blogs inserted')
+		})
+
+		test('blogs are returned as json', async () => {
+			const response = await api
+				.get('/api/blogs')
+				.expect(200)
+				.expect('Content-Type', /application\/json/)
+
+			assert(response.body.blogs.length === initialBlogs.length)
+		})
+
+		test('a blog has an id property', async () => {
+			const response = await api
+				.get('/api/blogs')
+				.expect(200)
+			const blog = response.body.blogs[0]
+
+			assert(blog.id)
+		})
+
+		test('a blog can be updated', async () => {
+			const [blogToUpdate] = await blogsInDb()
+
+			const updatedBlog = {
+				...blogToUpdate,
+				title: 'Updated title'
+			}
+
+			await api
+				.put(`/api/blogs/${blogToUpdate.id}`)
+				.send(updatedBlog)
+				.expect(200)
+
+			const blogs = await blogsInDb()
+
+			const titles = blogs.map((blog) => blog.title)
+
+			assert(titles.includes('Updated title'))
+		})
+
+		describe('Inserting a new blog', () => {
+			test('is ok with comprehensive data', async () => {
+				const newBlog = {
+					title: 'New blog',
+					author: 'John Doe',
+					url: 'https://example.com',
+					likes: 10
+				}
+
+				await api
+					.post('/api/blogs')
+					.set('Authorization', authHeader)
+					.send(newBlog)
+					.expect(201)
+					.expect('Content-Type', /application\/json/)
+
+				const blogs = await blogsInDb()
+
+				// Check that the new blog was added
+				assert(blogs.length === initialBlogs.length + 1)
+
+				// Check that the new blog is in the list
+				const titles = blogs.map((blog) => blog.title)
+				assert(titles.includes('New blog'))
+
+			})
+		})
+
+		test('includes likes set to 0 by default if not provided', async () => {
+			const newBlog = {
+				title: 'New blog',
+				author: 'John Doe',
+				url: 'https://example.com'
+			}
+
+			const response = await api
+				.post('/api/blogs')
+				.set('Authorization', authHeader)
+				.send(newBlog)
+				.expect(201)
+				.expect('Content-Type', /application\/json/)
+
+			assert(response.body.likes === 0)
+		})
+
+		test('fails if title is missing', async () => {
+			const newBlog = {
+				title: '',
+				author: 'John Doe',
+				url: 'https://example.com',
+				likes: 10
+			}
+
+			const response = await api
+				.post('/api/blogs')
+				.set('Authorization', authHeader)
+				.send(newBlog)
+				.expect(400)
+				.expect('Content-Type', /application\/json/)
+
+			assert(response.body.error === 'Title is required')
+
+		})
+
+		test('fails if url is missing', async () => {
+			const newBlog = {
+				title: 'New blog',
+				author: 'John Doe',
+				url: '',
+				likes: 10
+			}
+
+			const response = await api
+				.post('/api/blogs')
+				.set('Authorization', authHeader)
+				.send(newBlog)
+				.expect(400)
+				.expect('Content-Type', /application\/json/)
+
+			assert(response.body.error === 'URL is required')
+		})
+
+		test('fails if author is missing', async () => {
+			const newBlog = {
+				title: 'New blog',
+				url: 'https://example.com',
+				likes: 10
+			}
+
+			const response = await api
+				.post('/api/blogs')
+				.set('Authorization', authHeader)
+				.send(newBlog)
+				.expect(400)
+				.expect('Content-Type', /application\/json/)
+
+			assert(response.body.error === 'Author is required')
+		})
+	})
+})
+
+describe('a blog', () => {
+	let id
+	beforeEach(async () => {
+		await Blog.deleteMany({})
+
+		const newBlog = {
+			title: 'New blog',
+			author: 'John Doe',
+			url: 'https://example.com',
+			likes: 10
+		}
+
+		const response = await api
+			.post('/api/blogs')
+			.set('Authorization', authHeader)
+			.send(newBlog)
+			.expect(201)
+			.expect('Content-Type', /application\/json/)
+
+
+		id = response.body.id
+	})
+
+	test('can be deleted', async () => {
+		await api
+			.delete(`/api/blogs/${id}`)
+			.set('Authorization', authHeader)
+			.expect(204)
+
+		const blogs = await blogsInDb()
+
+		assert(blogs.length === 0)
+	})
+
+	test('can be deleted by the admin', async () => {
+		const blogToDelete = await blogsInDb()
+
+		await api
+			.delete(`/api/blogs/${blogToDelete[0].id}`)
+			.set('Authorization', authHeader)
+			.expect(204)
+
+		const blogs = await blogsInDb()
+
+		assert(blogs.length === 0)
+	})
+
+	test('cannot be deleted by a user with invalid auth header', async () => {
+		const blogToDelete = await blogsInDb()
+
+		await api
+			.delete(`/api/blogs/${blogToDelete[0].id}`)
+			.expect(401)
+
+		const blogs = await blogsInDb()
+		assert(blogs.length === 1)
+	})
+
+	test('cannot be deleted by a user who did not create it', async () => {
+		const blogToDelete = await blogsInDb()
+		const user = {
+			username: 'User2',
+			name: 'User2',
+			password: 'password'
+		}
+
+		await api
+			.post('/api/users')
+			.send(user)
+			.expect(201)
+			.expect('Content-Type', /application\/json/)
+
+		const loginResponse = await api
+			.post('/api/login')
+			.send(user)
+			.expect(200)
+			.expect('Content-Type', /application\/json/)
+		
+		const anotherUserAuthHeader = `Bearer ${loginResponse.body.token}`
+		await api
+			.delete(`/api/blogs/${blogToDelete[0].id}`)
+			.set('Authorization', anotherUserAuthHeader)
+			.expect(401)
+
+		const blogs = await blogsInDb()
+		assert(blogs.length === 1)
+	})
+})
+
+after(async () => {
+	await closeDatabase()
+})
