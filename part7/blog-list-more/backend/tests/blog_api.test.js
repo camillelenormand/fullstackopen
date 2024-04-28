@@ -2,14 +2,14 @@
 const supertest = require('supertest')
 const { closeDatabase, clearDatabase } = require('../utils/mongoTestUtils')
 const app = require('../app')
-const { beforeEach, before, test, after, describe, it } = require('node:test')
+const { beforeEach, test, after, describe } = require('node:test')
 const assert = require('node:assert')
 
 const api = supertest(app)
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
-const { initialUser, initialBlogs, blogsInDb, usersInDb } = require('./test_helper')
+const { initialUser, initialBlogs, blogsInDb } = require('./test_helper')
 
 let authHeader
 
@@ -270,5 +270,6 @@ describe('a blog', () => {
 })
 
 after(async () => {
+	await clearDatabase()
 	await closeDatabase()
 })
