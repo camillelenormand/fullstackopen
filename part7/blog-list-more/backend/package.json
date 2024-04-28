@@ -6,9 +6,8 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
-    "lint": "eslint .",
-    "test": "jest --verbose --runInBand",
-    "start:test": "NODE_ENV=test node index.js"
+    "test": "NODE_ENV=test node --test native/tests/",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -37,12 +36,15 @@
     "mongoose-unique-validator": "^5.0.0",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.0",
-    "supertest": "^6.3.4"
+    "supertest": "^6.3.4",
+    "uri-js": "^4.2.2"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
+    "mocha": "^10.4.0",
+    "mongodb-memory-server": "^9.1.8",
     "prettier": "3.2.5"
   }
 }
