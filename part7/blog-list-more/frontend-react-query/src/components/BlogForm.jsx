@@ -36,11 +36,11 @@ const BlogForm = () => {
   return (
     <BlogFormContainer onSubmit={onCreate}>
       <BlogFormLabel htmlFor='title'>Title</BlogFormLabel>
-      <BlogFormInput id='title' name='title' required/>
+      <BlogFormInput id='title' name='title' placeholder='Enter a title' type='text' required/>
       <BlogFormLabel htmlFor='author'>Author</BlogFormLabel>
-      <BlogFormInput id='author' name='author' required/>
+      <BlogFormInput id='author' name='author' placeholder='Enter an author'type='text' required/>
       <BlogFormLabel htmlFor='url'>URL</BlogFormLabel>
-      <BlogFormInput id='url' name='url' required/>
+      <BlogFormInput id='url' name='url' placeholder='Enter an URL' type='text' required/>
       <BlogButton type='submit'>Create</BlogButton>
     </BlogFormContainer>
   )
