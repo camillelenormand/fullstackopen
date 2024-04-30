@@ -55,7 +55,7 @@ const LoginForm = () => {
 
     if (isError) {
       console.log(isError)
-      notifyWith(`Failed to login ${isError.response?.data}`, 'error')
+      notifyWith(`Failed to login ${isError}`, 'error')
       setCredentials({ username: '', password: '' })
     }
 
