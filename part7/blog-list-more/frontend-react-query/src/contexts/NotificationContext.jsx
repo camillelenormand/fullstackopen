@@ -31,7 +31,7 @@ export const useNotificationValue = () => {
 export const useNotify = () => {
   const [, dispatch] = useContext(NotificationContext)
 
-  return (message, type = 'success') => {  // Default type is 'success'
+  return (message, type = 'success') => { 
     dispatch({ type: 'SET', payload: { message, type } })
     setTimeout(() => {
       dispatch({ type: 'CLEAR' })
