@@ -21,6 +21,7 @@ export const AuthProvider = ({ children }) => {
       setAuthState({ username: data.username, token: data.token })
       window.localStorage.setItem('loggedBlogUsername', JSON.stringify(data.username))
       window.localStorage.setItem('loggedBlogToken', JSON.stringify(data.token))
+      notifyWith('Logged in successfully', 'success')
     },
     onError: (error) => {
       setAuthState({ username: null, token: null })
