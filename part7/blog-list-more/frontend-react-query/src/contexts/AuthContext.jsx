@@ -2,8 +2,10 @@
 import { createContext, useContext, useState } from 'react'
 import { useMutation } from 'react-query'
 import loginService from '../services/login'
+import { useNotify } from './NotificationContext'
 
 const AuthContext = createContext()
+const notifyWith = useNotify()
 
 export const useAuth = () => useContext(AuthContext)
 
@@ -23,6 +25,8 @@ export const AuthProvider = ({ children }) => {
     onError: (error) => {
       setAuthState({ username: null, token: null })
       window.localStorage.removeItem('loggedBlogUsername')
+      window.localStorage.removeItem('loggedBlogToken')
+      notifyWith(error.response.data.error, 'error')
     },
   })
 
@@ -30,6 +34,7 @@ export const AuthProvider = ({ children }) => {
     setAuthState({ username: null, token: null })
     window.localStorage.removeItem('loggedBlogUsername')
     window.localStorage.removeItem('loggedBlogToken')
+    notifyWith('Logged out successfully', 'success')
   }
 
   return (
