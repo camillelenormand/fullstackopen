@@ -1,7 +1,6 @@
 import { useAuth } from '../contexts/AuthContext'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useNotify } from '../contexts/NotificationContext'
 import Button from './Button'
 import styled from 'styled-components'
 import Loading from './Loading'
@@ -31,7 +30,6 @@ const InputContainer = styled.div`
 const LoginForm = () => {
   const navigate = useNavigate()
   const { login, isLoading, isSuccess, isError } = useAuth()
-  const notifyWith = useNotify()
   const [credentials, setCredentials] = useState({ username: '', password: '' })
 
   const handleChange = (e) => {
@@ -55,12 +53,10 @@ const LoginForm = () => {
 
     if (isError) {
       console.log(isError)
-      notifyWith(`Failed to login ${isError}`, 'error')
       setCredentials({ username: '', password: '' })
     }
 
     if (isSuccess) {
-      notifyWith('Logged in successfully', 'success')
       setCredentials({ username: '', password: '' })
       navigate('/blogs')
     }
