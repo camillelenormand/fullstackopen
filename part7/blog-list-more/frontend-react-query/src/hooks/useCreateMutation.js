@@ -17,10 +17,10 @@ const useCreateMutation = () => {
         console.log('Mutation successful with data:', data)
       },
       onError: (error) => {
-        const errorMessage = error.response?.data?.error
+        const errorMessage = error.response?.data?.error || 'Failed to create blog.'
         notify(errorMessage, 'error')
         console.error('Failed to create blog: ', error)
-      }
+      },
     }
   )
 
