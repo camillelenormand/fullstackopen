@@ -21,6 +21,7 @@
     "styled-components": "^6.1.8"
   },
   "devDependencies": {
+    "@jackfranklin/test-data-bot": "^2.1.0",
     "@tanstack/eslint-plugin-query": "^5.28.6",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^15.0.5",
@@ -33,7 +34,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "jsdom": "^24.0.0",
-    "nock": "^13.5.4",
+    "msw": "^2.2.14",
     "prettier": "3.2.5",
     "vite": "^5.2.0",
     "vitest": "^1.5.2"
