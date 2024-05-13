@@ -1,55 +1,67 @@
 // AuthContext.js
-import { createContext, useContext, useState } from 'react'
-import { useMutation } from 'react-query'
+import { createContext, useContext, useReducer } from 'react'
 import loginService from '../services/login'
-import { useNotify } from './NotificationContext'
+import storageService from '../services/storage'
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'LOGIN':
+      return action.payload
+    case 'LOGOUT':
+      return null
+    default:
+      return state
+  }
+}
 
 const AuthContext = createContext()
-const notifyWith = useNotify()
-
-export const useAuth = () => useContext(AuthContext)
 
 export const AuthProvider = ({ children }) => {
-  const [authState, setAuthState] = useState(() => {
-    const token = JSON.parse(window.localStorage.getItem('loggedBlogToken'))
-    const username = JSON.parse(window.localStorage.getItem('loggedBlogUsername'))
-    return { username, token }
-  })
-
-  const loginMutation = useMutation(credentials => loginService(credentials), {
-    onSuccess: (data) => {
-      setAuthState({ username: data.username, token: data.token })
-      window.localStorage.setItem('loggedBlogUsername', JSON.stringify(data.username))
-      window.localStorage.setItem('loggedBlogToken', JSON.stringify(data.token))
-      notifyWith('Logged in successfully', 'success')
-    },
-    onError: (error) => {
-      setAuthState({ username: null, token: null })
-      window.localStorage.removeItem('loggedBlogUsername')
-      window.localStorage.removeItem('loggedBlogToken')
-      notifyWith(error.response.data.error, 'error')
-    },
-  })
-
-  const logout = () => {
-    setAuthState({ username: null, token: null })
-    window.localStorage.removeItem('loggedBlogUsername')
-    window.localStorage.removeItem('loggedBlogToken')
-    notifyWith('Logged out successfully', 'success')
-  }
+  const [authState, dispatch] = useReducer(reducer, null)
 
   return (
-    <AuthContext.Provider
-      value={{
-        ...authState,
-        login: loginMutation.mutate,
-        logout,
-        isError: loginMutation.isError,
-        isSuccess: loginMutation.isSuccess,
-        isLoading: loginMutation.isLoading
-      }}
-    >
+    <AuthContext.Provider value={{ authState, dispatch }}>
       {children}
     </AuthContext.Provider>
   )
 }
+
+export const useAuth = () => {
+  const context = useContext(AuthContext)
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider')
+  }
+  return context
+}
+
+export const useLogin = () => {
+  const { dispatch } = useAuth()
+  return async (credentials) => {
+    const user = await loginService.login(credentials)
+    dispatch({ type: 'LOGIN', payload: user })
+    storageService.saveUser(user)
+  }
+}
+
+export const useLogout = () => {
+  const { dispatch } = useAuth()
+  return () => {
+    dispatch({ type: 'LOGOUT' })
+    storageService.removeUser()
+  }
+}
+
+export const useUser = () => {
+  const { dispatch } = useAuth()
+  return async () => {
+    const user = storageService.loadUser()
+    if (user) {
+      dispatch({
+        type: 'LOGIN',
+        payload: user
+      })
+    }
+  }
+}
+
+export default AuthContext
