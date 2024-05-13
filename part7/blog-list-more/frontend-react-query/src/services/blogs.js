@@ -10,10 +10,8 @@ const baseUrl = '/api/blogs'
 
 const setToken = () => {
   let token = localStorage.getItem('loggedBlogUser')
-  console.log('token', token)
   if (token) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    console.log('token', token)
   } else {
     delete axios.defaults.headers.common['Authorization']
   }
@@ -30,7 +28,6 @@ const getAllBlogs = async ({ page = 1, limit = 10}) => {
     const response = await axios.get(baseUrl, {
       params: { page, limit }
     })
-    console.log('response', response.data)
     return response.data
   }
   catch (error) {
@@ -49,7 +46,6 @@ const getAllBlogs = async ({ page = 1, limit = 10}) => {
 const getBlog = async (id) => {
   try {
     const response = await axios.get(`${baseUrl}/${id}`)
-    console.log('response', response.data)
     return response.data
   } catch (error) {
     console.error('Error fetching blog', error)
@@ -73,7 +69,6 @@ const createBlog = async (newBlog, authToken) => {
 
   try {
     const response = await axios.post(baseUrl, newBlog, config)
-    console.log('response', response.data)
     return response.data
   } catch (error) {
     console.error('Error creating blog', error)
@@ -98,8 +93,6 @@ const updateBlog = async ({ id, newBlog, authToken }) => {
   }
   try {
     const response = await axios.put(`${baseUrl}/${id}`, newBlog, config)
-    console.log('newBlog', newBlog)
-    console.log('response', response.data.updatedBlog.likes)
     return response.data
   } catch (error) {
     console.error('Error updating blog', error)
@@ -122,8 +115,6 @@ const deleteBlog = async ({ id, authToken }) => {
   }
   try {
     const response = await axios.delete(`${baseUrl}/${id}`, config)
-    console.log('response', response.data)
-    console.log('id', id)
     console.log('Blog deleted successfully')
     return response.data
   } catch (error) {
@@ -142,7 +133,6 @@ const deleteBlog = async ({ id, authToken }) => {
 const getComments = async (id) => {
   try {
     const response = await axios.get(`${baseUrl}/${id}/comments`)
-    console.log('response', response.data)
     return response.data
   } catch (error) {
     console.error('Error fetching comments', error)
@@ -161,7 +151,6 @@ const getComments = async (id) => {
 const createComment = async (id, newComment) => {
   try {
     const response = await axios.post(`${baseUrl}/${id}/comments`, newComment)
-    console.log('response', response.data)
     return response.data
   } catch (error) {
     console.error('Error creating comment', error)
