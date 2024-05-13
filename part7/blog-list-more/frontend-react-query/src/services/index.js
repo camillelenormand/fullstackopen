@@ -1,6 +1,6 @@
-import { blogs } from './blogs';
-import { login } from './login';
-import { users } from './users';
+import { blogs } from './blogs'
+import { login } from './login'
+import { users } from './users'
 
 // Import all service functions
 
@@ -9,4 +9,4 @@ export default {
   blogs,
   login,
   users,
-};
+}
