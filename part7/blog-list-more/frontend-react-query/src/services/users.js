@@ -9,7 +9,6 @@ const baseUrl = '/api/users'
 const getAllUsers = async () => {
   try {
     const response = await axios.get(baseUrl)
-    console.log('response', response.data)
     return response.data
   } catch (error) {
     console.error('Error fetching users', error)
