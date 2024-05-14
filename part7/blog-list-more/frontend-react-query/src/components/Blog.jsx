@@ -1,7 +1,7 @@
 import BlogService from '../services/blogs'
 import { useQuery } from 'react-query'
 import { useMatch } from 'react-router-dom'
-import useLikeMutation from '../hooks/useLikeMutation'
+import useLike from '../hooks/useLikeBlog'
 import Loading from './Loading'
 import Error from './Error'
 import Comments from './Comments'
@@ -21,15 +21,12 @@ const BlogContainer = styled.div`
 `
 
 const Blog = () => {
-  console.log('Blog component')
   // Fetch all blogs
   const { isLoading, isError, error, data } = useQuery('blogs', BlogService.getAllBlogs)
   // Get the like mutation hook
-  const likeMutation = useLikeMutation()
+  const likeBlog = useLike()
 
   const blogs = data?.blogs
-
-  console.log('blogs', blogs)
 
   const match = useMatch('/blogs/:id')
 
@@ -41,9 +38,7 @@ const Blog = () => {
   const handleLike = () => {
     const token = window.localStorage.getItem('loggedBlogToken')
     const updatedBlog = { ...blog, likes: blog.likes + 1 }
-    console.log('updatedBlog', updatedBlog)
-    console.log('blog.id', blog.id)
-    likeMutation.mutate({
+    likeBlog.mutate({
       id: blog.id,
       newBlog: updatedBlog,
       authToken: token
