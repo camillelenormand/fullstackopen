@@ -2,11 +2,10 @@
 // Import hooks
 import { useState } from 'react'
 // Import contexts and custom hooks 
-import { useAuth } from '../contexts/AuthContext'
 import useBlogs from '../hooks/useBlogs'
 import usePagination from '../hooks/usePagination'
-import useLikeMutation from '../hooks/useLikeMutation'
-import useDeleteMutation from '../hooks/useDeleteMutation'
+import useLike from '../hooks/useLikeBlog'
+import useDelete from '../hooks/useDeleteBlog'
 // Import components
 import NoBlogs from './NoBlogs'
 import Loading from './Loading'
@@ -21,13 +20,10 @@ const Blogs = () => {
   const { limit } = useState(10)
 
   // Custom hooks
-  const user = useAuth()
   const { page, nextPage, prevPage } = usePagination()
   const { data, isLoading, isError, error } = useBlogs({ page, limit })
-  const likeMutation = useLikeMutation()
-  const deleteMutation = useDeleteMutation()
-
-  console.log('user:', user)
+  const likeBlog = useLike()
+  const deleteBlog = useDelete()
 
   // Handle loading and error states
   if (isLoading) 
@@ -38,9 +34,8 @@ const Blogs = () => {
 
   // Define event handlers for liking and deleting blog posts
   const handleLike = (blog) => {
-    const token = JSON.parse(window.localStorage.getItem('loggedBlogToken'))
     const updatedBlog = { ...blog, likes: blog.likes + 1 }
-    likeMutation.mutate({
+    likeBlog.mutate({
       id: updatedBlog.id,
       newBlog: updatedBlog,
       authToken: token,
@@ -48,7 +43,6 @@ const Blogs = () => {
   }
 
   const handleDelete = (blog) => {
-    const token = JSON.parse(window.localStorage.getItem('loggedBlogToken'))
     deleteMutation.mutate({
       id: blog.id,
       authToken: token,
@@ -71,8 +65,8 @@ const Blogs = () => {
               }
             }}
             onLike={handleLike}
-            isLikeLoading={likeMutation.isLoading}
-            isDeleteLoading={deleteMutation.isLoading}
+            isLikeLoading={likeBlog.isLoading}
+            isDeleteLoading={deleteBlog.isLoading}
           />
         ))}
       </GridContainer>
