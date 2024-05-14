@@ -35,16 +35,19 @@ export const useAuth = () => {
 }
 
 export const useLogin = () => {
-  const { dispatch } = useAuth()
+  const { dispatch } = useContext(AuthContext)
   return async (credentials) => {
-    const user = await loginService.login(credentials)
-    dispatch({ type: 'LOGIN', payload: user })
+    const user = await loginService(credentials)
+    dispatch({ 
+      type: 'LOGIN', 
+      payload: user
+    })
     storageService.saveUser(user)
   }
 }
 
 export const useLogout = () => {
-  const { dispatch } = useAuth()
+  const { dispatch } = useContext(AuthContext)
   return () => {
     dispatch({ type: 'LOGOUT' })
     storageService.removeUser()
@@ -52,7 +55,7 @@ export const useLogout = () => {
 }
 
 export const useUser = () => {
-  const { dispatch } = useAuth()
+  const { dispatch } = useContext(AuthContext)
   return async () => {
     const user = storageService.loadUser()
     if (user) {
