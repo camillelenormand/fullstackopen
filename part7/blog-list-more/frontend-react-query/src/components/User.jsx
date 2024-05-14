@@ -10,8 +10,6 @@ const User = () => {
 
   const match = useMatch('/users/:id')
 
-  console.log('users:', users)
-
   const user = match
     ? users?.find(user => user.id === match.params.id)
     : <p>No user found</p>
