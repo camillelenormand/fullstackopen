@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from 'react-query'
 import blogService from '../services/blogs'
 import { useNotify } from '../contexts/NotificationContext'
 
-const useDeleteMutation = () => {
+const useDelete= () => {
   const queryKey = ['blogs']
   const queryClient = useQueryClient()
   const notify = useNotify()
@@ -36,4 +36,4 @@ const useDeleteMutation = () => {
   )
 }
 
-export default useDeleteMutation
+export default useDelete
