@@ -1,15 +1,15 @@
 import { useMutation, useQueryClient } from 'react-query'
 import blogService from '../services/blogs'
 import { useNotify } from '../contexts/NotificationContext'
+import storageService from '../services/storage'
 
 const useCreateMutation = () => {
   const queryKey = ['blogs']
   const queryClient = useQueryClient()
   const notify = useNotify()
-  const token = JSON.parse(window.localStorage.getItem('loggedBlogToken'))
 
   return useMutation(
-    newBlog => blogService.createBlog(newBlog, token),
+    newBlog => blogService.createBlog(newBlog, storageService.loadUser().token),
     {
       onSuccess: (data) => {
         queryClient.invalidateQueries(queryKey)
