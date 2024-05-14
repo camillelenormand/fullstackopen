@@ -4,7 +4,7 @@ import { useMutation } from 'react-query'
 import { useQueryClient } from 'react-query'
 
 
-const useCreateCommentMutation = (blogId) => {
+const useCreateComment = (blogId) => {
   const notify = useNotify()
   const queryKey = ['blogs']
   const queryClient = useQueryClient()
@@ -25,4 +25,4 @@ const useCreateCommentMutation = (blogId) => {
   )
 }
 
-export default useCreateCommentMutation
+export default useCreateComment
