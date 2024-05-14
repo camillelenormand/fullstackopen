@@ -1,4 +1,4 @@
-import useCreateCommentMutation from '../hooks/useCreateCommentMutation'
+import useCreateComment from '../hooks/useCreateComment'
 import styled from 'styled-components'
 
 const TitleStyle = styled.h2`
@@ -12,16 +12,14 @@ const CommentFormContainer = styled.div`
 `
 
 const CommentForm = ({ blogId }) => {
-  const createCommentMutation = useCreateCommentMutation(blogId)
+  const createComment = useCreateComment(blogId)
   console.log('blogId:', blogId)
 
   const onCreate = async (e) => {
     e.preventDefault()
     const { content } = e.target.elements
-    console.log(content.value)
-    console.log(blogId)
 
-    createCommentMutation.mutate({
+    createComment.mutate({
       blog: blogId,
       content: content.value
     })
