@@ -1,12 +1,21 @@
 // LogoutButton.js
-import { useAuth } from '../contexts/AuthContext' 
+import { useLogout } from '../contexts/AuthContext'
+import { useNotify } from '../contexts/NotificationContext'
+import storageService from '../services/storage'
 import Button from './Button' 
 
 const LogoutButton = () => {
-  const { logout } = useAuth()
+  const logout = useLogout()
+  const notify = useNotify()
+
+  const handleLogout = () => {
+    logout()
+    notify('Logout successful', 'success')
+    storageService.removeUser()
+  }
 
   return (
-      <Button onClick={logout}>
+      <Button onClick={handleLogout}>
         Logout
       </Button>
   )
