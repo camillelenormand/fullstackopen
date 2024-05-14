@@ -4,8 +4,7 @@ import App from './App.jsx'
 import { AuthProvider } from './contexts/AuthContext.jsx'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { NotificationContextProvider } from './contexts/NotificationContext.jsx'
-import { ReactQueryDevtools } from "react-query/devtools"
-import { BrowserRouter as Router } from 'react-router-dom'
+import { ReactQueryDevtools } from 'react-query/devtools'
 import { ThemeProvider } from './contexts/ThemeContext.jsx'
 import GlobalStyle from './components/GlobalStyle'
 
@@ -18,9 +17,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <ThemeProvider>
               <GlobalStyle />
               <NotificationContextProvider>
-              <Router>
                 <App />
-              </Router>
               </NotificationContextProvider>
             </ThemeProvider>
           </AuthProvider>
