@@ -1,9 +1,9 @@
-import { useAuth } from '../contexts/AuthContext'
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button from './Button'
 import styled from 'styled-components'
-import Loading from './Loading'
+import { useLogin } from '../contexts/AuthContext'
+import { useNotify } from '../contexts/NotificationContext'
+import { useField } from '../hooks/useField'
 
 const LoginFormContainer = styled.div`
   display: flex;
@@ -29,53 +29,65 @@ const InputContainer = styled.div`
 
 const LoginForm = () => {
   const navigate = useNavigate()
-  const { login, isLoading, isSuccess, isError } = useAuth()
-  const [credentials, setCredentials] = useState({ username: '', password: '' })
+  const {
+    value: usernameValue,
+    onChange: usernameOnChange,
+    reset: resetUsername
+  } = useField('text')
+  const { 
+    value: passwordValue, 
+    onChange: passwordOnChange, 
+    reset: resetPassword 
+  } = useField('password')
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setCredentials(prev => ({ ...prev, [name]: value }))
-  }
+  const doLogin = useLogin()
+  const notify = useNotify()
 
   const handleSubmit = async (event) => {
     event.preventDefault()
+    console.log('Form submitted')
 
-    const trimmedCredentials = {
-      username: credentials.username.trim(),
-      password: credentials.password.trim(),
-    }
+    try {
+      console.log('Attempting to log in...')
+      await doLogin({
+        username: usernameValue.trim(),
+        password: passwordValue.trim()
+      })
 
-    await login(trimmedCredentials)
+      console.log('Login successful')
 
-    if (isLoading) {
-      <Loading />
-    }
-
-    if (isError) {
-      console.log(isError)
-      setCredentials({ username: '', password: '' })
-    }
-
-    if (isSuccess) {
-      setCredentials({ username: '', password: '' })
+      notify('Login successful', 'success')
       navigate('/blogs')
+      resetUsername()
+      resetPassword()
+
+    } catch (error) {
+      console.log('Login failed', error)
+      resetUsername()
+      resetPassword()
+      notify('Invalid username or password', 'error')
     }
   }
 
+  console.log('LoginForm.js: render')
+
   return (
     <LoginFormContainer>
-      <LoginTitle>Log in </LoginTitle>
-      <form onSubmit={handleSubmit} disabled={isLoading}>
+      <LoginTitle>
+        Log in
+      </LoginTitle>
+      <form onSubmit={handleSubmit}>
         <InputContainer>
           <input
-            type="text"
             id="username"
+            type="text"
             name="username"
             placeholder='username'
             required
             autoComplete='username'
-            value={credentials.username}
-            onChange={handleChange}
+            value={usernameValue}
+            onChange={usernameOnChange}
+            aria-label='username'
           />
         </InputContainer>
         <InputContainer>
@@ -86,11 +98,12 @@ const LoginForm = () => {
             autoComplete='current-password'
             placeholder='password'
             required
-            value={credentials.password}
-            onChange={handleChange}
+            value={passwordValue}
+            onChange={passwordOnChange}
+            aria-label='password'
           />
         </InputContainer>
-        <Button type="submit" disabled={isLoading}>
+        <Button type="submit">
           Login
         </Button>
       </form>
