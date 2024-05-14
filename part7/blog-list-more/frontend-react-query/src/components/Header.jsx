@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import LogoutButton from './LogOutButton'
 import { useAuth } from '../contexts/AuthContext'
-import BlogForm from './BlogForm'
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -26,24 +25,22 @@ const NavLink = styled(Link)`
 
   &:hover {
     text-decoration: underline;
-}
+  }
 `
 
-
 const Header = () => {
-  const { token } = useAuth()
+  const { authState } = useAuth()
 
   return (
-    <>
-      <HeaderContainer>
-        <Nav>
-          <NavLink to="/blogs">Blogs</NavLink>
-          <NavLink to="/users">Users</NavLink>
-          {!token ? null : <NavLink to={`/blogs/new`} element={<BlogForm />}>Create a New Blog</NavLink>}
-        </Nav>
-        {!token ? <NavLink to="/login">Login</NavLink> : <LogoutButton />}
-      </HeaderContainer>
-    </>
+    <HeaderContainer>
+      <Nav>
+        <NavLink to="/blogs">Blogs</NavLink>
+        <NavLink to="/users">Users</NavLink>
+        <NavLink to="/blogs/new">Create a New Blog</NavLink>
+      </Nav>
+      <p> Welcome {authState?.username}!</p>
+      {authState ? <LogoutButton /> : <NavLink to="/login">Login</NavLink>}
+    </HeaderContainer>
   )
 }
 
