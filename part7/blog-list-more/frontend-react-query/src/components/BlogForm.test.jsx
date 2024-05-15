@@ -11,11 +11,13 @@ import { NotificationContextProvider } from '../contexts/NotificationContext'
 vi.mock('../hooks/useCreateBlog')
 vi.mock('../contexts/AuthContext')
 
+// Mock createBlog hook
 const mockCreateBlog = vi.fn()
 useCreateBlog.mockReturnValue({
   mutate: mockCreateBlog,
 })
 
+// Mock the notify hook
 const mockNotify = vi.fn()
 vi.mock('../contexts/NotificationContext', async (importOriginal) => {
   const actual = await importOriginal()
@@ -25,6 +27,7 @@ vi.mock('../contexts/NotificationContext', async (importOriginal) => {
   }
 })
 
+// Mock the useNavigate hook
 const mockNavigate = vi.fn()
 vi.mock('react-router-dom', async (importOriginal) => {
   const actual = await importOriginal()
@@ -61,12 +64,9 @@ test('renders BlogForm and handles submission', async () => {
 
   // Mock the mutation onSuccess callback
   const onSuccessCallback = mockCreateBlog.mock.calls[0][1].onSuccess
-  onSuccessCallback({ title: 'Test Blog', author: 'Test Author' })
+  onSuccessCallback({ title: 'Test Blog', author: 'Test Author', url: 'http://test.url'})
 
   await waitFor(() => {
-    console.log('mockCreateBlog calls:', mockCreateBlog.mock.calls)
-    console.log('mockNotify calls:', mockNotify.mock.calls)
-
     expect(mockCreateBlog).toHaveBeenCalledWith(
       {
         title: 'Test Blog',
@@ -100,7 +100,6 @@ test('shows error notification on failure', async () => {
   fireEvent.click(screen.getByText(/Create/i))
 
   await waitFor(() => {
-    console.log('mockNotify calls (error):', mockNotify.mock.calls)
     // Check for error notification
     expect(mockNotify).toHaveBeenCalledWith('Failed to create blog: Network error', 'error')
   })
