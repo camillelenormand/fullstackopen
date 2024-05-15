@@ -69,8 +69,6 @@ const LoginForm = () => {
     }
   }
 
-  console.log('LoginForm.js: render')
-
   return (
     <LoginFormContainer>
       <LoginTitle>
