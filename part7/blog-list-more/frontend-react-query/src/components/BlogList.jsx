@@ -14,7 +14,6 @@ import Pagination from './Pagination'
 import BlogCard from './BlogCard'
 // Import styled components
 import { GridContainer } from './BlogListStyles'
-// Import services
 import storageService from '../services/storage'
 
 const Blogs = () => {
@@ -38,6 +37,7 @@ const Blogs = () => {
   const handleLike = (blog) => {
     const token = storageService.loadUser().token
     const updatedBlog = { ...blog, likes: blog.likes + 1 }
+
     likeBlog.mutate({
       id: updatedBlog.id,
       newBlog: updatedBlog,
@@ -46,7 +46,9 @@ const Blogs = () => {
   }
 
   const handleDelete = (blog) => {
-    deleteMutation.mutate({
+    const token = storageService.loadUser().token
+
+    deleteBlog.mutate({
       id: blog.id,
       authToken: token,
     })
