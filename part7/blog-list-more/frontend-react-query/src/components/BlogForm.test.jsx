@@ -1,83 +1,107 @@
-import { render, screen } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
-import userEvent from '@testing-library/user-event'
-import BlogForm from './BlogForm'
+import React from 'react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { MemoryRouter } from 'react-router-dom';
+import { vi } from 'vitest';
+import BlogForm from './BlogForm';
+import useCreateBlog from '../hooks/useCreateBlog';
+import { NotificationContextProvider } from '../contexts/NotificationContext';
 
-const createBlogMutation = vi.fn()
-const notify = vi.fn()
+// Mock the hooks and context
+vi.mock('../hooks/useCreateBlog');
+vi.mock('../contexts/AuthContext');
 
-/// Mocking hooks and modules
+const mockCreateBlog = vi.fn();
+useCreateBlog.mockReturnValue({
+  mutate: mockCreateBlog,
+});
 
-// Mock the useCreateMutation hook
-vi.mock('../hooks/useCreateMutation', () => ({
-  default: () => ({
-    mutate: async (data) => {
-      createBlogMutation(data);
-      notify('Blog created successfully: New Blog by Jane Doe', 'success');
-    },
-    mutateWithErrors: async (data) => {
-      createBlogMutation(data);
-      notify('Failed to create blog: ', 'error');
-    }
-  }),
-}))
+const mockNotify = vi.fn();
+vi.mock('../contexts/NotificationContext', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    useNotify: () => mockNotify,
+  };
+});
 
-vi.mock('../contexts/NotificationContext', () => ({
-  useNotify: () => notify
-}))
+const mockNavigate = vi.fn();
+vi.mock('react-router-dom', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
 
-const userLoggedIn = {
-  username: 'root',
-  token: '12345'
-}
+// Utility function to render the component with necessary providers
+const renderWithProviders = (ui) => {
+  const queryClient = new QueryClient();
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <NotificationContextProvider>
+        <MemoryRouter>
+          {ui}
+        </MemoryRouter>
+      </NotificationContextProvider>
+    </QueryClientProvider>
+  );
+};
 
-// Mock the useAuth hook
-vi.mock('../contexts/AuthContext', () => ({
-  useAuth: () => userLoggedIn
-}))
+test('renders BlogForm and handles submission', async () => {
+  renderWithProviders(<BlogForm />);
 
-describe('BlogForm', () => {
-  
-  it('submits form data correctly', async () => {
-    const user = userEvent.setup()
+  // Fill out the form
+  fireEvent.change(screen.getByPlaceholderText(/Enter a title/i), { target: { value: 'Test Blog' } });
+  fireEvent.change(screen.getByPlaceholderText(/Enter an author/i), { target: { value: 'Test Author' } });
+  fireEvent.change(screen.getByPlaceholderText(/Enter a URL/i), { target: { value: 'http://test.url' } });
 
-    render(<BlogForm />)
+  // Submit the form
+  fireEvent.click(screen.getByText(/Create/i));
 
-    // Get form elements
-    const title = screen.getByPlaceholderText('Enter a title')
-    const author = screen.getByPlaceholderText('Enter an author')
-    const url = screen.getByPlaceholderText('Enter an URL')
-    const button = screen.getByRole('button', { name: 'Create' })
+  // Mock the mutation onSuccess callback
+  const onSuccessCallback = mockCreateBlog.mock.calls[0][1].onSuccess;
+  onSuccessCallback({ title: 'Test Blog', author: 'Test Author' });
 
-    // Fill out the form
-    await userEvent.type(title, 'New Blog')
-    await userEvent.type(author, 'Jane Doe')
-    await userEvent.type(url, 'https://example.com')
+  await waitFor(() => {
+    console.log('mockCreateBlog calls:', mockCreateBlog.mock.calls);
+    console.log('mockNotify calls:', mockNotify.mock.calls);
 
-    console.log(title.value, author.value, url.value)
-    // Click the submit button
-    await user.click(button)
+    expect(mockCreateBlog).toHaveBeenCalledWith(
+      {
+        title: 'Test Blog',
+        author: 'Test Author',
+        url: 'http://test.url'
+      },
+      expect.anything()
+    );
 
-    // Check that the form was submitted correctly
-    expect(createBlogMutation).toHaveBeenCalled()
-    // Check that the form was submitted with the correct data
-    expect(createBlogMutation).toHaveBeenCalledWith({
-      title: 'New Blog',
-      author: 'Jane Doe',
-      url: 'https://example.com'
-    })
+    // Check for success notification
+    expect(mockNotify).toHaveBeenCalledWith('Blog created successfully: Test Blog by Test Author', 'success');
 
-    // Validate useAuth hook usage
-    // Ensure the hook itself was called
-    expect(userLoggedIn).toBeDefined()
-    // Check that the user has the correct username
-    expect(userLoggedIn).toHaveProperty('username', 'root')
-    // Check that the user has the correct token
-    expect(userLoggedIn).toHaveProperty('token', '12345')
-    // Check that the user was notified with the correct message
-    expect(notify).toHaveBeenCalledTimes(1)
-    expect(notify.mock.calls[0][0]).toBe('Blog created successfully: New Blog by Jane Doe')
-    expect(notify.mock.calls[0][1]).toBe('success')
-  })
-})
+    // Check if navigation to home page is triggered
+    expect(mockNavigate).toHaveBeenCalledWith('/');
+  });
+});
 
+test('shows error notification on failure', async () => {
+  mockCreateBlog.mockImplementation((_, { onError }) => {
+    onError({ message: 'Network error' });
+  });
+
+  renderWithProviders(<BlogForm />);
+
+  // Fill out the form
+  fireEvent.change(screen.getByPlaceholderText(/Enter a title/i), { target: { value: 'Test Blog' } });
+  fireEvent.change(screen.getByPlaceholderText(/Enter an author/i), { target: { value: 'Test Author' } });
+  fireEvent.change(screen.getByPlaceholderText(/Enter a URL/i), { target: { value: 'http://test.url' } });
+
+  // Submit the form
+  fireEvent.click(screen.getByText(/Create/i));
+
+  await waitFor(() => {
+    console.log('mockNotify calls (error):', mockNotify.mock.calls);
+    // Check for error notification
+    expect(mockNotify).toHaveBeenCalledWith('Failed to create blog: Network error', 'error');
+  });
+});

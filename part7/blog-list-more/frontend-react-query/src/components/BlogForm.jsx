@@ -5,7 +5,6 @@ import {
   BlogButton
 } from './BlogFormStyles'
 import useCreateBlog from '../hooks/useCreateBlog'
-import { useAuth } from '../contexts/AuthContext'
 import { useNotify } from '../contexts/NotificationContext'
 import { useNavigate } from 'react-router-dom'
 import { useField } from '../hooks/useField'
@@ -19,8 +18,6 @@ const BlogForm = () => {
   const title = useField('text')
   const author = useField('text')
   const url = useField('text')
-  console.log(title, author, url)
-
 
   const onCreate = async (event) => {
     event.preventDefault()
@@ -32,7 +29,7 @@ const BlogForm = () => {
     }, 
     {
       onSuccess: () => {
-        notify('Blog created successfully.')
+        notify(`Blog created successfully: ${title.value} by ${author.value}`, 'success')
         navigate('/')
       },
       onError: (error) => {
@@ -42,22 +39,43 @@ const BlogForm = () => {
     })
   }
 
-  const handleChange = (event) => {
-    title.onChange(event)
-    author.onChange(event)
-    url.onChange(event)
-  }
-
   return (
     <BlogFormContainer onSubmit={onCreate}>
-      <BlogFormLabel htmlFor='title'>Title</BlogFormLabel>
-      <BlogFormInput id='title' name='title' placeholder='Enter a title' type='text' aria-label='name' required onChange={handleChange}/>
-      <BlogFormLabel htmlFor='author'>Author</BlogFormLabel>
-      <BlogFormInput id='author' name='author' placeholder='Enter an author' type='text' aria-label='name' required onChange={handleChange}/>
-      <BlogFormLabel htmlFor='url'>URL</BlogFormLabel>
-      <BlogFormInput id='url' name='url' placeholder='Enter a URL' type='text' aria-label='url' required onChange={handleChange}/>
-      <BlogButton type='submit'>Create</BlogButton>
-    </BlogFormContainer>
+    <BlogFormLabel htmlFor='title'>Title</BlogFormLabel>
+    <BlogFormInput
+      id='title'
+      name='title'
+      placeholder='Enter a title'
+      type={title.type}
+      value={title.value}
+      onChange={title.onChange}
+      aria-label='title'
+      required
+    />
+    <BlogFormLabel htmlFor='author'>Author</BlogFormLabel>
+    <BlogFormInput
+      id='author'
+      name='author'
+      placeholder='Enter an author'
+      type={author.type}
+      value={author.value}
+      onChange={author.onChange}
+      aria-label='author'
+      required
+    />
+    <BlogFormLabel htmlFor='url'>URL</BlogFormLabel>
+    <BlogFormInput
+      id='url'
+      name='url'
+      placeholder='Enter a URL'
+      type={url.type}
+      value={url.value}
+      onChange={url.onChange}
+      aria-label='url'
+      required
+    />
+    <BlogButton type='submit'>Create</BlogButton>
+  </BlogFormContainer>
   )
 }
 
