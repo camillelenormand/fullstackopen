@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from 'react-query'
 import { useNotify } from '../contexts/NotificationContext'
-import blogService from '../services/blogs'
+import blogService from '../services/blogs' 
 
 const useLike = () => {
   const queryClient = useQueryClient()
