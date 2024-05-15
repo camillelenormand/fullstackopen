@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from 'react-query'
 import { useNotify } from '../contexts/NotificationContext'
 import blogService from '../services/blogs'
 
-const useLikeMutation = () => {
+const useLike = () => {
   const queryClient = useQueryClient()
   const queryKey = ['blogs']
   const notifyWith = useNotify()
@@ -11,29 +11,31 @@ const useLikeMutation = () => {
     mutationFn: blogService.updateBlog,
     onMutate: async (updatedBlog) => {
       await queryClient.cancelQueries(queryKey)
+
       const previousBlogs = queryClient.getQueryData(queryKey)
-      queryClient.setQueryData(queryKey, (oldData) => {
-        return {
-          ...oldData,
-          blogs: oldData?.blogs?.map(blog =>
+      
+      if (previousBlogs) {
+        queryClient.setQueryData(queryKey, {
+          ...previousBlogs,
+          blogs: previousBlogs.blogs.map(blog =>
             blog.id === updatedBlog.id ? { ...blog, likes: blog.likes + 1 } : blog
           ),
-        }
-      })
+        })
+      }
 
       return { previousBlogs }
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['blogs'] })
-      notifyWith('Blog liked successfully')
-      console.log('Mutation successful with data:', data)
+      queryClient.invalidateQueries(queryKey)
+      notifyWith('Blog liked successfully', 'success')
     },
     onError: (error, updatedBlog, context) => {
-      queryClient.setQueryData(['blogs'], context.previousBlogs)
-      notifyWith(error)
-      console.error('Failed to like blog: ', error)
+      if (context?.previousBlogs) {
+        queryClient.setQueryData(queryKey, context.previousBlogs)
+      }      
+      notifyWith(`Failed to like the blog: ${error.message}`, 'error')
     }
   })
 }
 
-export default useLikeMutation
+export default useLike
