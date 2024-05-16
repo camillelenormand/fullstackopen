@@ -31,8 +31,7 @@ const getAllBlogs = async ({ page = 1, limit = 10}) => {
     return response.data
   }
   catch (error) {
-    console.error('Error fetching blogs', error)
-    throw error 
+    throw new Error(`Error fetching blogs: ${error.message}`)
   }
 }
 
@@ -48,8 +47,7 @@ const getBlog = async (id) => {
     const response = await axios.get(`${baseUrl}/${id}`)
     return response.data
   } catch (error) {
-    console.error('Error fetching blog', error)
-    throw error
+    throw new Error(`Error fetching blog: ${error.message}`)
   }
 }
 
@@ -71,8 +69,7 @@ const createBlog = async (newBlog, authToken) => {
     const response = await axios.post(baseUrl, newBlog, config)
     return response.data
   } catch (error) {
-    console.error('Error creating blog', error)
-    throw error
+    throw new Error(`Error creating blog: ${error.message}`)
   }
 }
 
@@ -95,8 +92,7 @@ const updateBlog = async ({ id, newBlog, authToken }) => {
     const response = await axios.put(`${baseUrl}/${id}`, newBlog, config)
     return response.data
   } catch (error) {
-    console.error('Error updating blog', error)
-    throw error // Ensure consistent error handling by rethrowing the error
+    throw new Error(`Error updating blog: ${error.message}`)
   }
 }
 
@@ -118,8 +114,7 @@ const deleteBlog = async ({ id, authToken }) => {
     console.log('Blog deleted successfully')
     return response.data
   } catch (error) {
-    console.error('Error deleting blog', error)
-    throw error // Ensure consistent error handling by rethrowing the error
+    throw new Error(`Error deleting blog: ${error.message}`)
   }
 }
 
@@ -136,7 +131,7 @@ const getComments = async (id) => {
     return response.data
   } catch (error) {
     console.error('Error fetching comments', error)
-    throw error
+    throw new Error(`Error fetching comments: ${error.message}`)
   }
 }
 
@@ -154,7 +149,7 @@ const createComment = async (id, newComment) => {
     return response.data
   } catch (error) {
     console.error('Error creating comment', error)
-    throw error
+    throw new Error(`Error creating comment: ${error.message}`)
   }
 }
 
