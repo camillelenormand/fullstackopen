@@ -9,6 +9,7 @@ import CommentForm from './CommentForm'
 import Button from './Button'
 import { BlogTitle, BlogAuthor, BlogUrl } from './BlogListStyles'
 import styled from 'styled-components'
+import storageService from '../services/storage'
 
 const BlogContainer = styled.div`
   display: flex;
@@ -36,7 +37,7 @@ const Blog = () => {
 
   // Handle the like button click
   const handleLike = () => {
-    const token = window.localStorage.getItem('loggedBlogToken')
+    const token = storageService.loadUser().token
     const updatedBlog = { ...blog, likes: blog.likes + 1 }
     likeBlog.mutate({
       id: blog.id,
