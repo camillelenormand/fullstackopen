@@ -6,8 +6,7 @@ const loginService = async credentials => {
     const response = await axios.post(baseUrl, credentials)
     return response.data
   } catch (err) {
-    console.error('Error logging in', err)
-    throw err
+    throw new Error(`Error logging in: ${err.response.data.error}`)
   }
 }
 
