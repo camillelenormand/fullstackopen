@@ -54,8 +54,6 @@ const LoginForm = () => {
         password: passwordValue.trim()
       })
 
-      console.log('Login successful')
-
       notify('Login successful', 'success')
       navigate('/blogs')
       resetUsername()
