@@ -38,7 +38,7 @@ const Header = () => {
         <NavLink to="/users">Users</NavLink>
         <NavLink to="/blogs/new">Create a New Blog</NavLink>
       </Nav>
-      <p> Welcome {authState?.username}!</p>
+      <p>Welcome {authState?.username}!</p>
       {authState ? <LogoutButton /> : <NavLink to="/login">Login</NavLink>}
     </HeaderContainer>
   )
