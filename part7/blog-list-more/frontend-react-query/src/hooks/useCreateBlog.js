@@ -8,6 +8,15 @@ const useCreateMutation = () => {
   const queryClient = useQueryClient()
   const notify = useNotify()
 
+  // Check if the user is logged in
+  if (!storageService.loadUser()) {
+    return {
+      mutate: () => {
+        notify('You need to be logged in to create a blog.', 'error')
+      }
+    }
+  }
+
   return useMutation(
     newBlog => blogService.createBlog(newBlog, storageService.loadUser().token),
     {
