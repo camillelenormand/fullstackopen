@@ -22,6 +22,7 @@ const BlogCard = React.memo(({ blog, onDelete, onLike, isLikeLoading, isDeleteLo
       onClick={() => onLike(blog)}
       disabled={isLikeLoading}
       aria-label={`Like ${blog.title}`}
+      label="Like"
     >
       {blog.likes} Likes
     </Button>
@@ -30,6 +31,7 @@ const BlogCard = React.memo(({ blog, onDelete, onLike, isLikeLoading, isDeleteLo
       onClick={() => onDelete(blog)}
       disabled={isDeleteLoading}
       aria-label={`Delete ${blog.title}`}
+      label="Delete"
     >
       Delete
     </Button>
