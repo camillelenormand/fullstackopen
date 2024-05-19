@@ -15,16 +15,19 @@ import BlogCard from './BlogCard'
 // Import styled components
 import { GridContainer } from './BlogListStyles'
 import storageService from '../services/storage'
+// Import router hooks
+import { useNavigate } from 'react-router-dom'
 
 const Blogs = () => {
   // Define state variables for pagination
-  const { limit } = useState(10)
+  const [ limit ] = useState(10)
 
   // Custom hooks
   const { page, nextPage, prevPage } = usePagination()
   const { data, isLoading, isError, error } = useBlogs({ page, limit })
   const likeBlog = useLike()
   const deleteBlog = useDelete()
+  const navigate = useNavigate()
 
   // Handle loading and error states
   if (isLoading) 
@@ -51,6 +54,11 @@ const Blogs = () => {
     deleteBlog.mutate({
       id: blog.id,
       authToken: token,
+    },
+    {
+      onSuccess: () => {
+        navigate('/blogs')
+      }
     })
   }
 
