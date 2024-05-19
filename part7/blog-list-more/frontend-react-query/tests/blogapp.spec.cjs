@@ -201,4 +201,39 @@ describe('Blog app', () => {
     expect(notification).toBeDefined()
   })
 
+  test('user can add a comment to a blog', async ({ page }) => {
+      // Step 1: Click the login link
+      await page.click('text=Login')
+
+      // Step 2: Fill in the login form
+      await page.fill('input[name="username"]', 'root')
+      await page.fill('input[name="password"]', 'password')
+  
+      // Step 3: Submit the login form
+      await page.click('button[type="submit"]')
+  
+      // Step 4: Check that the user is logged in
+      await page.waitForSelector('text=root')
+      const username = await page.textContent('text=root')
+      expect(username).toBe('Welcome root!')
+  
+      // Step 5: Go to the blog page
+      await page.click('text=Blogs')
+  
+      // Ensure the blog page is loaded
+      await page.waitForSelector('text=John Doe Blog')
+
+      // Step 6: Click the title of the blog card
+      await page.click('text=John Doe Blog')
+      
+      // Step 7: Fill in the comment form
+      await page.fill('input[name="content"]', 'This is a test comment')
+
+      // Step 8: Submit the comment form
+      await page.click('button[type="submit"]')
+
+      // Step 9: Check the notification message
+      const notification = await page.textContent('text=Comment added successfully')
+      expect(notification).toBeDefined()
+  })
 })

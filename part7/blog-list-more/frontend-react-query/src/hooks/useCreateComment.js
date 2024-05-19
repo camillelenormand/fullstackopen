@@ -14,7 +14,7 @@ const useCreateComment = (blogId) => {
     {
       onSuccess: (data) => {
         queryClient.invalidateQueries(queryKey)
-        notify('Comment created successfully')
+        notify('Comment added successfully')
         console.log('Mutation successful with data:', data)
       },
       onError: (error) => {
