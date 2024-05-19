@@ -27,7 +27,6 @@ const useDelete = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(queryKey)
       notify('Blog deleted successfully', 'success')
-      Navigate('/')
     },
     onError: (error, deletedBlog, context) => {
       if (context?.previousBlogs) {
