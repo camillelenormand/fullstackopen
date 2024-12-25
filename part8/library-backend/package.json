@@ -1,0 +1,19 @@
+{
+  "name": "library-backend",
+  "version": "1.0.0",
+  "description": "fullstack open exercises 8.1 - 8.7",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Camille Lenormand",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^4.11.2",
+    "graphql": "^16.10.0",
+    "nodemon": "^3.1.9",
+    "save-dev": "^0.0.1-security",
+    "uuid": "^11.0.3"
+  }
+}
