@@ -177,8 +177,13 @@ const resolvers = {
           },
         });
       }
+      if (books.find((b) => b.author != args.author)) {
+        const author = {...args, id:uuid()}
+        authors = authors.concat(author)
+      }
+      
       const book = { ...args, id: uuid() };
-      books = books.concat(books);
+      books = books.concat(book);
       return book;
     },
   },
