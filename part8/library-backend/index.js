@@ -104,6 +104,7 @@ const typeDefs = `
     bookCount: Int!
     authorCount: Int!
     allBooks(author: String, genre: String): [Book!]!
+    allAuthors: [Author!]!
   }
 
   type Mutation {
@@ -127,6 +128,7 @@ const typeDefs = `
     name: String!
     id: ID!
     born: Int
+    bookCount: Int!
   }
 `;
 
@@ -154,6 +156,7 @@ const resolvers = {
       }
       return filteredBooks;
     },
+    allAuthors: () => authors,
   },
   Book: {
     title: (root) => root.title,
@@ -166,6 +169,9 @@ const resolvers = {
     name: (root) => root.name,
     id: (root) => root.id,
     born: (root) => root.born,
+    bookCount: (root) => {
+      return books.filter((book) => book.author === root.name).length;
+    },
   },
   Mutation: {
     addBook: (root, args) => {
@@ -177,11 +183,17 @@ const resolvers = {
           },
         });
       }
-      if (books.find((b) => b.author != args.author)) {
-        const author = {...args, id:uuid()}
-        authors = authors.concat(author)
+
+      // Check if author exists, if not add them
+      const authorExists = authors.find((a) => a.name === args.author);
+      if (!authorExists) {
+        const author = {
+          name: args.author,
+          id: uuid(),
+        };
+        authors = authors.concat(author);
       }
-      
+
       const book = { ...args, id: uuid() };
       books = books.concat(book);
       return book;
