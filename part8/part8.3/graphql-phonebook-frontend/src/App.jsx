@@ -5,6 +5,8 @@ import { ALL_PERSONS } from './queries'
 import { useState } from 'react'
 import { Error } from './Error'
 import PhoneForm from './PhoneForm'
+import 'simpledotcss/simple.min.css'
+
 
 const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)

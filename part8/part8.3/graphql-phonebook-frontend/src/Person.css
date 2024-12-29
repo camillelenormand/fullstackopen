@@ -1,0 +1,64 @@
+/* Persons.css */
+.persons-container {
+    padding: 20px;
+  }
+  
+  .persons-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .persons-table th,
+  .persons-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .persons-table th {
+    background-color: #f4f4f4;
+  }
+  
+  .persons-table tr:nth-child(even) {
+    background-color: #f8f8f8;
+  }
+  
+  .persons-table tr:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .persons-table button {
+    background-color: #0066cc;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+  
+  .persons-table button:hover {
+    background-color: #0052a3;
+  }
+  
+  .person-details {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+  
+  .person-details button {
+    margin-top: 10px;
+    background-color: #666;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+  
+  .person-details button:hover {
+    background-color: #555;
+  }

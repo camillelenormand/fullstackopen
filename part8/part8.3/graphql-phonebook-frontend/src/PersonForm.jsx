@@ -9,19 +9,19 @@ const PersonForm = ({ setError }) => {
   const [city, setCity] = useState('')
 
 
-  const [ createPerson ] = useMutation(CREATE_PERSON, {
-    refetchQueries: [ { query: ALL_PERSONS } ],
+  const [createPerson] = useMutation(CREATE_PERSON, {
+    refetchQueries: [{ query: ALL_PERSONS }],
     onError: (error) => {
-        const messages = error.graphQLErrors.map(e => e.message).join('\n')
-        setError(messages)
-      }
+      const messages = error.graphQLErrors.map(e => e.message).join('\n')
+      setError(messages)
+    }
   })
 
   const submit = (event) => {
     event.preventDefault()
 
 
-    createPerson({  variables: { name, phone, street, city } })
+    createPerson({ variables: { name, phone, street, city } })
 
     setName('')
     setPhone('')
@@ -31,25 +31,29 @@ const PersonForm = ({ setError }) => {
 
   return (
     <div>
-      <h2>create new</h2>
+      <h2>New Person</h2>
       <form onSubmit={submit}>
         <div>
-          name <input value={name}
+          <label>Name</label> 
+          <input value={name}
             onChange={({ target }) => setName(target.value)}
           />
         </div>
         <div>
-          phone <input value={phone}
+          <label>Phone</label> 
+          <input value={phone}
             onChange={({ target }) => setPhone(target.value)}
           />
         </div>
         <div>
-          street <input value={street}
+          <label>Street</label>
+          <input value={street}
             onChange={({ target }) => setStreet(target.value)}
           />
         </div>
         <div>
-          city <input value={city}
+          <label>City</label> 
+          <input value={city}
             onChange={({ target }) => setCity(target.value)}
           />
         </div>
