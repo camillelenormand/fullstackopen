@@ -1,22 +1,37 @@
-
-import { useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import { ALL_PERSONS } from "../queries"
+import { useState } from "react"
+import { EDIT_AUTHOR } from "../mutations"
 
-const Authors = (props) => {
-  const { data, loading, error } = useQuery(ALL_PERSONS);
+const Authors = () => {
+  const { data, loading } = useQuery(ALL_PERSONS)
+  const [name, setName] = useState('')
+  const [birth, setBirth] = useState('')
+  const [error, setError] = useState(null)
 
-  if (loading) return "Loading...";
-  if (error) return `Error: ${error.message}`;
+  const [editAuthor] = useMutation(EDIT_AUTHOR, {
+    refetchQueries: [{ query: ALL_PERSONS }],
+    onError: (error) => {
+      const messages = error.graphQLErrors.map(e => e.message).join('\n')
+      setError(messages)
+    }
+  })
 
-  if (!props.show) {
-    return null
+  if (loading) return "Loading..."
+  if (error) return `Error: ${error.message}`
+
+  const authors = data.allAuthors
+
+  const submit = async (event) => {
+    event.preventDefault()
+    editAuthor({ variables: { name, setBornTo: parseInt(birth) }})
+    setName('')
+    setBirth('')
   }
-
-  const authors = data.allAuthors;
 
   return (
     <div>
-      <h2>authors</h2>
+      <h2>Authors</h2>
       <table>
         <tbody>
           <tr>
@@ -33,6 +48,24 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
+      <form onSubmit={submit}>
+        <h4>Edit an author</h4>
+        <div>
+          <label>Name:</label>
+          <input
+            value={name}
+            onChange={({ target }) => setName(target.value)}
+          />
+        </div>
+        <div>
+          <label>Born in:</label>
+          <input
+            value={birth}
+            onChange={({ target }) => setBirth(target.value)}
+          />
+        </div>
+        <button type="submit">Edit</button>
+      </form>
     </div>
   )
 }

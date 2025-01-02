@@ -3,7 +3,7 @@ import { useMutation } from '@apollo/client'
 import { CREATE_BOOK } from '../mutations'
 import { ALL_BOOKS } from '../queries'
 
-const NewBook = (props) => {
+const NewBook = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [published, setPublished] = useState('')
@@ -22,7 +22,7 @@ const NewBook = (props) => {
   const submit = async (event) => {
     event.preventDefault()
 
-    
+
     createBook({ variables: { title, author, published: parseInt(published), genres: genres } })
 
     setTitle('')
@@ -41,21 +41,21 @@ const NewBook = (props) => {
     <div>
       <form onSubmit={submit}>
         <div>
-          title
+          <label>Title</label>
           <input
             value={title}
             onChange={({ target }) => setTitle(target.value)}
           />
         </div>
         <div>
-          author
+          <label>Author</label>
           <input
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
         <div>
-          published
+          <label>Published</label>
           <input
             type="number"
             value={published}
@@ -63,16 +63,17 @@ const NewBook = (props) => {
           />
         </div>
         <div>
+          <label>Genres</label>
           <input
             value={genre}
             onChange={({ target }) => setGenre(target.value)}
           />
           <button onClick={addGenre} type="button">
-            add genre
+            Add
           </button>
         </div>
-        <div>genres: {genres.join(' ')}</div>
-        <button type="submit">create book</button>
+        <div><span>Genres List: {genres.join(' ')}</span></div>
+        <button type="submit">New book</button>
       </form>
     </div>
   )
