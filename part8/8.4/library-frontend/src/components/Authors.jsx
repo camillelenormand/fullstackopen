@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@apollo/client"
 import { ALL_PERSONS } from "../queries"
 import { useState } from "react"
 import { EDIT_AUTHOR } from "../mutations"
+import Select from 'react-select'
 
 const Authors = () => {
   const { data, loading } = useQuery(ALL_PERSONS)
@@ -21,11 +22,15 @@ const Authors = () => {
   if (error) return `Error: ${error.message}`
 
   const authors = data.allAuthors
+  const options = authors.map(a => ({
+    value: a.name,
+    label: a.name
+  }))
 
   const submit = async (event) => {
     event.preventDefault()
-    editAuthor({ variables: { name, setBornTo: parseInt(birth) }})
-    setName('')
+    editAuthor({ variables: { name, setBornTo: parseInt(birth) } })
+    setName([])
     setBirth('')
   }
 
@@ -49,14 +54,34 @@ const Authors = () => {
         </tbody>
       </table>
       <form onSubmit={submit}>
-        <h4>Edit an author</h4>
-        <div>
+        <h4>Set author&apos;s birthdate</h4>
+        {/* <div>
           <label>Name:</label>
           <input
             value={name}
             onChange={({ target }) => setName(target.value)}
           />
-        </div>
+        </div> */}
+        <Select
+        styles={{
+          control: (baseStyles, state) => ({
+            ...baseStyles,
+            borderColor: state.isFocused ? '#2563eb' : '#e5e7eb',
+            boxShadow: state.isFocused ? '0 0 0 1px #2563eb' : 'none',
+            '&:hover': {
+              borderColor: '#2563eb'
+            }
+          }),
+          option: (baseStyles, state) => ({
+            ...baseStyles,
+            backgroundColor: state.isSelected ? '#2563eb' : state.isFocused ? '#dbeafe' : 'white',
+            color: state.isSelected ? 'white' : '#111827',
+            cursor: 'pointer'
+          })
+        }}
+        className="mb-4"
+          options={options}
+          onChange={({ value }) => setName(value)} />
         <div>
           <label>Born in:</label>
           <input
@@ -64,7 +89,7 @@ const Authors = () => {
             onChange={({ target }) => setBirth(target.value)}
           />
         </div>
-        <button type="submit">Edit</button>
+        <button type="submit">Update</button>
       </form>
     </div>
   )
